@@ -48,5 +48,6 @@ public class TurretConstants {
 	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(260);
 	public static final Rotation2d DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE = Rotation2d.fromRotations(3.0);
 	public static final Rotation2d DEFAULT_MAX_VELOCITY_PER_SECOND = Rotation2d.fromRotations(3.0);
+	public static final boolean IS_CONTINUOUS_WRAP = false;
 
 }
