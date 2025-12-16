@@ -11,6 +11,8 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.utils.battery.BatteryUtil;
+import frc.utils.time.TimeUtil;
+import frc.utils.utilcommands.BallThrowingLogCommand;
 
 public class JoysticksBindings {
 
@@ -53,6 +55,17 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));
+		usedJoystick.B.whileTrue(
+			new BallThrowingLogCommand(
+				"SimulationManager",
+				1,
+				robot.getHood().getPosition(),
+				TimeUtil.getCurrentTimeSeconds(),
+				robot.getSimulationManager().getTurretPosition3d(robot.getTurret().getPosition()),
+				robot.getFlyWheel().getVelocity(),
+				robot.getSwerve().getAllianceRelativeVelocity()
+			)
+		);
 		// bindings...
 	}
 

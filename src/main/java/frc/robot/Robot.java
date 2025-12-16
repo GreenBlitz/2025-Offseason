@@ -319,4 +319,8 @@ public class Robot {
 		return new PathPlannerAutoWrapper();
 	}
 
+	public SimulationManager getSimulationManager() {
+		return simulationManager;
+	}
+
 }

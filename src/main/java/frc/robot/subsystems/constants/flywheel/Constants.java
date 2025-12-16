@@ -18,5 +18,6 @@ public class Constants {
 	public final static double SENSOR_TO_MECHANISM_RATIO_FOLLOWER = 8.41;
 	public final static double MOMENT_OF_INERTIA = 0.000000001;
 	public final static int CURRENT_LIMIT = 40;
+	public final static double WHEEL_RADIUS_METERS = 0.03;
 
 }
