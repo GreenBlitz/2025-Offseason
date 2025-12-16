@@ -15,13 +15,13 @@ public class ShooterConstants {
 	public static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
-		Map.of(2.0, Rotation2d.fromDegrees(5.0))
+		Map.of(2.0, Rotation2d.fromDegrees(45.0))
 	);
 
 	public static final InterpolationMap<Double, Rotation2d> FLYWHEEL_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
-		Map.of(2.0, Rotation2d.fromDegrees(5.0))
+		Map.of(2.0, Rotation2d.fromRotations(0))
 	);
 
 	public static final LoggedNetworkRotation2d turretCalibrationAngle = new LoggedNetworkRotation2d("TurretAngle", Rotation2d.fromDegrees(0.0));

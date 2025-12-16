@@ -38,27 +38,33 @@ public class BallThrowingLogCommand extends Command {
 			new Translation2d(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond)
 		);
 
-		this.initialVelocityOnTheXAxis = -(flywheelVelocity.getRotations() * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getCos();
+		this.initialVelocityOnTheXAxis = (60 * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getCos();
 //			+ turretRelativeRobotVelocity.getX();
-		this.initialVelocityOnTheYAxis = (flywheelVelocity.getRotations() * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getSin();
+
+		this.initialVelocityOnTheYAxis = (300 * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getSin();
 //			+ turretRelativeRobotVelocity.getY();
+
+		Logger.recordOutput(logPath + "/Ball" + ballIndex, new Pose3d());
+
 	}
 
 	@Override
 	public void execute() {
-		Logger.recordOutput("aaa", initialVelocityOnTheXAxis);
 		double timePassed = TimeUtil.getCurrentTimeSeconds() - timeAtStartOfThrowSeconds;
+		Logger.recordOutput("bbb", timePassed);
 		double turretRelativeXPosition = initialVelocityOnTheXAxis * timePassed;
-		double turretRelativeYPosition = initialVelocityOnTheYAxis * timePassed
-			+ (-0 * Math.pow(timePassed, 2)) / 2;
-
-		Pose3d turretRelativeBallPose = new Pose3d(turretRelativeXPosition, turretRelativeYPosition, 0, new Rotation3d());
+		double turretRelativeYPosition = initialVelocityOnTheYAxis * timePassed + (-10 * Math.pow(timePassed, 2)) / 2;
+//
+//		if (turretRelativeYPosition < 0){
+//			turretRelativeYPosition = 0;
+//		}
+		Pose3d turretRelativeBallPose = new Pose3d(turretRelativeXPosition, 0, turretRelativeYPosition, new Rotation3d());
 
 		Transform3d turretTransform = new Transform3d(new Pose3d(), turretPose3dAtStartOfThrow);
 
 		Pose3d fieldRelativeBallPose = turretRelativeBallPose.plus(turretTransform);
 
-		Logger.recordOutput(logPath + "/Ball" + ballIndex, fieldRelativeBallPose);
+		Logger.recordOutput(logPath + "/Ball" + ballIndex, turretRelativeBallPose);
 	}
 
 	@Override
