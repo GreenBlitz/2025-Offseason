@@ -75,7 +75,8 @@ public class JoysticksBindings {
 				TimeUtil.getCurrentTimeSeconds(),
 				robot.getSimulationManager().getTurretPosition3d(robot.getTurret().getPosition()),
 				robot.getFlyWheel().getVelocity(),
-				robot.getSwerve().getAllianceRelativeVelocity()
+				robot.getSwerve().getAllianceRelativeVelocity(),
+				robot.getPoseEstimator().getEstimatedPose()
 		);
 	}
 

@@ -5,10 +5,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public enum Tower {
 
-	CLOSE_TOWER(new Pose2d(Field.Tower.getX() - 0.2, Field.Tower.getY(), Rotation2d.kZero)),
-	FAR_TOWER(new Pose2d(Field.Tower.getX() - 0.2, Field.Tower.getY(), Rotation2d.k180deg)),
-	RIGHT_TOWER(new Pose2d(Field.Tower.getX(), Field.Tower.getY() - 0.2, Rotation2d.kCCW_90deg.times(-1))),
-	LEFT_TOWER(new Pose2d(Field.Tower.getX(), Field.Tower.getY() + 0.2, Rotation2d.kCCW_90deg));
+	CLOSE_TOWER(new Pose2d(Field.Tower.getX() - 0.4, Field.Tower.getY(), Rotation2d.k180deg)),
+	FAR_TOWER(new Pose2d(Field.Tower.getX() + 0.4, Field.Tower.getY(), Rotation2d.kZero)),
+	RIGHT_TOWER(new Pose2d(Field.Tower.getX(), Field.Tower.getY() - 0.4, Rotation2d.kCCW_90deg.times(-1))),
+	LEFT_TOWER(new Pose2d(Field.Tower.getX(), Field.Tower.getY() + 0.4, Rotation2d.kCCW_90deg));
 
 	private final Pose2d tower;
 
