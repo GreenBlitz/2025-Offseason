@@ -7,7 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
-import frc.constants.field.Tower;
+import frc.constants.field.TowerSide;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
@@ -137,13 +137,13 @@ public class Robot {
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
 
-		Logger.recordOutput("aaa1", Tower.CLOSE_TOWER.getPose());
-		Logger.recordOutput("aaa2", Tower.LEFT_TOWER.getPose());
-		Logger.recordOutput("aaa3", Tower.RIGHT_TOWER.getPose());
-		Logger.recordOutput("aaa4", Tower.FAR_TOWER.getPose());
+		Logger.recordOutput("aaa1", TowerSide.CLOSE_TOWER.getPose());
+		Logger.recordOutput("aaa2", TowerSide.LEFT_TOWER.getPose());
+		Logger.recordOutput("aaa3", TowerSide.RIGHT_TOWER.getPose());
+		Logger.recordOutput("aaa4", TowerSide.FAR_TOWER.getPose());
 
-		ShooterConstants.flywheelCalib.periodic();;
-		ShooterConstants.hoodCalib.periodic();;
+		ShooterConstants.flywheelCalib.periodic();
+		ShooterConstants.hoodCalib.periodic();
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();

@@ -3,7 +3,6 @@ package frc;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
@@ -16,11 +15,10 @@ import frc.utils.battery.BatteryUtil;
 import frc.utils.time.TimeUtil;
 import frc.utils.utilcommands.BallThrowingLogCommand;
 
-import java.util.function.Supplier;
 
 public class JoysticksBindings {
 
-	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN, 0.2);
+	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN);
 	private static final SmartJoystick SECOND_JOYSTICK = new SmartJoystick(JoystickPorts.SECOND);
 	private static final SmartJoystick THIRD_JOYSTICK = new SmartJoystick(JoystickPorts.THIRD);
 	private static final SmartJoystick FOURTH_JOYSTICK = new SmartJoystick(JoystickPorts.FOURTH);
@@ -59,24 +57,20 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));
-		usedJoystick.B.whileTrue(
-			new InstantCommand(() ->
-				a(robot).schedule()
-			)
-		);
+		usedJoystick.B.whileTrue(new InstantCommand(() -> a(robot).schedule()));
 		// bindings...
 	}
 
-	public static Command a(Robot robot){
+	public static Command a(Robot robot) {
 		return new BallThrowingLogCommand(
-				"SimulationManager",
-				1,
-				robot.getHood().getPosition(),
-				TimeUtil.getCurrentTimeSeconds(),
-				robot.getSimulationManager().getTurretPosition3d(robot.getTurret().getPosition()),
-				robot.getFlyWheel().getVelocity(),
-				robot.getSwerve().getAllianceRelativeVelocity(),
-				robot.getPoseEstimator().getEstimatedPose()
+			"SimulationManager",
+			1,
+			robot.getHood().getPosition(),
+			TimeUtil.getCurrentTimeSeconds(),
+			robot.getSimulationManager().getTurretPosition3d(robot.getTurret().getPosition()),
+			robot.getFlyWheel().getVelocity(),
+			robot.getSwerve().getAllianceRelativeVelocity(),
+			robot.getPoseEstimator().getEstimatedPose()
 		);
 	}
 
