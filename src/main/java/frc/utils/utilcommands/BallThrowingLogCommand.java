@@ -45,7 +45,7 @@ public class BallThrowingLogCommand extends Command {
 		Transform2d turretToRobot = new Transform2d(new Pose2d(), robotPose2dAtStartOfThrow);
 
 		Translation2d turretRelativeRobotVelocity = FieldMath.getRelativeTranslation(
-				new Pose2d(0, 0, turretPose3dAtStartOfThrow.toPose2d().plus(turretToRobot).getRotation()),
+			new Pose2d(0, 0, turretPose3dAtStartOfThrow.toPose2d().plus(turretToRobot).getRotation()),
 			new Translation2d(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond)
 		);
 
