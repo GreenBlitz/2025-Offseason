@@ -12,7 +12,6 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.utils.battery.BatteryUtil;
 
-
 public class JoysticksBindings {
 
 	private static final SmartJoystick MAIN_JOYSTICK = new SmartJoystick(JoystickPorts.MAIN);
@@ -52,10 +51,10 @@ public class JoysticksBindings {
 	}
 
 	private static void mainJoystickButtons(Robot robot) {
+		// bindings...
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
-		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT)); // todo - pre then shoot until no balls
-		usedJoystick.L1.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
+		usedJoystick.R1.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT)); // todo - pre then shoot until no balls		usedJoystick.L1.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
 		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT_AND_INTAKE));
 	}
 
