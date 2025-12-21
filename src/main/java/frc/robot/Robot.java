@@ -7,12 +7,10 @@ package frc.robot;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
-import frc.constants.field.TowerSide;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
-import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
@@ -37,7 +35,6 @@ import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -136,14 +133,6 @@ public class Robot {
 		swerve.update();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
-
-		Logger.recordOutput("aaa1", TowerSide.CLOSE_TOWER.getPose());
-		Logger.recordOutput("aaa2", TowerSide.LEFT_TOWER.getPose());
-		Logger.recordOutput("aaa3", TowerSide.RIGHT_TOWER.getPose());
-		Logger.recordOutput("aaa4", TowerSide.FAR_TOWER.getPose());
-
-		ShooterConstants.flywheelCalib.periodic();
-		ShooterConstants.hoodCalib.periodic();
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
