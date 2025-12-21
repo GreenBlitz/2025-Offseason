@@ -59,6 +59,10 @@ public class JoysticksBindings {
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT));
 		usedJoystick.B.whileTrue(new InstantCommand(() -> a(robot).schedule()));
 		// bindings...
+		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
+		usedJoystick.R1.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT)); // todo - pre then shoot until no balls
+		usedJoystick.L1.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
+		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT_AND_INTAKE));
 	}
 
 	public static Command a(Robot robot) {
