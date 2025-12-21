@@ -3,6 +3,7 @@ package frc.utils.utilcommands;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotConstants;
 import frc.robot.subsystems.constants.flywheel.Constants;
 import frc.utils.math.FieldMath;
 import frc.utils.time.TimeUtil;
@@ -64,7 +65,7 @@ public class BallThrowingLogCommand extends Command {
 		double timePassed = TimeUtil.getCurrentTimeSeconds() - timeAtStartOfThrowSeconds;
 		double turretRelativeXPosition = initialVelocityOnTheXAxis * timePassed;
 		double turretRelativeYPosition = initialVelocityOnTheYAxis * timePassed;
-		double turretRelativeZPosition = initialVelocityOnTheZAxis * timePassed + (-10 * Math.pow(timePassed, 2)) / 2;
+		double turretRelativeZPosition = initialVelocityOnTheZAxis * timePassed + (-RobotConstants.GRAVITATIONAL_ACCELERATION_METERS_PER_SECOND_SQUARED_ISRAEL * Math.pow(timePassed, 2)) / 2;
 
 		Pose3d turretRelativeBallPose = new Pose3d(turretRelativeXPosition, turretRelativeYPosition, turretRelativeZPosition, new Rotation3d());
 
