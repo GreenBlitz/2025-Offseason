@@ -14,12 +14,12 @@ public class BallThrowingLogCommand extends Command {
 	private String logPath;
 	private int ballIndex;
 	private double timeAtStartOfThrowSeconds;
-	private Pose3d turretPose3dAtStartOfThrow;
 
 	private double initialVelocityOnTheXAxis;
 	private double initialVelocityOnTheYAxis;
 	private double initialVelocityOnTheZAxis;
 
+	private Pose3d turretPose3dAtStartOfThrow;
 	private Pose3d robotPose3dAtStartOfThrow;
 
 	private Pose3d finalPose;
