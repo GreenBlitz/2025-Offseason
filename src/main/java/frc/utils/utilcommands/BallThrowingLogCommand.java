@@ -42,14 +42,16 @@ public class BallThrowingLogCommand extends Command {
 		);
 		this.turretPose3dAtStartOfThrow = turretPose3dAtStartOfThrow.plus(turretFix);
 
+		Transform2d turretToRobot = new Transform2d(new Pose2d(), robotPose2dAtStartOfThrow);
+
 		Translation2d turretRelativeRobotVelocity = FieldMath.getRelativeTranslation(
-			new Translation2d(turretPose3dAtStartOfThrow.getX(), turretPose3dAtStartOfThrow.getY()),
+				new Pose2d(0, 0, turretPose3dAtStartOfThrow.toPose2d().plus(turretToRobot).getRotation()),
 			new Translation2d(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond)
 		);
 
-		this.initialVelocityOnTheXAxis = (120 * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getCos() + turretRelativeRobotVelocity.getX();
+		this.initialVelocityOnTheXAxis = (120 * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getCos() + turretRelativeRobotVelocity.getY();
 
-		this.initialVelocityOnTheYAxis = turretRelativeRobotVelocity.getY();
+		this.initialVelocityOnTheYAxis = turretRelativeRobotVelocity.getX();
 
 		this.initialVelocityOnTheZAxis = (120 * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getSin();
 
