@@ -14,7 +14,7 @@ public class ShooterConstants {
 	public static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
-		Map.of(2.0, Rotation2d.fromDegrees(5.0))
+		Map.of(0.5, Rotation2d.fromDegrees(50), 1.0, Rotation2d.fromDegrees(45), 1.5, Rotation2d.fromDegrees(42))
 	);
 
 	public static final InterpolationMap<Double, Rotation2d> FLYWHEEL_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
