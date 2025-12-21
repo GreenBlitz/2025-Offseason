@@ -49,11 +49,12 @@ public class BallThrowingLogCommand extends Command {
 			new Translation2d(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond)
 		);
 
-		this.initialVelocityOnTheXAxis = (120 * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getCos() + turretRelativeRobotVelocity.getY();
+		this.initialVelocityOnTheXAxis = (flywheelVelocity.getRotations() * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getCos()
+			+ turretRelativeRobotVelocity.getY();
 
 		this.initialVelocityOnTheYAxis = turretRelativeRobotVelocity.getX();
 
-		this.initialVelocityOnTheZAxis = (120 * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getSin();
+		this.initialVelocityOnTheZAxis = (flywheelVelocity.getRotations() * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getSin();
 
 		this.robotPose3dAtStartOfThrow = new Pose3d(robotPose2dAtStartOfThrow);
 	}
