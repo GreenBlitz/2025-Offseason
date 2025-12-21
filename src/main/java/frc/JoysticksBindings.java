@@ -51,8 +51,8 @@ public class JoysticksBindings {
 	}
 
 	private static void mainJoystickButtons(Robot robot) {
-		// bindings...
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
+		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().driveWith(RobotState.SHOOT)); // todo - pre then shoot until no balls
 		usedJoystick.L1.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
