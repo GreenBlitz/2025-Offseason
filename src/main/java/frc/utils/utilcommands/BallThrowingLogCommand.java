@@ -15,9 +15,9 @@ public class BallThrowingLogCommand extends Command {
 	private int ballIndex;
 	private double timeAtStartOfThrowSeconds;
 
-	private double initialVelocityOnTheXAxis;
-	private double initialVelocityOnTheYAxis;
-	private double initialVelocityOnTheZAxis;
+	private double initialVelocityOnTheXAxisTurretRelative;
+	private double initialVelocityOnTheYAxisTurretRelative;
+	private double initialVelocityOnTheZAxisTurretRelative;
 
 	private Pose3d turretPose3dAtStartOfThrow;
 	private Pose3d robotPose3dAtStartOfThrow;
@@ -37,25 +37,22 @@ public class BallThrowingLogCommand extends Command {
 		this.logPath = logPath;
 		this.ballIndex = ballIndex;
 		this.timeAtStartOfThrowSeconds = timeAtStartOfThrowSeconds;
+
 		Transform3d turretFix = new Transform3d(
 			new Pose3d(),
 			new Pose3d(0, 0, 0, new Rotation3d(0, 0, Rotation2d.fromDegrees(-90).getRadians()))
 		);
 		this.turretPose3dAtStartOfThrow = turretPose3dAtStartOfThrow.plus(turretFix);
-
 		Transform2d turretToRobot = new Transform2d(new Pose2d(), robotPose2dAtStartOfThrow);
-
 		Translation2d turretRelativeRobotVelocity = FieldMath.getRelativeTranslation(
 			new Pose2d(0, 0, turretPose3dAtStartOfThrow.toPose2d().plus(turretToRobot).getRotation()),
 			new Translation2d(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond)
 		);
 
-		this.initialVelocityOnTheXAxis = (flywheelVelocity.getRadians() * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getCos()
+		this.initialVelocityOnTheXAxisTurretRelative = (flywheelVelocity.getRadians() * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getCos()
 			+ turretRelativeRobotVelocity.getY();
-
-		this.initialVelocityOnTheYAxis = turretRelativeRobotVelocity.getX();
-
-		this.initialVelocityOnTheZAxis = (flywheelVelocity.getRadians() * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getSin();
+		this.initialVelocityOnTheYAxisTurretRelative = turretRelativeRobotVelocity.getX();
+		this.initialVelocityOnTheZAxisTurretRelative = (flywheelVelocity.getRadians() * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getSin();
 
 		this.robotPose3dAtStartOfThrow = new Pose3d(robotPose2dAtStartOfThrow);
 	}
@@ -63,17 +60,10 @@ public class BallThrowingLogCommand extends Command {
 	@Override
 	public void execute() {
 		double timePassed = TimeUtil.getCurrentTimeSeconds() - timeAtStartOfThrowSeconds;
-		double turretRelativeXPosition = initialVelocityOnTheXAxis * timePassed;
-		double turretRelativeYPosition = initialVelocityOnTheYAxis * timePassed;
-		double turretRelativeZPosition = initialVelocityOnTheZAxis * timePassed
-			+ (-RobotConstants.GRAVITATIONAL_ACCELERATION_METERS_PER_SECOND_SQUARED_ISRAEL * Math.pow(timePassed, 2)) / 2;
-
-		Pose3d turretRelativeBallPose = new Pose3d(turretRelativeXPosition, turretRelativeYPosition, turretRelativeZPosition, new Rotation3d());
+		Pose3d turretRelativeBallPose = getTurretRelativeBallPose(timePassed);
 
 		Transform3d turretToRobot = new Transform3d(new Pose3d(), turretPose3dAtStartOfThrow);
-
 		Transform3d ballToTurret = new Transform3d(new Pose3d(), turretRelativeBallPose);
-
 		Pose3d fieldRelativeBallPose = robotPose3dAtStartOfThrow.plus(turretToRobot).plus(ballToTurret);
 
 		if (fieldRelativeBallPose.getZ() <= 0.2) {
@@ -86,9 +76,14 @@ public class BallThrowingLogCommand extends Command {
 		}
 	}
 
-	@Override
-	public void end(boolean interrupted) {
-//		Logger.recordOutput(logPath + "/Ball" + ballIndex, new Pose3d(-1, -1, -1, new Rotation3d()));
+	private Pose3d getTurretRelativeBallPose(double timePassed) {
+		double turretRelativeXPosition = initialVelocityOnTheXAxisTurretRelative * timePassed;
+		double turretRelativeYPosition = initialVelocityOnTheYAxisTurretRelative * timePassed;
+		double turretRelativeZPosition = initialVelocityOnTheZAxisTurretRelative * timePassed
+			+ (-RobotConstants.GRAVITATIONAL_ACCELERATION_METERS_PER_SECOND_SQUARED_ISRAEL * Math.pow(timePassed, 2)) / 2;
+
+		Pose3d turretRelativeBallPose = new Pose3d(turretRelativeXPosition, turretRelativeYPosition, turretRelativeZPosition, new Rotation3d());
+		return turretRelativeBallPose;
 	}
 
 }
