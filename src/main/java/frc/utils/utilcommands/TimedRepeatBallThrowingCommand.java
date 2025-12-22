@@ -42,6 +42,10 @@ public class TimedRepeatBallThrowingCommand extends Command {
 		this.timeInterval = timeInterval;
 		this.numberOfBallsInFunnel = numberOfBallsInFunnel;
 		this.ballsThrown = 0;
+	}
+
+	@Override
+	public void initialize() {
 		this.timeAtStartOfThrow = TimeUtil.getCurrentTimeSeconds();
 	}
 
@@ -50,9 +54,8 @@ public class TimedRepeatBallThrowingCommand extends Command {
 		if (TimeUtil.getCurrentTimeSeconds() > timeAtStartOfThrow + timeInterval) {
 			new BallThrowingLogCommand(
 				logPath,
-				ballsThrown + 1,
+				ballsThrown,
 				hoodAngle.get(),
-				TimeUtil.getCurrentTimeSeconds(),
 				turretPose3dAtStartOfThrow.get(),
 				flywheelVelocity.get(),
 				robotSpeeds.get(),

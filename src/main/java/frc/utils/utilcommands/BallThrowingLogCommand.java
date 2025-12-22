@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
+import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.constants.flywheel.Constants;
 import frc.utils.math.FieldMath;
 import frc.utils.time.TimeUtil;
@@ -13,14 +14,14 @@ public class BallThrowingLogCommand extends Command {
 
 	private String logPath;
 	private int ballIndex;
-	private double timeAtStartOfThrowSeconds;
+	private double startTimeSeconds;
 
 	private double initialVelocityOnTheXAxisTurretRelative;
 	private double initialVelocityOnTheYAxisTurretRelative;
 	private double initialVelocityOnTheZAxisTurretRelative;
 
-	private Pose3d turretPose3dAtStartOfThrow;
-	private Pose3d robotPose3dAtStartOfThrow;
+	private Pose3d initialTurretPose;
+	private Pose3d initialRobotPose;
 
 	private Pose3d finalPose;
 
@@ -28,24 +29,22 @@ public class BallThrowingLogCommand extends Command {
 		String logPath,
 		int ballIndex,
 		Rotation2d hoodAngle,
-		double timeAtStartOfThrowSeconds,
-		Pose3d turretPose3dAtStartOfThrow,
+		Pose3d initialTurretPose,
 		Rotation2d flywheelVelocity,
 		ChassisSpeeds robotSpeeds,
-		Pose2d robotPose2dAtStartOfThrow
+		Pose2d initialRobotPose
 	) {
 		this.logPath = logPath;
 		this.ballIndex = ballIndex;
-		this.timeAtStartOfThrowSeconds = timeAtStartOfThrowSeconds;
 
 		Transform3d turretFix = new Transform3d(
 			new Pose3d(),
 			new Pose3d(0, 0, 0, new Rotation3d(0, 0, Rotation2d.fromDegrees(-90).getRadians()))
 		);
-		this.turretPose3dAtStartOfThrow = turretPose3dAtStartOfThrow.plus(turretFix);
-		Transform2d turretToRobot = new Transform2d(new Pose2d(), robotPose2dAtStartOfThrow);
+		this.initialTurretPose = initialTurretPose.plus(turretFix);
+		Transform2d turretToRobot = new Transform2d(new Pose2d(), initialRobotPose);
 		Translation2d turretRelativeRobotVelocity = FieldMath.getRelativeTranslation(
-			new Pose2d(0, 0, turretPose3dAtStartOfThrow.toPose2d().plus(turretToRobot).getRotation()),
+			new Pose2d(0, 0, initialTurretPose.toPose2d().plus(turretToRobot).getRotation()),
 			new Translation2d(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond)
 		);
 
@@ -54,25 +53,30 @@ public class BallThrowingLogCommand extends Command {
 		this.initialVelocityOnTheYAxisTurretRelative = turretRelativeRobotVelocity.getX();
 		this.initialVelocityOnTheZAxisTurretRelative = (flywheelVelocity.getRadians() * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getSin();
 
-		this.robotPose3dAtStartOfThrow = new Pose3d(robotPose2dAtStartOfThrow);
+		this.initialRobotPose = new Pose3d(initialRobotPose);
+	}
+
+	@Override
+	public void initialize() {
+		this.startTimeSeconds = TimeUtil.getCurrentTimeSeconds();
 	}
 
 	@Override
 	public void execute() {
-		double timePassed = TimeUtil.getCurrentTimeSeconds() - timeAtStartOfThrowSeconds;
+		double timePassed = TimeUtil.getCurrentTimeSeconds() - startTimeSeconds;
 		Pose3d turretRelativeBallPose = getTurretRelativeBallPose(timePassed);
 
-		Transform3d turretToRobot = new Transform3d(new Pose3d(), turretPose3dAtStartOfThrow);
+		Transform3d turretToRobot = new Transform3d(new Pose3d(), initialTurretPose);
 		Transform3d ballToTurret = new Transform3d(new Pose3d(), turretRelativeBallPose);
-		Pose3d fieldRelativeBallPose = robotPose3dAtStartOfThrow.plus(turretToRobot).plus(ballToTurret);
+		Pose3d fieldRelativeBallPose = initialRobotPose.plus(turretToRobot).plus(ballToTurret);
 
-		if (fieldRelativeBallPose.getZ() <= 0.2) {
-			if (finalPose == null && timePassed > 0.3) {
+		if (fieldRelativeBallPose.getZ() <= StateMachineConstants.DISTANCE_FROM_FLOOR_TO_STOP_BALL_SIMULATION_METERS) {
+			if (finalPose == null && timePassed > StateMachineConstants.MINIMAL_TIME_AFTER_THROW_TO_STOP_BALL_SIMULATION_SECONDS) {
 				finalPose = fieldRelativeBallPose;
 			}
-			Logger.recordOutput(logPath + "/Ball" + ballIndex, finalPose);
+			Logger.recordOutput(logPath + "/Ball" + ballIndex + 1, finalPose);
 		} else {
-			Logger.recordOutput(logPath + "/Ball" + ballIndex, fieldRelativeBallPose);
+			Logger.recordOutput(logPath + "/Ball" + ballIndex + 1, fieldRelativeBallPose);
 		}
 	}
 
