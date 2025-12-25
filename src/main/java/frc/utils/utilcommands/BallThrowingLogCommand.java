@@ -48,9 +48,11 @@ public class BallThrowingLogCommand extends Command {
 			new Translation2d(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond)
 		);
 
-		this.initialVelocityOnTheXAxisTurretRelative = (flywheelVelocity.getRadians() * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getCos()
-			+ turretRelativeRobotVelocity.getY();
-		this.initialVelocityOnTheYAxisTurretRelative = turretRelativeRobotVelocity.getX();
+		this.initialVelocityOnTheXAxisTurretRelative = (flywheelVelocity.getRadians() * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getCos();
+//			+ turretRelativeRobotVelocity.getY();
+//		this.initialVelocityOnTheYAxisTurretRelative = -turretRelativeRobotVelocity.getX();
+				this.initialVelocityOnTheYAxisTurretRelative = 0;
+
 		this.initialVelocityOnTheZAxisTurretRelative = (flywheelVelocity.getRadians() * Constants.WHEEL_RADIUS_METERS) * hoodAngle.getSin();
 
 		this.initialRobotPose = new Pose3d(initialRobotPose);
@@ -74,9 +76,9 @@ public class BallThrowingLogCommand extends Command {
 			if (finalPose == null && timePassed > StateMachineConstants.MINIMAL_TIME_AFTER_THROW_TO_STOP_BALL_SIMULATION_SECONDS) {
 				finalPose = fieldRelativeBallPose;
 			}
-			Logger.recordOutput(logPath + "/Ball" + ballIndex + 1, finalPose);
+			Logger.recordOutput(logPath + "/Ball" + (ballIndex + 1), finalPose);
 		} else {
-			Logger.recordOutput(logPath + "/Ball" + ballIndex + 1, fieldRelativeBallPose);
+			Logger.recordOutput(logPath + "/Ball" + (ballIndex + 1), fieldRelativeBallPose);
 		}
 	}
 
