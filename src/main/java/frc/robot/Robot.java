@@ -4,9 +4,14 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.config.RobotConfig;
+import com.sun.java.accessibility.util.GUIInitializedListener;
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
+import frc.robot.autonomous.AutosBuilder;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
@@ -32,7 +37,9 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
+import frc.utils.auto.AutonomousChooser;
 import frc.utils.auto.PathPlannerAutoWrapper;
+import frc.utils.auto.PathPlannerUtil;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 
@@ -54,6 +61,7 @@ public class Robot {
 	private final Roller omni;
 	private final IDigitalInput funnelDigitalInput;
 	private final SimulationManager simulationManager;
+    private final AutonomousChooser autoChooser;
 
 	private final RobotCommander robotCommander;
 
@@ -90,7 +98,6 @@ public class Robot {
 		this.funnelDigitalInput = omniAndDigitalInput.getSecond();
 		BrakeStateManager.add(() -> omni.setBrake(true), () -> omni.setBrake(false));
 
-		robotCommander = new RobotCommander("/RobotCommander", this);
 
 		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
 		this.swerve = new Swerve(
@@ -100,7 +107,10 @@ public class Robot {
 			IMUFactory.createSignals(imu)
 		);
 
-		this.poseEstimator = new WPILibPoseEstimatorWrapper(
+        robotCommander = new RobotCommander("/RobotCommander", this);
+
+
+        this.poseEstimator = new WPILibPoseEstimatorWrapper(
 			WPILibPoseEstimatorConstants.WPILIB_POSEESTIMATOR_LOGPATH,
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
@@ -111,6 +121,10 @@ public class Robot {
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
 
 		simulationManager = new SimulationManager("SimulationManager", this);
+
+        swerve.configPathPlanner(poseEstimator::getEstimatedPose, poseEstimator::resetPose,PathPlannerUtil.getGuiRobotConfig().get());
+
+        autoChooser = createAutonomousChooser();
 	}
 
 	public void resetSubsystems() {
@@ -138,6 +152,10 @@ public class Robot {
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
 	}
+
+    private AutonomousChooser createAutonomousChooser(){
+        return new AutonomousChooser("AutosChooser",AutosBuilder.getAllTestAutos());
+    }
 
 	public Pair<Roller, IDigitalInput> createIntakeRollers() {
 		return SparkMaxRollerBuilder.buildWithDigitalInput(
@@ -313,7 +331,7 @@ public class Robot {
 	}
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {
-		return new PathPlannerAutoWrapper();
+		return autoChooser.getChosenValue();
 	}
 
 }
