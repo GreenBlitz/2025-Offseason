@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
+import frc.robot.autonomous.AutosBuilder;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
@@ -34,9 +35,12 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
+import frc.utils.auto.AutonomousChooser;
 import frc.utils.auto.PathPlannerAutoWrapper;
+import frc.utils.auto.PathPlannerUtil;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -61,6 +65,8 @@ public class Robot {
 
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
+
+	private final AutonomousChooser autonomousChooser;
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
@@ -114,8 +120,15 @@ public class Robot {
 		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());
 		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
+		swerve.configPathPlanner(
+			() -> poseEstimator.getEstimatedPose(),
+			(Pose) -> poseEstimator.resetPose(Pose),
+			PathPlannerUtil.getGuiRobotConfig().get()
+		);
 
 		simulationManager = new SimulationManager("SimulationManager", this);
+
+		autonomousChooser = createAutoChooser();
 	}
 
 	public void resetSubsystems() {
@@ -267,6 +280,10 @@ public class Robot {
 		);
 	}
 
+	private AutonomousChooser createAutoChooser() {
+		return new AutonomousChooser("name", AutosBuilder.getAllTestAutos());
+	}
+
 	private Pair<Roller, IDigitalInput> createOmniAndSignal() {
 		return SparkMaxRollerBuilder.buildWithDigitalInput(
 			OmniConstant.LOG_PATH,
@@ -331,7 +348,7 @@ public class Robot {
 	}
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {
-		return new PathPlannerAutoWrapper();
+		return autonomousChooser.getChosenValue();
 	}
 
 }

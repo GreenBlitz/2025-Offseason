@@ -11,7 +11,8 @@ public class AutosBuilder {
 		return List.of(
 			() -> new PathPlannerAutoWrapper("Rotate"),
 			() -> new PathPlannerAutoWrapper("Rotate 2m"),
-			() -> new PathPlannerAutoWrapper("Straight 2m")
+			() -> new PathPlannerAutoWrapper("Straight 2m"),
+			() -> new PathPlannerAutoWrapper("First path")
 		);
 	}
 
