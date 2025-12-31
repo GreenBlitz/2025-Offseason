@@ -16,6 +16,8 @@ import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
+import frc.robot.statemachine.ScoringHelpers;
+import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
@@ -119,6 +121,9 @@ public class Robot {
 		);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
+		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());
+		swerve.getStateHandler().setRobotPoseSupplier(() -> poseEstimator.getEstimatedPose());
+		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
 		simulationManager = new SimulationManager("SimulationManager", this);
 
@@ -137,6 +142,16 @@ public class Robot {
 		if (FourBarConstants.MAXIMUM_POSITION.getRadians() < fourBar.getPosition().getRadians()) {
 			fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
 		}
+	}
+
+	public boolean isTurretMoveLegal() {
+		return ShooterStateHandler.isTurretMoveLegal(
+			ShooterStateHandler.getRobotRelativeLookAtTowerAngleForTurret(
+				ScoringHelpers.getClosestTower(poseEstimator.getEstimatedPose()).getPose().getTranslation(),
+				poseEstimator.getEstimatedPose()
+			),
+			turret
+		);
 	}
 
 	public void periodic() {
@@ -184,6 +199,7 @@ public class Robot {
 			TurretConstants.LOG_PATH,
 			IDs.TalonFXIDs.TURRET,
 			TurretConstants.IS_INVERTED,
+			TurretConstants.IS_CONTINUOUS_WRAP,
 			TurretConstants.TALON_FX_FOLLOWER_CONFIG,
 			TurretConstants.SYS_ID_ROUTINE_CONFIG,
 			TurretConstants.FEEDBACK_CONFIGS,
@@ -212,6 +228,7 @@ public class Robot {
 			FourBarConstants.LOG_PATH,
 			IDs.TalonFXIDs.FOUR_BAR,
 			FourBarConstants.IS_INVERTED,
+			FourBarConstants.IS_CONTINUOUS_WRAP,
 			FourBarConstants.TALON_FX_FOLLOWER_CONFIG,
 			FourBarConstants.SYS_ID_ROUTINE,
 			FourBarConstants.FEEDBACK_CONFIGS,
@@ -240,7 +257,7 @@ public class Robot {
 	}
 
 	private Arm createHood() {
-		ArmSimulationConstants hoodSimulationConstatns = new ArmSimulationConstants(
+		ArmSimulationConstants hoodSimulationConstants = new ArmSimulationConstants(
 			HoodConstants.MAXIMUM_POSITION,
 			HoodConstants.MINIMUM_POSITION,
 			HoodConstants.MINIMUM_POSITION,
@@ -251,6 +268,7 @@ public class Robot {
 			RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Hood",
 			IDs.TalonFXIDs.HOOD,
 			HoodConstants.IS_INVERTED,
+			HoodConstants.IS_CONTINUOUS_WRAP,
 			new TalonFXFollowerConfig(),
 			HoodConstants.SYSIDROUTINE_CONFIG,
 			HoodConstants.FEEDBACK_CONFIGS,
@@ -261,7 +279,7 @@ public class Robot {
 			HoodConstants.ARBITRARY_FEEDFORWARD,
 			HoodConstants.FORWARD_SOFTWARE_LIMIT,
 			HoodConstants.BACKWARD_SOFTWARE_LIMIT,
-			hoodSimulationConstatns,
+			hoodSimulationConstants,
 			HoodConstants.DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE,
 			HoodConstants.DEFAULT_MAX_VELOCITY_PER_SECOND
 		);
