@@ -15,6 +15,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.JoysticksBindings;
 import frc.RobotManager;
+import frc.robot.autonomous.AutosBuilder;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
@@ -41,7 +42,10 @@ import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.subsystems.swerve.module.ModuleUtil;
+import frc.utils.auto.AutoCommand;
+import frc.utils.auto.AutonomousChooser;
 import frc.utils.auto.PathPlannerAutoWrapper;
+import frc.utils.auto.PathPlannerUtil;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 import org.littletonrobotics.junction.Logger;
@@ -66,6 +70,7 @@ public class Robot {
 	private final Roller omni;
 	private final IDigitalInput funnelDigitalInput;
 	private final SimulationManager simulationManager;
+    private static AutonomousChooser autonomousChooser;
 
 	private final RobotCommander robotCommander;
 
@@ -123,8 +128,11 @@ public class Robot {
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
 
 		simulationManager = new SimulationManager("SimulationManager", this);
-        swerve.configPathPlanner(() -> getPoseEstimator().getEstimatedPose(),new Pose2d(0,0,new Rotation2d(0)) ;-> Logger.recordOutput("s" ,new Pose2d(0,0,new Rotation2d(0))),new RobotConfig(5,5,new ModuleConfig(5,5,5,new DCMotor(5,5,5,5,5,1),1,40,1)));
-	}
+        swerve.configPathPlanner(poseEstimator::getEstimatedPose, poseEstimator::resetPose, PathPlannerUtil.getGuiRobotConfig().get());
+
+        autonomousChooser = new AutonomousChooser("RafaelTest", AutosBuilder.getAllStartTest());
+
+    }
 
 	public void resetSubsystems() {
 		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians()) {
@@ -329,7 +337,7 @@ public class Robot {
 	}
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {
-		return new PathPlannerAutoWrapper();
+		return autonomousChooser.getChosenValue();
 	}
 
 }

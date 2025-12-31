@@ -10,8 +10,13 @@ public class AutosBuilder {
 	public static List<Supplier<PathPlannerAutoWrapper>> getAllTestAutos() {
 		return List.of(
 			() -> new PathPlannerAutoWrapper("Rotate"),
-			() -> new PathPlannerAutoWrapper("Rotate 2m"),
 			() -> new PathPlannerAutoWrapper("Straight 2m")
+		);
+	}
+
+    public static List<Supplier<PathPlannerAutoWrapper>> getAllStartTest() {
+		return List.of(
+			() -> new PathPlannerAutoWrapper("Rotate 2m")
 		);
 	}
 
