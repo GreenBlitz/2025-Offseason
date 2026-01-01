@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GoToBranch1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FromReefToFeeder2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FromFeederToReef3"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "test",
+  "choreoAuto": false
+}
