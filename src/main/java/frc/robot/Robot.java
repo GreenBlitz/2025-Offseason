@@ -39,8 +39,6 @@ import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
 import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
-import frc.robot.subsystems.swerve.module.ModuleConstants;
-import frc.robot.subsystems.swerve.module.ModuleUtil;
 import frc.utils.auto.AutonomousChooser;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.auto.PathPlannerUtil;
@@ -126,12 +124,12 @@ public class Robot {
 		simulationManager = new SimulationManager("SimulationManager", this);
 
 		swerve.configPathPlanner(
-				poseEstimator::getEstimatedPose,
-				poseEstimator::resetPose,
-				PathPlannerUtil.getGuiRobotConfig().orElse(getRobotConfig())
+			poseEstimator::getEstimatedPose,
+			poseEstimator::resetPose,
+			PathPlannerUtil.getGuiRobotConfig().orElse(getRobotConfig())
 		);
 
-		new EventTrigger("drive").onTrue(robotCommander.getSuperstructure().setState(RobotState.DRIVE ));
+		new EventTrigger("drive").onTrue(robotCommander.getSuperstructure().setState(RobotState.DRIVE));
 		new EventTrigger("intake").onTrue(robotCommander.getSuperstructure().setState(RobotState.INTAKE));
 		new EventTrigger("shoot").onTrue(robotCommander.getSuperstructure().setState(RobotState.SHOOT));
 		new EventTrigger("pre-shoot").onTrue(robotCommander.getSuperstructure().setState(RobotState.PRE_SHOOT));
@@ -347,18 +345,18 @@ public class Robot {
 
 	public RobotConfig getRobotConfig() {
 		return new RobotConfig(
-				60,
-				6.375,
-				new ModuleConfig(
-						0.05,
-						swerve.getConstants().velocityAt12VoltsMetersPerSecond(),
-						0.96,
-						DCMotor.getKrakenX60Foc(1),
-						KrakenX60DriveBuilder.GEAR_RATIO,
-						KrakenX60DriveBuilder.SLIP_CURRENT,
-						1
-				),
-				swerve.getModules().getModulePositionsFromCenterMeters()
+			60,
+			6.375,
+			new ModuleConfig(
+				0.05,
+				swerve.getConstants().velocityAt12VoltsMetersPerSecond(),
+				0.96,
+				DCMotor.getKrakenX60Foc(1),
+				KrakenX60DriveBuilder.GEAR_RATIO,
+				KrakenX60DriveBuilder.SLIP_CURRENT,
+				1
+			),
+			swerve.getModules().getModulePositionsFromCenterMeters()
 		);
 	}
 
