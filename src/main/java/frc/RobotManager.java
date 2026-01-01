@@ -4,6 +4,7 @@
 
 package frc;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -12,6 +13,7 @@ import frc.robot.Robot;
 import frc.robot.autonomous.AutonomousConstants;
 import frc.utils.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
+import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.auto.PathPlannerUtil;
 import frc.utils.brakestate.BrakeStateManager;
@@ -65,8 +67,8 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void autonomousInit() {
-		// robot.getRobotCommander().getSuperstructure().setIsSubsystemRunningIndependently(true);
-		// robot.getSwerve().getCommandsBuilder().setIsSubsystemRunningIndependently(true);
+		 robot.getRobotCommander().getSuperstructure().setIsSubsystemRunningIndependently(true);
+		 robot.getSwerve().getCommandsBuilder().setIsSubsystemRunningIndependently(true);
 
 		if (autonomousCommand == null) {
 			this.autonomousCommand = robot.getAutonomousCommand();
