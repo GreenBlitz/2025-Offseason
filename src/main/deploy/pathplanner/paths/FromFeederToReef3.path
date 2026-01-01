@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.282684426229508,
-        "y": 7.16577868852459
+        "x": 1.4265368852459013,
+        "y": 0.8242827868852476
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.044794950690096,
-        "y": 6.720572763982152
+        "x": 2.028084937259033,
+        "y": 0.48444927087252715
       },
       "isLocked": false,
-      "linkedName": "endOfSecondPath"
+      "linkedName": "Feeder"
     },
     {
       "anchor": {
-        "x": 3.164754098360655,
-        "y": 4.060963114754099
+        "x": 3.9919057377049176,
+        "y": 2.706352459016393
       },
       "prevControl": {
-        "x": 1.616155323047989,
-        "y": 4.145396444841044
+        "x": 2.6640927013397513,
+        "y": 2.5308842808877436
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,13 +33,13 @@
   "pointTowardsZones": [
     {
       "fieldPosition": {
-        "x": 3.75,
-        "y": 4.0
+        "x": 4.3,
+        "y": 3.4
       },
       "rotationOffset": 0.0,
       "minWaypointRelativePos": 0.0,
       "maxWaypointRelativePos": 1.0,
-      "name": "Middle Branch"
+      "name": "ClosestBranchToFeeder"
     }
   ],
   "eventMarkers": [],
@@ -53,13 +53,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -1.1691393279074198
+    "rotation": 55.49147701233197
   },
   "reversed": false,
   "folder": "test",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -56.870264531587914
+    "rotation": 51.340191745909934
   },
   "useDefaultConstraints": true
 }

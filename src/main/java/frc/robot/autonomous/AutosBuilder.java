@@ -1,6 +1,7 @@
 package frc.robot.autonomous;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.utils.auto.PathHelper;
 import frc.utils.auto.PathPlannerAutoWrapper;
@@ -18,9 +19,12 @@ public class AutosBuilder {
 		return List.of(
 			() -> new PathPlannerAutoWrapper(
 				new SequentialCommandGroup(
-					PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("LookAtMiddle1")),
+					PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("GoToBranch1")),
+                    new InstantCommand(() -> System.out.println("banana1")),
 					PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("FromReefToFeeder2")),
-					PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("FromFeederToReef3"))
+                    new InstantCommand(() -> System.out.println("banana2")),
+					PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("FromFeederToReef3")),
+                    new InstantCommand(() -> System.out.println("banana3"))
 				),
 				Pose2d.kZero,
 				"Start Of Autonomous"

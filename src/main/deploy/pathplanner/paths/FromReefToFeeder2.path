@@ -3,45 +3,34 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.032889344262295,
-        "y": 4.072950819672131
+        "x": 5.202663934426229,
+        "y": 2.8022540983606565
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5653688524590166,
-        "y": 4.0249999999999995
+        "x": 4.474903051644814,
+        "y": 2.1291141279488075
       },
       "isLocked": false,
-      "linkedName": "endOfFirstPath"
+      "linkedName": "ClosestBranchAtLine"
     },
     {
       "anchor": {
-        "x": 1.282684426229508,
-        "y": 7.16577868852459
+        "x": 1.4265368852459013,
+        "y": 0.8242827868852476
       },
       "prevControl": {
-        "x": 0.9909719509919719,
-        "y": 7.099500403768548
+        "x": 1.1584706255563189,
+        "y": 0.8274326384917695
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "endOfSecondPath"
+      "linkedName": "Feeder"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "pointTowardsZones": [
-    {
-      "fieldPosition": {
-        "x": 3.75,
-        "y": 4.0
-      },
-      "rotationOffset": 0.0,
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 1.0,
-      "name": "Middle branch"
-    }
-  ],
+  "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.2,
@@ -53,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -56.870264531587914
+    "rotation": 51.340191745909934
   },
   "reversed": false,
   "folder": "test",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -2.161079488226373
+    "rotation": 109.17900802581062
   },
   "useDefaultConstraints": true
 }
