@@ -1,4 +1,3 @@
-
 package frc.robot.subsystems.swerve.factories.modules.drive;
 
 import com.ctre.phoenix6.SignalLogger;
