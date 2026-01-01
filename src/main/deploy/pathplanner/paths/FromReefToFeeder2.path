@@ -3,15 +3,15 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.164754098360655,
-        "y": 4.060963114754099
+        "x": 3.032889344262295,
+        "y": 4.072950819672131
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.210934512224681,
-        "y": 4.2504078848290465
+        "x": 2.5653688524590166,
+        "y": 4.0249999999999995
       },
-      "isLocked": true,
+      "isLocked": false,
       "linkedName": "endOfFirstPath"
     },
     {
@@ -20,8 +20,8 @@
         "y": 7.16577868852459
       },
       "prevControl": {
-        "x": 0.7571095870250367,
-        "y": 7.196793492649783
+        "x": 0.9909719509919719,
+        "y": 7.099500403768548
       },
       "nextControl": null,
       "isLocked": false,
@@ -37,19 +37,9 @@
         "y": 4.0
       },
       "rotationOffset": 0.0,
-      "minWaypointRelativePos": 0.9463437796771113,
-      "maxWaypointRelativePos": 1.0,
-      "name": "Middle branch"
-    },
-    {
-      "fieldPosition": {
-        "x": 1.2,
-        "y": 7.6
-      },
-      "rotationOffset": 0.0,
       "minWaypointRelativePos": 0.0,
       "maxWaypointRelativePos": 1.0,
-      "name": "Point Towards Zone"
+      "name": "Middle branch"
     }
   ],
   "eventMarkers": [],
@@ -69,7 +59,7 @@
   "folder": "test",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 130.03025927188952
+    "rotation": -2.161079488226373
   },
   "useDefaultConstraints": true
 }

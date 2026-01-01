@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8207463360001221,
-        "y": 1.0348465026378122
+        "x": 0.7332137755554132,
+        "y": 0.9733630963221354
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.164754098360655,
-        "y": 4.060963114754099
+        "x": 3.032889344262295,
+        "y": 4.072950819672131
       },
       "prevControl": {
-        "x": 3.0328893442622946,
-        "y": 4.312704918032788
+        "x": 3.024248166228365,
+        "y": 4.322801435125017
       },
       "nextControl": null,
       "isLocked": false,
@@ -37,19 +37,9 @@
         "y": 4.0
       },
       "rotationOffset": 0.0,
-      "minWaypointRelativePos": 0.6804368471035123,
-      "maxWaypointRelativePos": 0.99,
-      "name": "MiddleBranch"
-    },
-    {
-      "fieldPosition": {
-        "x": 1.2,
-        "y": 7.6
-      },
-      "rotationOffset": 0.0,
       "minWaypointRelativePos": 0.0,
       "maxWaypointRelativePos": 1.0,
-      "name": "Feeder"
+      "name": "MiddleBranch"
     }
   ],
   "eventMarkers": [],
@@ -63,7 +53,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 130.03025927188952
+    "rotation": -2.161079488226373
   },
   "reversed": false,
   "folder": "test",

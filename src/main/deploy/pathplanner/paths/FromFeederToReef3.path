@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2826844262295083,
-        "y": 7.16577868852459
+        "x": 2.044794950690096,
+        "y": 6.720572763982152
       },
       "isLocked": false,
       "linkedName": "endOfSecondPath"
@@ -20,8 +20,8 @@
         "y": 4.060963114754099
       },
       "prevControl": {
-        "x": 2.164754098360655,
-        "y": 4.060963114754099
+        "x": 1.616155323047989,
+        "y": 4.145396444841044
       },
       "nextControl": null,
       "isLocked": false,
