@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
@@ -34,9 +38,14 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
+import frc.robot.vision.cameras.limelight.Limelight;
+import frc.robot.vision.cameras.limelight.LimelightFilters;
+import frc.robot.vision.cameras.limelight.LimelightPipeline;
+import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import frc.utils.math.StandardDeviations2D;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -56,6 +65,7 @@ public class Robot {
 	private final RobotCommander robotCommander;
 
 	private final Swerve swerve;
+	private final Limelight limelight;
 	private final IPoseEstimator poseEstimator;
 
 	public Robot() {
@@ -90,6 +100,27 @@ public class Robot {
 			swerve.getModules().getWheelPositions(0),
 			swerve.getGyroAbsoluteYaw().getValue(),
 			swerve.getGyroAbsoluteYaw().getTimestamp()
+		);
+
+		this.limelight = new Limelight("limelight", "Vision", new Pose3d(), LimelightPipeline.APRIL_TAG); // todo calibrate pose
+
+		limelight.setMT1StdDevsCalculation(
+			LimelightStdDevCalculations.getMT1StdDevsCalculation(
+				limelight,
+				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(0.05),
+				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(-0.02)
+			)
+		);
+		limelight.setMT1PoseFilter(
+			LimelightFilters.megaTag1Filter(
+				limelight,
+				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
+				poseEstimator::isIMUOffsetCalibrated,
+				new Translation2d(0.1, 0.1),
+				Rotation2d.fromDegrees(10)
+			)
 		);
 
 		robotCommander = new RobotCommander("/RobotCommander", this);
@@ -127,7 +158,9 @@ public class Robot {
 		simulationManager.logPoses();
 
 		swerve.update();
+		limelight.updateMT1();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
+		limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		poseEstimator.log();
 
 		BatteryUtil.logStatus();
