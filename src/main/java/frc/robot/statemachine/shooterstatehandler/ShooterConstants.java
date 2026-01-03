@@ -15,8 +15,8 @@ public class ShooterConstants {
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
-			0.8,
-			Rotation2d.fromDegrees(53),
+			1.47,
+			Rotation2d.fromDegrees(35),
 			1.5,
 			Rotation2d.fromDegrees(47),
 			2.5,
@@ -30,7 +30,7 @@ public class ShooterConstants {
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
-			0.8,
+			1.47,
 			Rotation2d.fromRotations(70),
 			1.5,
 			Rotation2d.fromRotations(70),

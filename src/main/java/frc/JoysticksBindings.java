@@ -2,11 +2,14 @@ package frc;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
 import frc.robot.statemachine.RobotState;
+import frc.robot.statemachine.funnelstatehandler.FunnelState;
+import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
@@ -86,11 +89,11 @@ public class JoysticksBindings {
 	}
 
 	private static void applySuperstructureCalibrationBindings(SmartJoystick joystick, Robot robot) {
-		joystick.A.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.SHOOT));
-		joystick.B.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.PRE_SHOOT));
-		joystick.X.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.DRIVE));
-		joystick.Y.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.INTAKE));
-		joystick.POV_DOWN.onTrue(robot.getRobotCommander().shootSequence());
+		joystick.A.onTrue(robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().setState(FunnelState.SHOOT).until(() -> robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().isBallAtSensor()));
+		joystick.B.onTrue(robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().setState(FunnelState.SHOOT));
+//		joystick.X.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.DRIVE));
+		joystick.Y.onTrue(robot.getRobotCommander().getSuperstructure().getShooterStateHandler().setState(ShooterState.CALIBRATION));
+//		joystick.POV_DOWN.onTrue(robot.getRobotCommander().shootSequence());
 	}
 
 	private static void applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
