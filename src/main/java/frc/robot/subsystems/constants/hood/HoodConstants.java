@@ -32,16 +32,16 @@ public class HoodConstants {
 		SIMULATION_SLOT.GravityType = GravityTypeValue.Elevator_Static;
 
 		FEEDBACK_CONFIGS.RotorToSensorRatio = 1;
-		FEEDBACK_CONFIGS.SensorToMechanismRatio = 450 / 7.0;
+		FEEDBACK_CONFIGS.SensorToMechanismRatio = 9.0;
 
 		HARDWARE_LIMIT_SWITCH_CONFIGS.ReverseLimitEnable = true;
 		HARDWARE_LIMIT_SWITCH_CONFIGS.ReverseLimitAutosetPositionValue = Rotation2d.fromDegrees(10).getRotations();
 		HARDWARE_LIMIT_SWITCH_CONFIGS.ReverseLimitAutosetPositionEnable = true;
 	}
 
-	public static final boolean IS_INVERTED = false;
+	public static final boolean IS_INVERTED = true;
 	public static final double ARBITRARY_FEEDFORWARD = 0;
-	public static final double CURRENT_LIMIT = 40;
+	public static final double CURRENT_LIMIT = 20;
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final double HOOD_LENGTH_METERS = 0.3;
 	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(80);
