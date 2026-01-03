@@ -28,16 +28,16 @@ import frc.utils.AngleUnit;
 import com.ctre.phoenix6.controls.VoltageOut;
 
 public class KrakenX60FlyWheelBuilder {
-	
+
 	private static SysIdRoutine.Config buildSysidConfig(String logPath) {
 		return new SysIdRoutine.Config(
-				Units.Volts.of(1).per(Units.Second),
-				Units.Volts.of(7),
-				null,
-				state -> SignalLogger.writeString(logPath + "/state", state.toString())
+			Units.Volts.of(1).per(Units.Second),
+			Units.Volts.of(7),
+			null,
+			state -> SignalLogger.writeString(logPath + "/state", state.toString())
 		);
 	}
-	
+
 	public static FlyWheel build(String logPath, Phoenix6DeviceID motorID) {
 		TalonFXFollowerConfig followerConfig = buildFollowerConfig();
 		FlywheelSimulation simulationMotor = new FlywheelSimulation(

@@ -9,7 +9,6 @@ import frc.robot.subsystems.GBSubsystem;
 import frc.robot.subsystems.constants.flywheel.Constants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.swerve.Swerve;
-import java.util.Set;
 import java.util.function.Supplier;
 
 public class RobotCommander extends GBSubsystem {
@@ -87,7 +86,13 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public Command shootSequence() {
-		return new SequentialCommandGroup(driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot), driveWith(RobotState.SHOOT));
+		return new RepeatCommand(
+			new SequentialCommandGroup(
+				driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
+				driveWith(RobotState.SHOOT).until(() -> !superstructure.isObjectIn()),
+				driveWith(RobotState.SHOOT).withTimeout(0.2)
+			)
+		);
 	}
 
 	public Command shootWhileIntakeSequence() {

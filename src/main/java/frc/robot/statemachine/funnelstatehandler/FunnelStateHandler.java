@@ -55,8 +55,8 @@ public class FunnelStateHandler {
 
 	private Command drive() {
 		return new SequentialCommandGroup(
-				omni.getCommandsBuilder().setVoltage(FunnelState.DRIVE.getOmniVoltage()).until(() -> sensorInputsAutoLogged.debouncedValue),
-				omni.getCommandsBuilder().stop()
+			omni.getCommandsBuilder().setVoltage(FunnelState.DRIVE.getOmniVoltage()).until(() -> sensorInputsAutoLogged.debouncedValue),
+			omni.getCommandsBuilder().stop()
 		);
 	}
 
