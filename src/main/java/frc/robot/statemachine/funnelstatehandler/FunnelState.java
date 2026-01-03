@@ -5,8 +5,8 @@ public enum FunnelState {
 	STOP(3, 0),
 	INTAKE(),
 	SHOOT(10, 0),
-	SHOOT_WHILE_INTAKE(6, 0),
-	DRIVE(3, 0),
+	SHOOT_WHILE_INTAKE(10, 0),
+	DRIVE(7, 0),
 	CALIBRATION;
 
 	private final double bellyVoltage;

@@ -88,9 +88,10 @@ public class RobotCommander extends GBSubsystem {
 	public Command shootSequence() {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
-				driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
-				driveWith(RobotState.SHOOT).until(() -> !superstructure.isObjectIn()),
-				driveWith(RobotState.SHOOT).withTimeout(0.2)
+				superstructure.setState(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
+				superstructure.setState(RobotState.SHOOT).until(() -> !superstructure.isObjectIn())
+//					,
+//				superstructure.setState(RobotState.SHOOT).withTimeout(0.2)
 			)
 		);
 	}
