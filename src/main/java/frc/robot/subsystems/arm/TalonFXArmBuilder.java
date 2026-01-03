@@ -218,19 +218,19 @@ public class TalonFXArmBuilder {
 	}
 
 	private static void limitMotionUntilSensor(TalonFXWrapper wrapper, TalonFXConfiguration configuration) {
-		configuration.Voltage.PeakForwardVoltage = 0;
-		configuration.Voltage.PeakReverseVoltage = 0;
-		wrapper.applyConfiguration(configuration);
-
-		configuration.Voltage.PeakForwardVoltage = 12;
-		configuration.Voltage.PeakReverseVoltage = -12;
-
-
-		new Trigger(
-			() -> wrapper.getStickyFault_ForwardHardLimit(true).getValueAsDouble()
-				+ wrapper.getStickyFault_ReverseHardLimit(true).getValueAsDouble()
-				> 0
-		).onTrue(new InstantCommand(() -> wrapper.applyConfiguration(configuration)));
+//		configuration.Voltage.PeakForwardVoltage = 0;
+//		configuration.Voltage.PeakReverseVoltage = 0;
+//		wrapper.applyConfiguration(configuration);
+//
+//		configuration.Voltage.PeakForwardVoltage = 12;
+//		configuration.Voltage.PeakReverseVoltage = -12;
+//
+//
+//		new Trigger(
+//			() -> wrapper.getStickyFault_ForwardHardLimit(true).getValueAsDouble()
+//				+ wrapper.getStickyFault_ReverseHardLimit(true).getValueAsDouble()
+//				> 0
+//		).onTrue(new InstantCommand(() -> wrapper.applyConfiguration(configuration)));
 	}
 
 	private static TalonFXConfiguration buildConfiguration(
