@@ -15,10 +15,10 @@ public class HoodConstants {
 	public static final HardwareLimitSwitchConfigs HARDWARE_LIMIT_SWITCH_CONFIGS = new HardwareLimitSwitchConfigs();
 
 	static {
-		REAL_SLOT.kP = 0;
+		REAL_SLOT.kP = 350;
 		REAL_SLOT.kI = 0;
-		REAL_SLOT.kD = 0;
-		REAL_SLOT.kS = 0;
+		REAL_SLOT.kD = 10;
+		REAL_SLOT.kS = 0.4;
 		REAL_SLOT.kG = 0;
 		REAL_SLOT.kV = 0;
 		REAL_SLOT.kA = 0;

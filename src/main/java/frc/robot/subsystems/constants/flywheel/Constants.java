@@ -8,7 +8,7 @@ public class Constants {
 	public final static double kI = 0;
 	public final static double kD = 0;
 	public final static double kV = 0.0;
-	public final static double kS = 0.0;
+	public final static double kS = 0.8;
 	public final static double kA = 0.0;
 	public final static double kP_SIM = 0.4;
 	public final static double kI_SIM = 0;
