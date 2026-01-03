@@ -17,14 +17,14 @@ Encoder:
 
 Steer:
 -----------------------
-- [ ] Motor ID
-- [ ] Inverted
+- [x] Motor ID
+- [x] Inverted
 - [X] Neutral Mode
 - [X] Current Limit
 - [X] Gear Ratio (should use RotorToSensorRatio)
 - [X] Encoder Usage and ID (should use fuse)
-- [ ] FF (ks, kv, ka)
-- [ ] PID
+- [x] FF (ks, kv, ka)
+- [x] PID
 - [X] Use ContinuousWrap
 - [X] Control mode (motion magic, voltage, torque)
 - [X] Enable/Disable FOC (only talonfx)
@@ -36,15 +36,15 @@ SteerSimulation:
 
 Drive:
 -----------------------
-- [ ] Motor ID
-- [ ] Inverted
+- [x] Motor ID
+- [x] Inverted
 - [X] Neutral Mode
 - [X] Current Limit
 - [X] Gear Ratio (should use RotorToSensorRatio)
 - [ ] FF (ks, kv, ka)
 - [ ] PID
-- [X] Control mode (motion magic, voltage, torque)
-- [X] Enable/Disable FOC (only talonfx)
+- [ ] Control mode (motion magic, voltage, torque)
+- [ ] Enable/Disable FOC (only talonfx)
 
 DriveSimulation:
 -----------------------

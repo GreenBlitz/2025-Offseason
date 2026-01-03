@@ -1,5 +1,6 @@
 package frc;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -13,6 +14,9 @@ import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
+import frc.robot.subsystems.swerve.states.DriveRelative;
+import frc.robot.subsystems.swerve.states.LoopMode;
+import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.battery.BatteryUtil;
 
 public class JoysticksBindings {
@@ -56,10 +60,11 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
-		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
-		usedJoystick.L1.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
-		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().shootWhileIntakeSequence());
+//		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
+//		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
+//		usedJoystick.L1.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
+//		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().shootWhileIntakeSequence());
+		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getPoseEstimator().setHeading(new Rotation2d())));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

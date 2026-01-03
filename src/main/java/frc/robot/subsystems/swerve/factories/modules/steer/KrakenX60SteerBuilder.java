@@ -60,14 +60,14 @@ class KrakenX60SteerBuilder {
 		steerConfig.CurrentLimits.StatorCurrentLimit = 30;
 		steerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
-		steerConfig.Feedback.RotorToSensorRatio = GEAR_RATIO;
+		steerConfig.Feedback.SensorToMechanismRatio = GEAR_RATIO;
 		steerConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor; // FeedbackSensorSourceValue.FusedCANcoder;
 
 		if (Robot.ROBOT_TYPE.isReal()) {
-			steerConfig.Slot0.kS = 0.295;
+			steerConfig.Slot0.kS = 0.24;
 			steerConfig.Slot0.kV = 0;
 			steerConfig.Slot0.kA = 0;
-			steerConfig.Slot0.kP = 70;
+			steerConfig.Slot0.kP = 50;
 			steerConfig.Slot0.kI = 0;
 			steerConfig.Slot0.kD = 0;
 		} else {
