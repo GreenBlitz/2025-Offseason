@@ -1,7 +1,6 @@
 package frc.robot.statemachine;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import frc.robot.SimulationManager;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 
 public class ShooterCalculations {
