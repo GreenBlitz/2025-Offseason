@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
@@ -13,6 +14,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 import frc.robot.hardware.interfaces.IDynamicMotionMagicRequest;
@@ -21,6 +24,7 @@ import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.hardware.phoenix6.motors.TalonFXMotor;
+import frc.robot.hardware.phoenix6.motors.TalonFXWrapper;
 import frc.robot.hardware.phoenix6.request.Phoenix6FeedForwardRequest;
 import frc.robot.hardware.phoenix6.request.Phoenix6Request;
 import frc.robot.hardware.phoenix6.request.Phoenix6RequestBuilder;
@@ -40,6 +44,7 @@ public class TalonFXArmBuilder {
 		FeedbackConfigs feedbackConfigs,
 		Slot0Configs realSlotsConfig,
 		Slot0Configs simulationSlotsConfig,
+		HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs,
 		double currentLimit,
 		double signalsFrequency,
 		double arbitraryFeedForward,
@@ -79,6 +84,7 @@ public class TalonFXArmBuilder {
 			feedbackConfigs,
 			simulationSlotsConfig,
 			realSlotsConfig,
+			hardwareLimitSwitchConfigs,
 			forwardSoftwareLimit,
 			reverseSoftwareLimit,
 			isInverted,
@@ -88,6 +94,7 @@ public class TalonFXArmBuilder {
 		addMotionMagicConfig(configuration, defaultMaxVelocityRotation2dPerSecond, defaultMaxAccelerationRotation2dPerSecondSquare);
 		motor.applyConfiguration(configuration);
 
+		limitMotionUntilSensor(motor.getDevice(), configuration);
 		return new DynamicMotionMagicArm(
 			logPath,
 			motor,
@@ -110,6 +117,7 @@ public class TalonFXArmBuilder {
 		FeedbackConfigs feedbackConfigs,
 		Slot0Configs realSlotsConfig,
 		Slot0Configs simulationSlotsConfig,
+		HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs,
 		double currentLimit,
 		double signalsFrequency,
 		double arbitraryFeedForward,
@@ -141,6 +149,7 @@ public class TalonFXArmBuilder {
 			feedbackConfigs,
 			simulationSlotsConfig,
 			realSlotsConfig,
+			hardwareLimitSwitchConfigs,
 			forwardSoftwareLimit,
 			reverseSoftwareLimit,
 			isInverted,
@@ -150,6 +159,7 @@ public class TalonFXArmBuilder {
 		addMotionMagicConfig(configuration, defaultMaxVelocityRotation2dPerSecond, defaultMaxAccelerationRotation2dPerSecondSquare);
 		motor.applyConfiguration(configuration);
 
+		limitMotionUntilSensor(motor.getDevice(), configuration);
 		return new Arm(logPath, motor, signals, voltageRequest, positionRequest, configuration.Slot0.kG);
 	}
 
@@ -163,6 +173,7 @@ public class TalonFXArmBuilder {
 		FeedbackConfigs feedbackConfigs,
 		Slot0Configs realSlotsConfig,
 		Slot0Configs simulationSlotsConfig,
+		HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs,
 		double currentLimit,
 		double signalsFrequency,
 		double arbitraryFeedForward,
@@ -193,6 +204,7 @@ public class TalonFXArmBuilder {
 			feedbackConfigs,
 			simulationSlotsConfig,
 			realSlotsConfig,
+			hardwareLimitSwitchConfigs,
 			forwardSoftwareLimit,
 			reverseSoftwareLimit,
 			isInverted,
@@ -200,13 +212,32 @@ public class TalonFXArmBuilder {
 			currentLimit
 		);
 		motor.applyConfiguration(configuration);
+
+		limitMotionUntilSensor(motor.getDevice(), configuration);
 		return new Arm(logPath, motor, signals, voltageRequest, positionRequest, configuration.Slot0.kG);
+	}
+
+	private static void limitMotionUntilSensor(TalonFXWrapper wrapper, TalonFXConfiguration configuration) {
+		configuration.Voltage.PeakForwardVoltage = 0;
+		configuration.Voltage.PeakReverseVoltage = 0;
+		wrapper.applyConfiguration(configuration);
+
+		configuration.Voltage.PeakForwardVoltage = 12;
+		configuration.Voltage.PeakReverseVoltage = -12;
+
+
+		new Trigger(
+			() -> wrapper.getStickyFault_ForwardHardLimit(true).getValueAsDouble()
+				+ wrapper.getStickyFault_ReverseHardLimit(true).getValueAsDouble()
+				> 0
+		).onTrue(new InstantCommand(() -> wrapper.applyConfiguration(configuration)));
 	}
 
 	private static TalonFXConfiguration buildConfiguration(
 		FeedbackConfigs feedbackConfigs,
 		Slot0Configs simulationConfigSlots,
 		Slot0Configs realConfigSlots,
+		HardwareLimitSwitchConfigs hardwareLimitSwitchConfigs,
 		Rotation2d forwardSoftwareLimit,
 		Rotation2d reverseSoftwareLimit,
 		boolean isInverted,
@@ -237,6 +268,8 @@ public class TalonFXArmBuilder {
 
 		config.MotorOutput.Inverted = isInverted ? InvertedValue.CounterClockwise_Positive : InvertedValue.Clockwise_Positive;
 		config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+		config.HardwareLimitSwitch = hardwareLimitSwitchConfigs;
 
 		return config;
 	}
@@ -281,7 +314,9 @@ public class TalonFXArmBuilder {
 			Phoenix6SignalBuilder.build(motor.getDevice().getMotorVoltage(), signalFrequency, busChain),
 			Phoenix6SignalBuilder.build(motor.getDevice().getStatorCurrent(), signalFrequency, busChain),
 			velocity,
-			Phoenix6SignalBuilder.build(motor.getDevice().getPosition(), velocity, signalFrequency, AngleUnit.ROTATIONS, busChain)
+			Phoenix6SignalBuilder.build(motor.getDevice().getPosition(), velocity, signalFrequency, AngleUnit.ROTATIONS, busChain),
+			Phoenix6SignalBuilder.build(motor.getDevice().getFault_ForwardHardLimit(), signalFrequency, busChain),
+			Phoenix6SignalBuilder.build(motor.getDevice().getFault_ReverseHardLimit(), signalFrequency, busChain)
 		);
 	}
 

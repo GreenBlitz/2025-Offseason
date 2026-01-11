@@ -4,25 +4,29 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
 import frc.robot.hardware.digitalinput.IDigitalInput;
+import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
+import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ScoringHelpers;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
-import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
+import frc.robot.subsystems.constants.FunnelSensorConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorWrapper;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.TalonFXArmBuilder;
-import frc.robot.subsystems.constants.belly.BellyConstants;
-import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.omni.OmniConstant;
 import frc.robot.subsystems.constants.turret.TurretConstants;
@@ -34,9 +38,14 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
+import frc.robot.vision.cameras.limelight.Limelight;
+import frc.robot.vision.cameras.limelight.LimelightFilters;
+import frc.robot.vision.cameras.limelight.LimelightPipeline;
+import frc.robot.vision.cameras.limelight.LimelightStdDevCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import frc.utils.math.StandardDeviations2D;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -48,11 +57,7 @@ public class Robot {
 	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(false);
 	private final Arm turret;
 	private final FlyWheel flyWheel;
-	private final Roller intakeRoller;
-	private final Arm fourBar;
 	private final Arm hood;
-	private final IDigitalInput intakeRollerSensor;
-	private final Roller belly;
 	private final Roller omni;
 	private final IDigitalInput funnelDigitalInput;
 	private final SimulationManager simulationManager;
@@ -60,6 +65,7 @@ public class Robot {
 	private final RobotCommander robotCommander;
 
 	private final Swerve swerve;
+	private final Limelight limelight;
 	private final IPoseEstimator poseEstimator;
 
 	public Robot() {
@@ -71,26 +77,14 @@ public class Robot {
 
 		this.flyWheel = KrakenX60FlyWheelBuilder.build("Subsystems/FlyWheel", IDs.TalonFXIDs.FLYWHEEL);
 
-		this.fourBar = createFourBar();
-		fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
-		BrakeStateManager.add(() -> fourBar.setBrake(true), () -> fourBar.setBrake(false));
-
 		this.hood = createHood();
 		hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
-		Pair<Roller, IDigitalInput> intakeRollerAndDigitalInput = createIntakeRollers();
-		this.intakeRoller = intakeRollerAndDigitalInput.getFirst();
-		this.intakeRollerSensor = intakeRollerAndDigitalInput.getSecond();
-		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
-
-		this.belly = createBelly();
-		BrakeStateManager.add(() -> belly.setBrake(true), () -> belly.setBrake(false));
-
-		Pair<Roller, IDigitalInput> omniAndDigitalInput = createOmniAndSignal();
-		this.omni = omniAndDigitalInput.getFirst();
-		this.funnelDigitalInput = omniAndDigitalInput.getSecond();
+		this.omni = createOmniAndSignal();
 		BrakeStateManager.add(() -> omni.setBrake(true), () -> omni.setBrake(false));
+
+		this.funnelDigitalInput = createFunnelDI();
 
 		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
 		this.swerve = new Swerve(
@@ -107,6 +101,27 @@ public class Robot {
 			swerve.getGyroAbsoluteYaw().getValue(),
 			swerve.getGyroAbsoluteYaw().getTimestamp(),
 			swerve.getIMUAcceleration()
+		);
+
+		this.limelight = new Limelight("limelight", "Vision", new Pose3d(), LimelightPipeline.APRIL_TAG); // todo calibrate pose
+
+		limelight.setMT1StdDevsCalculation(
+			LimelightStdDevCalculations.getMT1StdDevsCalculation(
+				limelight,
+				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(0.05),
+				new StandardDeviations2D(0.5),
+				new StandardDeviations2D(-0.02)
+			)
+		);
+		limelight.setMT1PoseFilter(
+			LimelightFilters.megaTag1Filter(
+				limelight,
+				timestamp -> poseEstimator.getEstimatedPoseAtTimestamp(timestamp).map(Pose2d::getRotation),
+				poseEstimator::isIMUOffsetCalibrated,
+				new Translation2d(0.1, 0.1),
+				Rotation2d.fromDegrees(10)
+			)
 		);
 
 		robotCommander = new RobotCommander("/RobotCommander", this);
@@ -126,9 +141,6 @@ public class Robot {
 		if (TurretConstants.MIN_POSITION.getRadians() > turret.getPosition().getRadians()) {
 			turret.setPosition(TurretConstants.MIN_POSITION);
 		}
-		if (FourBarConstants.MAXIMUM_POSITION.getRadians() < fourBar.getPosition().getRadians()) {
-			fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
-		}
 	}
 
 	public boolean isTurretMoveLegal() {
@@ -147,27 +159,14 @@ public class Robot {
 		simulationManager.logPoses();
 
 		swerve.update();
+		limelight.updateMT1();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
+		limelight.getIndependentRobotPose().ifPresent(poseEstimator::updateVision);
 		poseEstimator.log();
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
 		CommandScheduler.getInstance().run(); // Should be last
-	}
-
-	private Pair<Roller, IDigitalInput> createIntakeRollers() {
-		return SparkMaxRollerBuilder.buildWithDigitalInput(
-			RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/IntakeRollers",
-			IDs.SparkMAXIDs.INTAKE_ROLLERS,
-			IntakeRollerConstants.IS_INVERTED,
-			IntakeRollerConstants.GEAR_RATIO,
-			IntakeRollerConstants.CURRENT_LIMIT,
-			IntakeRollerConstants.MOMENT_OF_INERTIA,
-			IntakeRollerConstants.DIGITAL_INPUT_NAME,
-			IntakeRollerConstants.DEBOUNCE_TIME,
-			IntakeRollerConstants.IS_FORWARD_LIMIT_SWITCH,
-			IntakeRollerConstants.IS_SENSOR_INVERTED
-		);
 	}
 
 	private Arm createTurret() {
@@ -188,6 +187,7 @@ public class Robot {
 			TurretConstants.FEEDBACK_CONFIGS,
 			TurretConstants.REAL_SLOTS_CONFIG,
 			TurretConstants.SIMULATION_SLOTS_CONFIG,
+			TurretConstants.HARDWARE_LIMIT_SWITCH_CONFIGS,
 			TurretConstants.CURRENT_LIMIT,
 			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
 			TurretConstants.ARBITRARY_FEED_FORWARD,
@@ -199,44 +199,14 @@ public class Robot {
 		);
 	}
 
-	private Arm createFourBar() {
-		ArmSimulationConstants fourBarSimConstant = new ArmSimulationConstants(
-			FourBarConstants.MAXIMUM_POSITION,
-			FourBarConstants.MINIMUM_POSITION,
-			FourBarConstants.MAXIMUM_POSITION,
-			FourBarConstants.MOMENT_OF_INERTIA,
-			FourBarConstants.FOUR_BAR_LENGTH
-		);
-		return TalonFXArmBuilder.buildDynamicMotionMagicArm(
-			FourBarConstants.LOG_PATH,
-			IDs.TalonFXIDs.FOUR_BAR,
-			FourBarConstants.IS_INVERTED,
-			FourBarConstants.IS_CONTINUOUS_WRAP,
-			FourBarConstants.TALON_FX_FOLLOWER_CONFIG,
-			FourBarConstants.SYS_ID_ROUTINE,
-			FourBarConstants.FEEDBACK_CONFIGS,
-			FourBarConstants.REAL_SLOT,
-			FourBarConstants.SIMULATION_SLOT,
-			FourBarConstants.CURRENT_LIMIT,
-			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
-			FourBarConstants.ARBITRARY_FEED_FORWARD,
-			FourBarConstants.FORWARD_SOFTWARE_LIMITS,
-			FourBarConstants.BACKWARD_SOFTWARE_LIMITS,
-			fourBarSimConstant,
-			FourBarConstants.MAX_ACCELERATION_ROTATION2D_PER_SECONDS_SQUARE,
-			FourBarConstants.MAX_VELOCITY_ROTATION2D_PER_SECONDS
-		);
-	}
-
-	private Roller createBelly() {
-		return SparkMaxRollerBuilder.build(
-			BellyConstants.LOG_PATH,
-			IDs.SparkMAXIDs.BELLY,
-			BellyConstants.INVERTED,
-			BellyConstants.GEAR_RATIO,
-			BellyConstants.CURRENT_LIMIT,
-			BellyConstants.MOMENT_OF_INERTIA
-		);
+	private IDigitalInput createFunnelDI() {
+		return ROBOT_TYPE.isSimulation()
+			? new ChooserDigitalInput("funnelSensor")
+			: new ChanneledDigitalInput(
+				new DigitalInput(FunnelSensorConstants.CHANNEL),
+				FunnelSensorConstants.DEBOUNCER,
+				FunnelSensorConstants.INVERTED
+			);
 	}
 
 	private Arm createHood() {
@@ -247,7 +217,7 @@ public class Robot {
 			HoodConstants.MOMENT_OF_INERTIA,
 			HoodConstants.HOOD_LENGTH_METERS
 		);
-		return TalonFXArmBuilder.buildDynamicMotionMagicArm(
+		return TalonFXArmBuilder.buildArm(
 			RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Hood",
 			IDs.TalonFXIDs.HOOD,
 			HoodConstants.IS_INVERTED,
@@ -257,43 +227,27 @@ public class Robot {
 			HoodConstants.FEEDBACK_CONFIGS,
 			HoodConstants.REAL_SLOT,
 			HoodConstants.SIMULATION_SLOT,
+			HoodConstants.HARDWARE_LIMIT_SWITCH_CONFIGS,
 			HoodConstants.CURRENT_LIMIT,
 			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
 			HoodConstants.ARBITRARY_FEEDFORWARD,
 			HoodConstants.FORWARD_SOFTWARE_LIMIT,
 			HoodConstants.BACKWARD_SOFTWARE_LIMIT,
-			hoodSimulationConstants,
-			HoodConstants.DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE,
-			HoodConstants.DEFAULT_MAX_VELOCITY_PER_SECOND
+			hoodSimulationConstants
 		);
 	}
 
-	private Pair<Roller, IDigitalInput> createOmniAndSignal() {
-		return SparkMaxRollerBuilder.buildWithDigitalInput(
+	private Roller createOmniAndSignal() {
+		return SparkMaxRollerBuilder.build(
 			OmniConstant.LOG_PATH,
 			IDs.SparkMAXIDs.OMNI,
 			OmniConstant.IS_INVERTED,
 			OmniConstant.GEAR_RATIO,
 			OmniConstant.CURRENT_LIMIT,
-			OmniConstant.MOMENT_OF_INERTIA,
-			OmniConstant.FUNNEL_INPUT_NAME,
-			OmniConstant.DEBOUNCE_TIME,
-			OmniConstant.IS_FORWARD_LIMIT_SWITCH,
-			OmniConstant.IS_FORWARD_LIMIT_SWITCH_INVERTED
+			OmniConstant.MOMENT_OF_INERTIA
 		);
 	}
 
-	public IDigitalInput getIntakeRollerSensor() {
-		return intakeRollerSensor;
-	}
-
-	public Roller getIntakeRoller() {
-		return intakeRoller;
-	}
-
-	public Roller getBelly() {
-		return belly;
-	}
 
 	public Arm getTurret() {
 		return turret;
@@ -301,10 +255,6 @@ public class Robot {
 
 	public FlyWheel getFlyWheel() {
 		return flyWheel;
-	}
-
-	public Arm getFourBar() {
-		return fourBar;
 	}
 
 	public Roller getOmni() {
