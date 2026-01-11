@@ -80,14 +80,11 @@ public class ShooterStateHandler {
 	}
 
 	private Command shoot() {
-		return new RepeatCommand(
-			new ParallelCommandGroup(
+		return new ParallelCommandGroup(
 				aimAtTower(),
-				hood.getCommandsBuilder()
-					.setTargetPosition(hoodInterpolation(() -> ScoringHelpers.getDistanceFromClosestTower(robotPose.get()))),
+				hood.getCommandsBuilder().setTargetPosition(hoodInterpolation(() -> ScoringHelpers.getDistanceFromClosestTower(robotPose.get()))),
 				flyWheel.getCommandBuilder()
-					.setVelocityAsSupplier(flywheelInterpolation(() -> ScoringHelpers.getDistanceFromClosestTower(robotPose.get())))
-			)
+						.setVelocityAsSupplier(flywheelInterpolation(() -> ScoringHelpers.getDistanceFromClosestTower(robotPose.get())))
 		);
 	}
 

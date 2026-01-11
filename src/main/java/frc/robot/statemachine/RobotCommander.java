@@ -11,6 +11,7 @@ import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.swerve.Swerve;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 public class RobotCommander extends GBSubsystem {
 
@@ -100,6 +101,7 @@ public class RobotCommander extends GBSubsystem {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
 				superstructure.setState(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
+				new RunCommand(() -> getSuperstructure().getFunnelStateHandler().setIsBallAtSensor()),
 				superstructure.setState(RobotState.SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor())
 			)
 		);
