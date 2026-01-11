@@ -1,9 +1,7 @@
 package frc;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
@@ -14,9 +12,6 @@ import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
-import frc.robot.subsystems.swerve.states.DriveRelative;
-import frc.robot.subsystems.swerve.states.LoopMode;
-import frc.robot.subsystems.swerve.states.SwerveState;
 import frc.utils.battery.BatteryUtil;
 
 public class JoysticksBindings {
@@ -60,17 +55,45 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-//		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
-//		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
-//		usedJoystick.L1.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
-//		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().shootWhileIntakeSequence());
-		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getPoseEstimator().setHeading(new Rotation2d())));
+		usedJoystick.A.onTrue(robot.getRobotCommander().getSuperstructure().getShooterStateHandler().setState(ShooterState.CLOSE_SHOOT));
+		usedJoystick.B
+				.onTrue(robot.getRobotCommander().getSuperstructure().getShooterStateHandler().setState(ShooterState.CLOSE_MIDDLE_SHOOT));
+		usedJoystick.X.onTrue(robot.getRobotCommander().getSuperstructure().getShooterStateHandler().setState(ShooterState.FAR_MIDDLE_SHOOT));
+		usedJoystick.Y.onTrue(robot.getRobotCommander().getSuperstructure().getShooterStateHandler().setState(ShooterState.FAR_SHOOT));
+		
+		usedJoystick.R1.onTrue(
+				robot.getRobotCommander()
+						.getSuperstructure()
+						.getFunnelStateHandler()
+						.setState(FunnelState.SHOOT)
+						.until(() -> robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().isBallAtSensor())
+		);usedJoystick.L1.onTrue(
+				robot.getRobotCommander()
+						.getSuperstructure()
+						.getFunnelStateHandler()
+						.setState(FunnelState.SHOOT));
+		
+		usedJoystick.POV_UP.onTrue(new InstantCommand(() -> robot.getPoseEstimator().setHeading(new Rotation2d())));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
 		// bindings...
 		applySuperstructureCalibrationBindings(usedJoystick, robot);
+		usedJoystick.R1.onTrue(
+				robot.getRobotCommander()
+						.getSuperstructure()
+						.getFunnelStateHandler()
+						.setState(FunnelState.SHOOT)
+						.until(() -> robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().isBallAtSensor())
+		);usedJoystick.L1.onTrue(
+				robot.getRobotCommander()
+						.getSuperstructure()
+						.getFunnelStateHandler()
+						.setState(FunnelState.SHOOT));
+		
+		
+		
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
@@ -94,8 +117,13 @@ public class JoysticksBindings {
 	}
 
 	private static void applySuperstructureCalibrationBindings(SmartJoystick joystick, Robot robot) {
-		joystick.A.onTrue(robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().setState(FunnelState.SHOOT).until(() -> robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().isBallAtSensor()));
-		joystick.B.onTrue(robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().setState(FunnelState.SHOOT));
+		joystick.A.onTrue(
+			robot.getRobotCommander()
+				.getSuperstructure()
+				.getFunnelStateHandler()
+				.setState(FunnelState.SHOOT)
+				.until(() -> robot.getRobotCommander().getSuperstructure().getFunnelStateHandler().isBallAtSensor())
+		);
 //		joystick.X.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.DRIVE));
 		joystick.Y.onTrue(robot.getRobotCommander().getSuperstructure().getShooterStateHandler().setState(ShooterState.CALIBRATION));
 //		joystick.POV_DOWN.onTrue(robot.getRobotCommander().shootSequence());

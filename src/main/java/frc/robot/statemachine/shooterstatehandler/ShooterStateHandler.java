@@ -52,7 +52,10 @@ public class ShooterStateHandler {
 		Command command = switch (shooterState) {
 			case STAY_IN_PLACE -> stayInPlace();
 			case IDLE -> idle();
-			case SHOOT -> shoot();
+			case CLOSE_SHOOT -> closeShoot();
+			case CLOSE_MIDDLE_SHOOT -> closeMiddleShoot();
+			case FAR_MIDDLE_SHOOT -> farMiddleShoot();
+			case FAR_SHOOT -> farShoot();
 			case CALIBRATION -> calibration();
 		};
 		return new ParallelCommandGroup(
@@ -69,6 +72,41 @@ public class ShooterStateHandler {
 			flyWheel.getCommandBuilder().stop()
 		);
 	}
+	
+	private Command closeShoot() {
+		return new ParallelCommandGroup(
+				aimAtTower(),
+				hood.getCommandsBuilder().setTargetPosition(ShooterState.CLOSE_SHOOT.getHoodAngle()),
+				flyWheel.getCommandBuilder().setTargetVelocity(ShooterState.CLOSE_SHOOT.getFlywheelSpeed())
+		);
+	}
+	
+	private Command closeMiddleShoot(){
+		return new ParallelCommandGroup(
+				aimAtTower(),
+				hood.getCommandsBuilder().setTargetPosition(ShooterState.CLOSE_MIDDLE_SHOOT.getHoodAngle()),
+				flyWheel.getCommandBuilder().setTargetVelocity(ShooterState.CLOSE_MIDDLE_SHOOT.getFlywheelSpeed())
+		);
+	}
+	
+	
+	private Command farMiddleShoot(){
+		return new ParallelCommandGroup(
+				aimAtTower(),
+				hood.getCommandsBuilder().setTargetPosition(ShooterState.FAR_MIDDLE_SHOOT.getHoodAngle()),
+				flyWheel.getCommandBuilder().setTargetVelocity(ShooterState.FAR_MIDDLE_SHOOT.getFlywheelSpeed())
+		);
+	}
+	
+	
+	private Command farShoot(){
+		return new ParallelCommandGroup(
+				aimAtTower(),
+				hood.getCommandsBuilder().setTargetPosition(ShooterState.FAR_SHOOT.getHoodAngle()),
+				flyWheel.getCommandBuilder().setTargetVelocity(ShooterState.FAR_SHOOT.getFlywheelSpeed())
+		);
+	}
+	
 
 	private Command idle() {
 		return new ParallelCommandGroup(
