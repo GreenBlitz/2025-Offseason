@@ -11,7 +11,6 @@ import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.swerve.Swerve;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
 
 public class RobotCommander extends GBSubsystem {
 

@@ -117,9 +117,7 @@ public class Superstructure {
 
 	private Command preShoot() {
 		return new ParallelCommandGroup(
-			new RunCommand(
-					()->Logger.recordOutput("pre shoot workinggg",9)
-			),
+			new RunCommand(() -> Logger.recordOutput("pre shoot workinggg", 9)),
 			shooterStateHandler.setState(ShooterState.SHOOT),
 			funnelStateHandler.setState(FunnelState.DRIVE),
 			intakeStateHandler.setState(IntakeState.CLOSED)
