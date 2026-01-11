@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Robot;
-import frc.robot.SimulationManager;
 import frc.robot.statemachine.ScoringHelpers;
 import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
@@ -40,7 +39,7 @@ public class TargetChecks {
 	private static boolean isTurretAtTarget(Pose2d robotPose, Arm turret, double tolerance) {
 		Rotation2d wantedAngle = ShooterStateHandler.getRobotRelativeLookAtTowerAngleForTurret(
 			ScoringHelpers.getClosestTower(robotPose).getPose().getTranslation(),
-                ShooterCalculations.getTurretPose(robotPose)
+			ShooterCalculations.getTurretPose(robotPose)
 		);
 		boolean isAtHeading = MathUtil.isNear(wantedAngle.getDegrees(), turret.getPosition().getDegrees(), tolerance);
 		Logger.recordOutput(isReadyToShootLogPath + "/isAtHeading", isAtHeading);

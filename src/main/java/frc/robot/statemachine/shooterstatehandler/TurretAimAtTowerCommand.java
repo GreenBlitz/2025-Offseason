@@ -26,7 +26,7 @@ public class TurretAimAtTowerCommand extends Command {
 
 	@Override
 	public void execute() {
-        Pose2d turretPose = ShooterCalculations.getTurretPose(robotPose.get());
+		Pose2d turretPose = ShooterCalculations.getTurretPose(robotPose.get());
 		Translation2d targetGoal = ScoringHelpers.getClosestTower(turretPose).getPose().getTranslation();
 		Rotation2d targetAngle = ShooterStateHandler.getRobotRelativeLookAtTowerAngleForTurret(targetGoal, turretPose);
 
