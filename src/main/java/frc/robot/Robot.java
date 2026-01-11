@@ -4,16 +4,12 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
-import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
-import frc.robot.hardware.phoenix6.imu.Pigeon2IMU;
-import frc.robot.hardware.phoenix6.imu.Pigeon2Wrapper;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ScoringHelpers;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
@@ -57,7 +53,6 @@ public class Robot {
 	private final IDigitalInput intakeRollerSensor;
 	private final Roller omni;
 	private final IDigitalInput funnelDigitalInput;
-	private final Pigeon2Wrapper pigeon;
 	private final SimulationManager simulationManager;
 
 	private final RobotCommander robotCommander;
@@ -271,13 +266,6 @@ public class Robot {
 			OmniConstant.IS_FORWARD_LIMIT_SWITCH,
 			OmniConstant.IS_FORWARD_LIMIT_SWITCH_INVERTED
 		);
-	}
-
-	private Pigeon2IMU createPigeon(){
-		Pigeon2IMU pigeon = Pi
-		Pigeon2Configuration pigeon2Config = new Pigeon2Configuration();
-		pigeon2Config.
-		pigeon.applyConfiguration(pigeon2Config);
 	}
 
 	public IDigitalInput getIntakeRollerSensor() {
