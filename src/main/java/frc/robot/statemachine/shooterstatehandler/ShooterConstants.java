@@ -9,20 +9,20 @@ import java.util.Map;
 
 public class ShooterConstants {
 
-	public static final Rotation2d DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND = Rotation2d.fromRotations(10);
+	public static final Rotation2d DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND = Rotation2d.fromRotations(25);
 
 	public static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
-			0.8,
-			Rotation2d.fromDegrees(67),
-			1.5,
-			Rotation2d.fromDegrees(60),
-			2.5,
+			1.07,
 			Rotation2d.fromDegrees(43),
-			3.7,
-			Rotation2d.fromDegrees(33)
+			3.03,
+			Rotation2d.fromDegrees(30),
+			4.48,
+			Rotation2d.fromDegrees(30),
+			5.48,
+			Rotation2d.fromDegrees(30)
 		)
 	);
 
@@ -30,14 +30,14 @@ public class ShooterConstants {
 		InverseInterpolator.forDouble(),
 		InterpolationMap.interpolatorForRotation2d(),
 		Map.of(
-			0.8,
-			Rotation2d.fromDegrees(7000),
-			1.5,
-			Rotation2d.fromDegrees(7800),
-			2.5,
-			Rotation2d.fromDegrees(10000),
-			3.7,
-			Rotation2d.fromDegrees(12000)
+			1.07,
+			Rotation2d.fromRotations(70),
+			3.03,
+			Rotation2d.fromRotations(76),
+			4.48,
+			Rotation2d.fromRotations(86),
+			5.48,
+			Rotation2d.fromRotations(105)
 		)
 	);
 

@@ -37,7 +37,7 @@ public class Arm extends GBSubsystem {
 		this.kG = kG;
 		this.sysIdCalibrator = new SysIdCalibrator(motor.getSysidConfigInfo(), this, (voltage) -> setVoltage(voltage + getKgVoltage()));
 		commandBuilder = new ArmCommandBuilder(this);
-		setDefaultCommand(commandBuilder.stayInPlace());
+//		setDefaultCommand(commandBuilder.stayInPlace());
 	}
 
 	public ArmCommandBuilder getCommandsBuilder() {
@@ -58,6 +58,10 @@ public class Arm extends GBSubsystem {
 
 	public Rotation2d getPosition() {
 		return signals.position().getLatestValue();
+	}
+
+	public boolean getHardwareLimitActive(boolean forward) {
+		return (forward ? signals.hardwareForwardLimitActive().getLatestValue() : signals.hardwareReverseLimitActive().getLatestValue()) > 0;
 	}
 
 	public SysIdCalibrator getSysIdCalibrator() {
@@ -84,7 +88,14 @@ public class Arm extends GBSubsystem {
 	}
 
 	private void updateInputs() {
-		motor.updateInputs(signals.voltage(), signals.current(), signals.velocity(), signals.position());
+		motor.updateInputs(
+			signals.voltage(),
+			signals.current(),
+			signals.velocity(),
+			signals.position(),
+			signals.hardwareForwardLimitActive(),
+			signals.hardwareReverseLimitActive()
+		);
 	}
 
 	public void log() {
