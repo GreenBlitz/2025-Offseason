@@ -18,7 +18,7 @@ public class BatteryUtil {
 
 	public static void scheduleLimiter() {
 		if (!limiter.isScheduled()) {
-            CommandScheduler.getInstance().schedule(limiter);
+			CommandScheduler.getInstance().schedule(limiter);
 		}
 	}
 
