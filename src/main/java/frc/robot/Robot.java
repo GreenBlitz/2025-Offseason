@@ -129,7 +129,7 @@ public class Robot {
 
 	public boolean isTurretMoveLegal() {
 		return ShooterStateHandler.isTurretMoveLegal(
-                ShooterCalculations.getRobotRelativeLookAtTowerAngleForTurret(
+			ShooterCalculations.getRobotRelativeLookAtTowerAngleForTurret(
 				ScoringHelpers.getClosestTower(poseEstimator.getEstimatedPose()).getPose().getTranslation(),
 				poseEstimator.getEstimatedPose()
 			),
