@@ -74,7 +74,7 @@ public class Field {
 		});
 	}
 
-	public static boolean isHubActive(){
+	public static boolean isHubActive() {
 		return DriverStationUtil.getAlliance() == DriverStationUtil.getCurrentActiveAlliance();
 	}
 
