@@ -14,11 +14,17 @@ public class DriverStationUtil {
 	public static DriverStation.Alliance getAutoWinnerAlliance() {
 		String gameData = DriverStation.getGameSpecificMessage();
 		if (!gameData.isEmpty()) {
-			return switch (gameData.charAt(0)) {
+			DriverStation.Alliance alliance = switch (gameData.charAt(0)) {
 				case 'B' -> DriverStation.Alliance.Blue;
 				case 'R' -> DriverStation.Alliance.Red;
-				default -> DEFAULT_ALLIANCE;
+				default -> null;
 			};
+			if (alliance == null) {
+				new Alert("Unknown current active alliance", Alert.AlertType.kWarning);
+				return DEFAULT_ALLIANCE;
+			} else {
+				return alliance;
+			}
 		} else {
 			new Alert("Unknown current active alliance", Alert.AlertType.kWarning);
 			return DEFAULT_ALLIANCE;
