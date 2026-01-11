@@ -31,10 +31,10 @@ public class KrakenX60FlyWheelBuilder {
 
 	private static SysIdRoutine.Config buildSysidConfig(String logPath) {
 		return new SysIdRoutine.Config(
-				Units.Volts.of(1).per(Units.Second),
-				Units.Volts.of(7),
-				null,
-				state -> SignalLogger.writeString(logPath + "/state", state.toString())
+			Units.Volts.of(1).per(Units.Second),
+			Units.Volts.of(7),
+			null,
+			state -> SignalLogger.writeString(logPath + "/state", state.toString())
 		);
 	}
 
