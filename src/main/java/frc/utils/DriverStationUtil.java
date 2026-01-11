@@ -13,22 +13,20 @@ public class DriverStationUtil {
 
 	public static DriverStation.Alliance getAutoWinnerAlliance() {
 		String gameData = DriverStation.getGameSpecificMessage();
-		if (!gameData.isEmpty()) {
-			DriverStation.Alliance alliance = switch (gameData.charAt(0)) {
-				case 'B' -> DriverStation.Alliance.Blue;
-				case 'R' -> DriverStation.Alliance.Red;
-				default -> null;
-			};
-			if (alliance == null) {
-				new Alert("Unknown current active alliance", Alert.AlertType.kWarning);
-				return DEFAULT_ALLIANCE;
-			} else {
-				return alliance;
-			}
-		} else {
+		if (gameData.isEmpty()) {
 			new Alert("Unknown current active alliance", Alert.AlertType.kWarning);
 			return DEFAULT_ALLIANCE;
 		}
+		DriverStation.Alliance alliance = switch (gameData.charAt(0)) {
+			case 'B' -> DriverStation.Alliance.Blue;
+			case 'R' -> DriverStation.Alliance.Red;
+			default -> null;
+		};
+		if (alliance == null) {
+			new Alert("Unknown current active alliance", Alert.AlertType.kWarning);
+			return DEFAULT_ALLIANCE;
+		}
+		return alliance;
 	}
 
 	public static boolean isBlueAlliance() {
