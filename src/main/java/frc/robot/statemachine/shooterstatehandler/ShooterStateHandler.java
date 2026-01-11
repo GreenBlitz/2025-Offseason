@@ -3,7 +3,6 @@ package frc.robot.statemachine.shooterstatehandler;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -12,7 +11,6 @@ import frc.robot.statemachine.ScoringHelpers;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
-import frc.utils.math.FieldMath;
 import frc.utils.math.ToleranceMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -97,13 +95,6 @@ public class ShooterStateHandler {
 
 	public Command aimAtTower() {
 		return new TurretAimAtTowerCommand(turret, robotPose, logPath);
-	}
-
-	public static Rotation2d getRobotRelativeLookAtTowerAngleForTurret(Translation2d target, Pose2d fieldRelativeTurretPose) {
-		Rotation2d targetAngle = Rotation2d
-			.fromRadians(FieldMath.getRelativeTranslation(fieldRelativeTurretPose, target).getAngle().getRadians());
-		return Rotation2d
-			.fromDegrees(MathUtil.inputModulus(targetAngle.getDegrees(), Rotation2d.kZero.getDegrees(), MathConstants.FULL_CIRCLE.getDegrees()));
 	}
 
 	public static boolean isTurretMoveLegal(Rotation2d targetRobotRelative, Arm turret) {
