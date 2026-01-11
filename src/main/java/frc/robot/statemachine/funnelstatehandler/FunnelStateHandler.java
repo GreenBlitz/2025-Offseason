@@ -64,7 +64,10 @@ public class FunnelStateHandler {
 	}
 
 	private Command intake() {
-		return omni.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getOmniVoltage());
+		return new SequentialCommandGroup(
+			omni.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getOmniVoltage()).until(this::isBallAtSensor),
+			omni.getCommandsBuilder().stop()
+		);
 	}
 
 	private Command stop() {
