@@ -74,7 +74,7 @@ public class Field {
 		});
 	}
 
-	public static boolean isAutoWinner() {
+	public static boolean isRobotAllianceAutoWinner() {
 		return DriverStationUtil.getAlliance() == DriverStationUtil.getAutoWinnerAlliance();
 	}
 
