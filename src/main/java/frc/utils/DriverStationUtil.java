@@ -1,5 +1,6 @@
 package frc.utils;
 
+import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class DriverStationUtil {
@@ -19,6 +20,7 @@ public class DriverStationUtil {
 				default -> DEFAULT_ALLIANCE;
 			};
 		} else {
+			new Alert("Unknown current active alliance", Alert.AlertType.kWarning);
 			return DEFAULT_ALLIANCE;
 		}
 	}
