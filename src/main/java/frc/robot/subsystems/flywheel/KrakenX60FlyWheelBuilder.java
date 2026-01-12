@@ -1,5 +1,6 @@
 package frc.robot.subsystems.flywheel;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -7,6 +8,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.IDs;
@@ -28,6 +30,15 @@ import com.ctre.phoenix6.controls.VoltageOut;
 
 public class KrakenX60FlyWheelBuilder {
 
+	private static SysIdRoutine.Config buildSysidConfig(String logPath) {
+		return new SysIdRoutine.Config(
+			Units.Volts.of(1).per(Units.Second),
+			Units.Volts.of(7),
+			null,
+			state -> SignalLogger.writeString(logPath + "/state", state.toString())
+		);
+	}
+
 	public static FlyWheel build(String logPath, Phoenix6DeviceID motorID) {
 		TalonFXFollowerConfig followerConfig = buildFollowerConfig();
 		FlywheelSimulation simulationMotor = new FlywheelSimulation(
@@ -41,7 +52,7 @@ public class KrakenX60FlyWheelBuilder {
 			)
 		);
 
-		TalonFXMotor motor = new TalonFXMotor(logPath, motorID, followerConfig, new SysIdRoutine.Config(), simulationMotor);
+		TalonFXMotor motor = new TalonFXMotor(logPath, motorID, followerConfig, buildSysidConfig(logPath), simulationMotor);
 
 		Phoenix6AngleSignal velocitySignal = Phoenix6SignalBuilder
 			.build(motor.getDevice().getVelocity(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, motorID.busChain());
