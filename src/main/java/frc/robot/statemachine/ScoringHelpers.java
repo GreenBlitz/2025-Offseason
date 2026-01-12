@@ -1,6 +1,5 @@
 package frc.robot.statemachine;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 

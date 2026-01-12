@@ -73,7 +73,8 @@ public class ShooterStateHandler {
 	private Command idle() {
 		return new ParallelCommandGroup(
 			aimAtHub(),
-			hood.getCommandsBuilder().setTargetPosition(hoodInterpolation(() -> ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))),
+			hood.getCommandsBuilder()
+				.setTargetPosition(hoodInterpolation(() -> ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))),
 			flyWheel.getCommandBuilder().setTargetVelocity(ShooterConstants.DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND)
 		);
 	}
@@ -81,7 +82,8 @@ public class ShooterStateHandler {
 	private Command shoot() {
 		return new ParallelCommandGroup(
 			aimAtHub(),
-			hood.getCommandsBuilder().setTargetPosition(hoodInterpolation(() -> ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))),
+			hood.getCommandsBuilder()
+				.setTargetPosition(hoodInterpolation(() -> ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation()))),
 			flyWheel.getCommandBuilder()
 				.setVelocityAsSupplier(flywheelInterpolation(() -> ScoringHelpers.getDistanceFromHub(robotPose.get().getTranslation())))
 		);

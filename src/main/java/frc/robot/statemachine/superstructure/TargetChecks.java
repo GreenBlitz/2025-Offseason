@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.SimulationManager;
-import frc.robot.statemachine.ScoringHelpers;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.arm.Arm;
 import frc.utils.math.FieldMath;
@@ -39,7 +38,7 @@ public class TargetChecks {
 
 	private static boolean isTurretAtTarget(Pose2d robotPose, Arm turret, double tolerance) {
 		Rotation2d wantedAngle = ShooterStateHandler.getRobotRelativeLookAtHubAngleForTurret(
-				Field.getHubMiddle(),
+			Field.getHubMiddle(),
 			new Pose2d(
 				robotPose.getX() + robotPose.getRotation().getCos() * SimulationManager.TURRET_DISTANCE_FROM_ROBOT_ON_X_AXIS,
 				robotPose.getY() + robotPose.getRotation().getSin() * SimulationManager.TURRET_DISTANCE_FROM_ROBOT_ON_X_AXIS,
@@ -85,10 +84,7 @@ public class TargetChecks {
 		Rotation2d flywheelVelocityRotation2dPerSecond = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
-		boolean isWithinDistance = isWithinDistance(
-			robotPose.getTranslation(),
-			maxShootingDistanceFromTargetMeters
-		);
+		boolean isWithinDistance = isWithinDistance(robotPose.getTranslation(), maxShootingDistanceFromTargetMeters);
 
 		boolean isInRange = isInAngleRange(robotPose.getTranslation(), maxAngleFromHubCenter);
 
