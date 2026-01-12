@@ -51,10 +51,6 @@ public class FunnelStateHandler {
 		return sensorInputsAutoLogged.debouncedValue;
 	}
 
-	public boolean setIsBallAtSensor() {
-		return true;
-	}
-
 	private Command drive() {
 		return omni.getCommandsBuilder().stop();
 	}
