@@ -79,7 +79,7 @@ public class PathPlannerUtil {
 	}
 
 	public static void scheduleWarmup() {
-        CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
+		CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
 	}
 
 	public static Optional<RobotConfig> getGuiRobotConfig() {
