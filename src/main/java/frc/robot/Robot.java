@@ -4,13 +4,19 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.events.EventTrigger;
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
+import frc.robot.autonomous.AutosBuilder;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
+import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ScoringHelpers;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
@@ -34,7 +40,10 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
+import frc.robot.subsystems.swerve.factories.modules.drive.KrakenX60DriveBuilder;
+import frc.utils.auto.AutonomousChooser;
 import frc.utils.auto.PathPlannerAutoWrapper;
+import frc.utils.auto.PathPlannerUtil;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 
@@ -58,6 +67,8 @@ public class Robot {
 	private final SimulationManager simulationManager;
 
 	private final RobotCommander robotCommander;
+
+	private AutonomousChooser preBuiltAutosChooser;
 
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
@@ -117,6 +128,19 @@ public class Robot {
 		swerve.getStateHandler().setTurretAngleSupplier(() -> turret.getPosition());
 
 		simulationManager = new SimulationManager("SimulationManager", this);
+
+		swerve.configPathPlanner(
+			poseEstimator::getEstimatedPose,
+			poseEstimator::resetPose,
+			PathPlannerUtil.getGuiRobotConfig().orElse(getRobotConfig())
+		);
+
+		new EventTrigger("drive").onTrue(robotCommander.getSuperstructure().setState(RobotState.DRIVE));
+		new EventTrigger("intake").onTrue(robotCommander.getSuperstructure().setState(RobotState.INTAKE));
+		new EventTrigger("shoot").onTrue(robotCommander.getSuperstructure().setState(RobotState.SHOOT));
+		new EventTrigger("pre-shoot").onTrue(robotCommander.getSuperstructure().setState(RobotState.PRE_SHOOT));
+
+		this.preBuiltAutosChooser = new AutonomousChooser("PreBuiltAutos", AutosBuilder.getAllPreBuiltAutos(this));
 	}
 
 	public void resetSubsystems() {
@@ -332,7 +356,24 @@ public class Robot {
 	}
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {
-		return new PathPlannerAutoWrapper();
+		return preBuiltAutosChooser.getChosenValue();
+	}
+
+	public RobotConfig getRobotConfig() {
+		return new RobotConfig(
+			60,
+			6.375,
+			new ModuleConfig(
+				0.05,
+				swerve.getConstants().velocityAt12VoltsMetersPerSecond(),
+				0.96,
+				DCMotor.getKrakenX60Foc(1),
+				KrakenX60DriveBuilder.GEAR_RATIO,
+				KrakenX60DriveBuilder.SLIP_CURRENT,
+				1
+			),
+			swerve.getModules().getModulePositionsFromCenterMeters()
+		);
 	}
 
 }
