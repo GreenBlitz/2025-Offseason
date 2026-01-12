@@ -13,7 +13,6 @@ import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ScoringHelpers;
 import frc.robot.statemachine.ShooterCalculations;
-import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;

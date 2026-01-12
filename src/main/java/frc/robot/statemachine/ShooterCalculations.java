@@ -27,20 +27,20 @@ public class ShooterCalculations {
 			.fromDegrees(MathUtil.inputModulus(targetAngle.getDegrees(), Rotation2d.kZero.getDegrees(), MathConstants.FULL_CIRCLE.getDegrees()));
 	}
 
-    public static boolean isTurretMoveLegal(Rotation2d targetRobotRelative, Arm turret) {
-        boolean isTargetInMaxRange = !(targetRobotRelative.getDegrees() > TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees()
-                && turret.getPosition().getDegrees() < TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees());
+	public static boolean isTurretMoveLegal(Rotation2d targetRobotRelative, Arm turret) {
+		boolean isTargetInMaxRange = !(targetRobotRelative.getDegrees() > TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees()
+			&& turret.getPosition().getDegrees() < TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees());
 
-        boolean isTargetInMinRange = !(targetRobotRelative.getDegrees() < TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees()
-                && turret.getPosition().getDegrees() > TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees());
+		boolean isTargetInMinRange = !(targetRobotRelative.getDegrees() < TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees()
+			&& turret.getPosition().getDegrees() > TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees());
 
-        boolean isTargetBehindSoftwareLimits = ToleranceMath.isInRange(
-                targetRobotRelative.getDegrees(),
-                TurretConstants.BACKWARDS_SOFTWARE_LIMIT.getDegrees(),
-                TurretConstants.FORWARD_SOFTWARE_LIMIT.getDegrees()
-        );
+		boolean isTargetBehindSoftwareLimits = ToleranceMath.isInRange(
+			targetRobotRelative.getDegrees(),
+			TurretConstants.BACKWARDS_SOFTWARE_LIMIT.getDegrees(),
+			TurretConstants.FORWARD_SOFTWARE_LIMIT.getDegrees()
+		);
 
-        return isTargetInMaxRange && isTargetInMinRange && isTargetBehindSoftwareLimits;
-    }
+		return isTargetInMaxRange && isTargetInMinRange && isTargetBehindSoftwareLimits;
+	}
 
 }
