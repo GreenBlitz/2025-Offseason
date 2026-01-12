@@ -5,9 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.Pair;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.RobotManager;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
@@ -36,7 +34,7 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
-//import frc.utils.auto.PathPlannerAutoWrapper;
+import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
 
@@ -333,8 +331,8 @@ public class Robot {
 		return robotCommander;
 	}
 
-	public Command getAutonomousCommand() {
-		return Commands.none();
+	public PathPlannerAutoWrapper getAutonomousCommand() {
+		return new PathPlannerAutoWrapper();
 	}
 
 }
