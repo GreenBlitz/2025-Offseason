@@ -55,7 +55,7 @@ public class ShooterCalculations {
 	public static Rotation2d getRangeEdge(Rotation2d angle, Rotation2d tolerance) {
 		return Rotation2d.fromRadians(
 			MathUtil
-				.inputModulus(angle.getRadians() + tolerance.getRadians(), Rotation2d.kZero.getRadians(), MathConstants.FULL_CIRCLE.getRadians())
+				.inputModulus(angle.getRadians() + tolerance.getRadians(), TurretConstants.MIN_POSITION.getDegrees(), TurretConstants.MAX_POSITION.getDegrees())
 		);
 	}
 
