@@ -26,7 +26,10 @@ public class TurretAimAtHubCommand extends Command {
 
 	@Override
 	public void execute() {
-		Pose2d turretPose = ShooterCalculations.getTurretPoseFiledRelative(robotPose.get());
+		Pose2d turretPose = new Pose2d(
+			ShooterCalculations.getTurretPositionFieldRelative(robotPose.get()).getTranslation(),
+			turret.getPosition().plus(robotPose.get().getRotation())
+		);
 		Translation2d hub = Field.getHubMiddle();
 		Rotation2d targetAngle = ShooterCalculations.getRobotRelativeLookAtTowerAngleForTurret(hub, turretPose);
 

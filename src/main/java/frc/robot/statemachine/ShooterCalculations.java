@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import frc.constants.MathConstants;
 import frc.robot.subsystems.arm.Arm;
@@ -16,10 +17,24 @@ import java.util.Map;
 
 public class ShooterCalculations {
 
-	public static Pose2d getTurretPoseFiledRelative(Pose2d robotPose) {
+	public static Translation3d getTurretTranslation3dFieldRelative(Pose2d robotPose) {
+		Translation2d turretPositionRelativeToRobotRelativeToField = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
+			.rotateBy(robotPose.getRotation());
+		return new Translation3d(
+			robotPose.getX() + turretPositionRelativeToRobotRelativeToField.getX(),
+			robotPose.getY() + turretPositionRelativeToRobotRelativeToField.getY(),
+			TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.getZ()
+		);
+	}
+
+	public static Pose2d getTurretPositionFieldRelative(Pose2d robotPose) {
+		Translation2d turretPositionRelativeToRobotRelativeToField = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
+			.rotateBy(robotPose.getRotation());
 		return new Pose2d(
-			robotPose.getX() + robotPose.getRotation().getCos() * TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.getX(),
-			robotPose.getY() + robotPose.getRotation().getSin() * TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.getY(),
+			new Translation2d(
+				robotPose.getX() + turretPositionRelativeToRobotRelativeToField.getX(),
+				robotPose.getY() + turretPositionRelativeToRobotRelativeToField.getY()
+			),
 			robotPose.getRotation()
 		);
 	}
@@ -77,5 +92,19 @@ public class ShooterCalculations {
 			Rotation2d.fromDegrees(12000)
 		)
 	);
+
+	public static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Translation2d target, Pose2d fieldRelativeTurretPose) {
+		Rotation2d targetAngle = Rotation2d
+			.fromRadians(FieldMath.getRelativeTranslation(fieldRelativeTurretPose, target).getAngle().getRadians());
+		return Rotation2d
+			.fromDegrees(MathUtil.inputModulus(targetAngle.getDegrees(), Rotation2d.kZero.getDegrees(), MathConstants.FULL_CIRCLE.getDegrees()));
+	}
+
+	public static Rotation2d getRangeEdge(Rotation2d angle, Rotation2d tolerance) {
+		return Rotation2d.fromRadians(
+			MathUtil
+				.inputModulus(angle.getRadians() + tolerance.getRadians(), Rotation2d.kZero.getRadians(), MathConstants.FULL_CIRCLE.getRadians())
+		);
+	}
 
 }
