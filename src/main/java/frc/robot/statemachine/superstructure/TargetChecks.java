@@ -94,7 +94,11 @@ public class TargetChecks {
 		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtHeading;
 	}
 
-	public static boolean calibrationIsReadyToShoot(Robot robot, Rotation2d flywheelVelocityToleranceRotation2dPerSecond, Rotation2d hoodPositionTolerance) {
+	public static boolean calibrationIsReadyToShoot(
+		Robot robot,
+		Rotation2d flywheelVelocityToleranceRotation2dPerSecond,
+		Rotation2d hoodPositionTolerance
+	) {
 		Rotation2d flywheelVelocityRotation2dPerSecond = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
