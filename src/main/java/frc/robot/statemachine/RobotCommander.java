@@ -96,11 +96,25 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
+	private boolean calibrationIsReadyToShoot() {
+		Supplier<Double> distanceFromHub = () -> ScoringHelpers.getDistanceFromHub(robot.getPoseEstimator().getEstimatedPose().getTranslation());
+		return TargetChecks.calibrationIsReadyToShoot(robot, Constants.FLYWHEEL_VELOCITY_TOLERANCE_RPS, HoodConstants.HOOD_POSITION_TOLERANCE);
+	}
+
 	public Command shootSequence() {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
 				driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
 				driveWith(RobotState.SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor())
+			)
+		);
+	}
+
+	public Command calibrationShootSequence() {
+		return new RepeatCommand(
+			new SequentialCommandGroup(
+				driveWith(RobotState.CALIBRATION_PRE_SHOOT).until(this::isReadyToShoot),
+				driveWith(RobotState.CALIBRATION_SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor())
 			)
 		);
 	}
@@ -116,7 +130,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-			case DRIVE, INTAKE, SHOOT, SHOOT_WHILE_INTAKE -> driveWith(RobotState.DRIVE);
+			case DRIVE, INTAKE, SHOOT, SHOOT_WHILE_INTAKE, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT -> driveWith(RobotState.DRIVE);
 			case PRE_SHOOT -> driveWith(RobotState.PRE_SHOOT);
 		};
 	}
