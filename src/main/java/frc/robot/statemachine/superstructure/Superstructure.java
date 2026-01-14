@@ -149,11 +149,19 @@ public class Superstructure {
 	}
 
 	private Command calibrationPreShoot() {
-		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.CALIBRATION), funnelStateHandler.setState(FunnelState.DRIVE));
+		return new ParallelCommandGroup(
+			shooterStateHandler.setState(ShooterState.CALIBRATION),
+			funnelStateHandler.setState(FunnelState.DRIVE),
+			intakeStateHandler.setState(IntakeState.CLOSED)
+		);
 	}
 
 	private Command calibrationShoot() {
-		return new ParallelDeadlineGroup(funnelStateHandler.setState(FunnelState.CALIBRATION), shooterStateHandler.setState(ShooterState.SHOOT));
+		return new ParallelDeadlineGroup(
+			shooterStateHandler.setState(ShooterState.CALIBRATION),
+			funnelStateHandler.setState(FunnelState.SHOOT),
+			intakeStateHandler.setState(IntakeState.CLOSED)
+		);
 	}
 
 	public void periodic() {
