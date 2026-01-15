@@ -2,6 +2,8 @@ package frc.utils;
 
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.RobotManager;
+import frc.utils.time.TimeUtil;
 
 public class DriverStationUtil {
 
@@ -11,10 +13,10 @@ public class DriverStationUtil {
 		return DriverStation.getAlliance().orElse(DEFAULT_ALLIANCE);
 	}
 
-	public static DriverStation.Alliance getAutoWinnerAlliance() {
+	public static DriverStation.Alliance getStartingAlliance() {
 		String gameData = DriverStation.getGameSpecificMessage();
 		if (gameData.isEmpty()) {
-			new Alert("Unknown current active alliance", Alert.AlertType.kWarning);
+			new Alert("Unknown starting alliance", Alert.AlertType.kWarning);
 			return DEFAULT_ALLIANCE;
 		}
 		DriverStation.Alliance alliance = switch (gameData.charAt(0)) {
@@ -23,10 +25,40 @@ public class DriverStationUtil {
 			default -> null;
 		};
 		if (alliance == null) {
-			new Alert("Unknown current active alliance", Alert.AlertType.kWarning);
+			new Alert("Unknown starting alliance", Alert.AlertType.kWarning);
 			return DEFAULT_ALLIANCE;
 		}
 		return alliance;
+	}
+
+	public static DriverStation.Alliance whichHubIsActive() {
+		if (DriverStation.isAutonomous()) {
+			return DEFAULT_ALLIANCE;
+		}
+		if (RobotManager.getTeleopStartTime() == 0) {
+			new Alert("Unkown time since teleop started", Alert.AlertType.kInfo);
+			return DEFAULT_ALLIANCE;
+		}
+		if (DriverStation.isTeleop()) {
+			int currentTime = (int) Math.floor(TimeUtil.getCurrentTimeSeconds());
+			int timeSinceTeleopInit = currentTime - (int) Math.floor(RobotManager.getTeleopStartTime());
+			int howMuchShiftsPassed = (timeSinceTeleopInit / 25);
+			int shiftEvenOrOdd = howMuchShiftsPassed % 2;
+			DriverStation.Alliance startingAlliance = getStartingAlliance();
+			if ((startingAlliance == DriverStation.Alliance.Red) && (shift == 0)) {
+				return DriverStation.Alliance.Blue;
+			}
+			if ((startingAlliance == DriverStation.Alliance.Red)) {
+				return DriverStation.Alliance.Red;
+			}
+			if ((startingAlliance == DriverStation.Alliance.Blue) && (shift != 0)) {
+				return DriverStation.Alliance.Blue;
+			}
+			if ((startingAlliance == DriverStation.Alliance.Blue)) {
+				return DriverStation.Alliance.Red;
+			}
+		}
+		return DEFAULT_ALLIANCE;
 	}
 
 	public static boolean isBlueAlliance() {

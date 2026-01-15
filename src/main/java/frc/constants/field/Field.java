@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.utils.DriverStationUtil;
 import frc.utils.math.AngleTransform;
@@ -69,7 +68,7 @@ public class Field {
 	}
 
 	public static boolean isRobotAllianceAutoWinner() {
-		return DriverStationUtil.getAlliance() == DriverStationUtil.getAutoWinnerAlliance();
+		return DriverStationUtil.getAlliance() == DriverStationUtil.getStartingAlliance();
 	}
 
 	public static Pose2d getAllianceRelative(Pose2d pose2d) {

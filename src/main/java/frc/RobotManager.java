@@ -21,6 +21,7 @@ import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as described in the TimedRobot
  * documentation. If you change the name of this class or the package after creating this project, you must also update the build.gradle file in
@@ -31,6 +32,7 @@ public class RobotManager extends LoggedRobot {
 	private final Robot robot;
 	private PathPlannerAutoWrapper autonomousCommand;
 	private int roborioCycles;
+	private static double teleopStartTime = 0.0;
 
 	public RobotManager() {
 		if (Robot.ROBOT_TYPE.isReplay()) {
@@ -82,6 +84,15 @@ public class RobotManager extends LoggedRobot {
 		}
 		// robot.getRobotCommander().getSuperstructure().setIsSubsystemRunningIndependently(false);
 		// robot.getSwerve().getCommandsBuilder().setIsSubsystemRunningIndependently(false);
+	}
+
+	@Override
+	public void teleopInit() {
+		teleopStartTime = TimeUtil.getCurrentTimeSeconds();
+	}
+
+	public static double getTeleopStartTime() {
+		return teleopStartTime;
 	}
 
 	@Override
