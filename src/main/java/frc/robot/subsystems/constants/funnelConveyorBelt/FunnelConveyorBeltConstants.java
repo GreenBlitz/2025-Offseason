@@ -1,8 +1,8 @@
-package frc.robot.subsystems.constants.fannelConvairBelt;
+package frc.robot.subsystems.constants.funnelConveyorBelt;
 
 import frc.robot.RobotConstants;
 
-public class FannelConveyorBeltConstants {
+public class FunnelConveyorBeltConstants {
 
 	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/FunnelConveyorBelt";
 	public static final double GEAR_RATIO = 5;

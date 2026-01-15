@@ -13,7 +13,7 @@ import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
-import frc.robot.subsystems.constants.fannelConvairBelt.FannelConveyorBeltConstants;
+import frc.robot.subsystems.constants.funnelConvairBelt.FunnelConveyorBeltConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.poseestimator.IPoseEstimator;
@@ -54,7 +54,7 @@ public class Robot {
 	private final Roller omni;
 	private final IDigitalInput funnelDigitalInput;
 	private final SimulationManager simulationManager;
-	private final Roller fannelConveyorBelt;
+	private final Roller funnelConveyorBelt;
 
 	private final RobotCommander robotCommander;
 
@@ -88,8 +88,8 @@ public class Robot {
 		this.funnelDigitalInput = omniAndDigitalInput.getSecond();
 		BrakeStateManager.add(() -> omni.setBrake(true), () -> omni.setBrake(false));
 
-		this.fannelConveyorBelt = createFannelConveyorBelt();
-		BrakeStateManager.add(() -> fannelConveyorBelt.setBrake(true), () -> fannelConveyorBelt.setBrake(false));
+		this.funnelConveyorBelt = createFunnelConveyorBelt();
+		BrakeStateManager.add(() -> funnelConveyorBelt.setBrake(true), () -> funnelConveyorBelt.setBrake(false));
 
 		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
 		this.swerve = new Swerve(
@@ -268,14 +268,14 @@ public class Robot {
 		);
 	}
 
-	private Roller createFannelConveyorBelt() {
+	private Roller createFunnelConveyorBelt() {
 		return SparkMaxRollerBuilder.build(
-			FannelConveyorBeltConstants.LOG_PATH,
-			IDs.SparkMAXIDs.FANNEL_CONVEYOR_BELT,
-			FannelConveyorBeltConstants.IS_INVERTED,
-			FannelConveyorBeltConstants.GEAR_RATIO,
-			FannelConveyorBeltConstants.CURRENT_LIMIT,
-			FannelConveyorBeltConstants.MOMENT_OF_INERTIA
+			FunnelConveyorBeltConstants.LOG_PATH,
+			IDs.SparkMAXIDs.funnel_CONVEYOR_BELT,
+			FunnelConveyorBeltConstants.IS_INVERTED,
+			FunnelConveyorBeltConstants.GEAR_RATIO,
+			FunnelConveyorBeltConstants.CURRENT_LIMIT,
+			FunnelConveyorBeltConstants.MOMENT_OF_INERTIA
 		);
 	}
 
@@ -303,8 +303,8 @@ public class Robot {
 		return omni;
 	}
 
-	public Roller getFannelConveyorBelt() {
-		return fannelConveyorBelt;
+	public Roller getFunnelConveyorBelt() {
+		return funnelConveyorBelt;
 	}
 
 	public IDigitalInput getFunnelDigitalInput() {
