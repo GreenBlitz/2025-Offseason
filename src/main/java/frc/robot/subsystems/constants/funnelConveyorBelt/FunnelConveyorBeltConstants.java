@@ -11,4 +11,3 @@ public class FunnelConveyorBeltConstants {
 	public static final boolean IS_INVERTED = true;
 
 }
-
