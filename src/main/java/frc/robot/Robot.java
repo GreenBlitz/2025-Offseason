@@ -13,7 +13,7 @@ import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
-import frc.robot.subsystems.constants.funnelConvairBelt.FunnelConveyorBeltConstants;
+import frc.robot.subsystems.constants.funnelConveyorBelt.FunnelConveyorBeltConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.poseestimator.IPoseEstimator;

@@ -12,9 +12,9 @@ public enum FunnelState {
 	private final double omniVoltage;
 	private final double conveyorBeltVoltage;
 
-	FunnelState(double omniVoltage, double ConveyorBeltVoltage) {
+	FunnelState(double omniVoltage, double conveyorBeltVoltage) {
 		this.omniVoltage = omniVoltage;
-		this.conveyorBeltVoltage = ConveyorBeltVoltage;
+		this.conveyorBeltVoltage = conveyorBeltVoltage;
 	}
 
 	FunnelState() {
