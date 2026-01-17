@@ -10,24 +10,24 @@ public enum FunnelState {
 	CALIBRATION;
 
 	private final double omniVoltage;
-	private final double conveyorBeltVoltage;
+	private final double bellyVoltage;
 
-	FunnelState(double omniVoltage, double conveyorBeltVoltage) {
+	FunnelState(double omniVoltage, double bellyVoltage) {
 		this.omniVoltage = omniVoltage;
-		this.conveyorBeltVoltage = conveyorBeltVoltage;
+		this.bellyVoltage = bellyVoltage;
 	}
 
 	FunnelState() {
 		this.omniVoltage = 0;
-		this.conveyorBeltVoltage = 0;
+		this.bellyVoltage = 0;
 	}
 
 	public double getOmniVoltage() {
 		return omniVoltage;
 	}
 
-	public double getConveyorBeltVoltage() {
-		return conveyorBeltVoltage;
+	public double getBellyVoltage() {
+		return bellyVoltage;
 	}
 
 }
