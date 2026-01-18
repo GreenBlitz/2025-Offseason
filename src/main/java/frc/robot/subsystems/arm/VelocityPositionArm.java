@@ -9,8 +9,6 @@ import frc.robot.hardware.interfaces.VelocityPositionRequest;
 public class VelocityPositionArm extends Arm {
 
 	VelocityPositionRequest velocityPositionRequest;
-	IFeedForwardRequest positionRequest;
-	IRequest<Double> voltageRequest;
 
 	public VelocityPositionArm(
 		String logPath,
@@ -27,7 +25,7 @@ public class VelocityPositionArm extends Arm {
 
 	public void setPositionVelocity(Rotation2d position, Rotation2d velocity) {
 		velocityPositionRequest.withSetPoint(position);
-		velocityPositionRequest.withSetVelocity(velocity);
+		velocityPositionRequest.setVelocity(velocity);
 		motor.applyRequest(velocityPositionRequest);
 	}
 

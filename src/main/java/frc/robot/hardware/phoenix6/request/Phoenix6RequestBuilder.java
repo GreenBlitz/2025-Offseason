@@ -3,7 +3,6 @@ package frc.robot.hardware.phoenix6.request;
 import com.ctre.phoenix6.controls.*;
 import edu.wpi.first.math.geometry.Rotation2d;
 
-
 public class Phoenix6RequestBuilder {
 
 	public static Phoenix6FeedForwardRequest build(PositionVoltage positionVoltage, double defaultArbitraryFeedForward, boolean enableFOC) {
@@ -16,7 +15,7 @@ public class Phoenix6RequestBuilder {
 		);
 	}
 
-	public static Phoenix6FeedForwardRequest build(
+	public static Phoenix6VelocityPositionRequest build(
 		PositionVoltage positionVoltage,
 		double defaultArbitraryFeedForward,
 		boolean enableFOC,
