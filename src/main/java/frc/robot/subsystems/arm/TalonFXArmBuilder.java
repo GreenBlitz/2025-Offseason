@@ -61,7 +61,7 @@ public class TalonFXArmBuilder {
 
 		ArmSignals signals = buildSignals(motor, signalsFrequency, deviceID.busChain());
 
-		Phoenix6Request<Double> voltageRequest = Phoenix6RequestBuilder.build(new VoltageOut(0), true);
+		Phoenix6Request<Double> voltageRequest = buildVoltageRequest();
 
 		IDynamicMotionMagicRequest positionRequest = Phoenix6RequestBuilder.build(
 			new DynamicMotionMagicVoltage(
@@ -147,56 +147,6 @@ public class TalonFXArmBuilder {
 		addMotionMagicConfig(configuration, defaultMaxVelocityRotation2dPerSecond, defaultMaxAccelerationRotation2dPerSecondSquare);
 		motor.applyConfiguration(configuration);
 
-		return new Arm(logPath, motor, signals, voltageRequest, positionRequest, configuration.Slot0.kG);
-	}
-
-	public static Arm buildArm(
-		String logPath,
-		Phoenix6DeviceID deviceID,
-		boolean isInverted,
-		boolean isContinuesWrap,
-		TalonFXFollowerConfig talonFXFollowerConfig,
-		SysIdRoutine.Config sysIdRoutineConfig,
-		FeedbackConfigs feedbackConfigs,
-		Slot0Configs realSlotsConfig,
-		Slot0Configs simulationSlotsConfig,
-		double currentLimit,
-		double signalsFrequency,
-		double arbitraryFeedForward,
-		Rotation2d forwardSoftwareLimit,
-		Rotation2d reverseSoftwareLimit,
-		ArmSimulationConstants simulationConstants
-	) {
-		TalonFXMotor motor = new TalonFXMotor(
-			logPath,
-			deviceID,
-			talonFXFollowerConfig,
-			sysIdRoutineConfig,
-			buildSimulation(
-				simulationConstants,
-				talonFXFollowerConfig,
-				feedbackConfigs.RotorToSensorRatio * feedbackConfigs.SensorToMechanismRatio
-			)
-		);
-
-		ArmSignals signals = buildSignals(motor, signalsFrequency, deviceID.busChain());
-
-		Phoenix6Request<Double> voltageRequest = buildVoltageRequest();
-
-		Phoenix6FeedForwardRequest positionRequest = Phoenix6RequestBuilder
-			.build(new PositionVoltage(signals.position().getLatestValue().getRotations()), arbitraryFeedForward, true);
-
-		TalonFXConfiguration configuration = buildConfiguration(
-			feedbackConfigs,
-			simulationSlotsConfig,
-			realSlotsConfig,
-			forwardSoftwareLimit,
-			reverseSoftwareLimit,
-			isInverted,
-			isContinuesWrap,
-			currentLimit
-		);
-		motor.applyConfiguration(configuration);
 		return new Arm(logPath, motor, signals, voltageRequest, positionRequest, configuration.Slot0.kG);
 	}
 

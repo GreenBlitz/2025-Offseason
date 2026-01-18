@@ -4,8 +4,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public interface VelocityPositionRequest extends IFeedForwardRequest {
 
-	VelocityPositionRequest setVelocity(Rotation2d setPoint);
+	VelocityPositionRequest setVelocity(Rotation2d targetVelocityRPS);
 
-	Rotation2d getVelocity();
+	Rotation2d getVelocityRPS();
 
 }

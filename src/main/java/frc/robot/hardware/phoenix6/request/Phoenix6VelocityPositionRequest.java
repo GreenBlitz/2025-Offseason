@@ -11,10 +11,10 @@ public class Phoenix6VelocityPositionRequest extends Phoenix6FeedForwardRequest 
 	private Consumer<Rotation2d> setVelocity;
 	private Rotation2d velocity;
 	private Consumer<Rotation2d> setPosition;
-	private Rotation2d position;
 
 	public Phoenix6VelocityPositionRequest(
 		Consumer<Rotation2d> setVelocity,
+		Consumer<Rotation2d> setPosition,
 		Rotation2d position,
 		ControlRequest controlRequest,
 		Consumer<Double> setFeedForward,
@@ -28,23 +28,18 @@ public class Phoenix6VelocityPositionRequest extends Phoenix6FeedForwardRequest 
 	}
 
 	public void withPosition(Rotation2d position) {
-		this.position = position;
 		setPosition.accept(position);
 	}
 
-	public Rotation2d getPosition() {
-		return position;
-	}
-
 	@Override
-	public VelocityPositionRequest setVelocity(Rotation2d velocity) {
-		this.velocity = velocity;
-		setVelocity.accept(velocity);
+	public VelocityPositionRequest setVelocity(Rotation2d targetVelocityRPS) {
+		this.velocity = targetVelocityRPS;
+		setVelocity.accept(targetVelocityRPS);
 		return this;
 	}
 
 	@Override
-	public Rotation2d getVelocity() {
+	public Rotation2d getVelocityRPS() {
 		return velocity;
 	}
 

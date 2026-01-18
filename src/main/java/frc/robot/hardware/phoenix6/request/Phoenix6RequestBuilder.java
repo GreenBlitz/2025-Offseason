@@ -24,6 +24,7 @@ public class Phoenix6RequestBuilder {
 	) {
 		return new Phoenix6VelocityPositionRequest(
 			setPoint -> positionVoltage.withVelocity(setPoint.getRotations()),
+			setPoint -> positionVoltage.withPosition(setPoint.getRotations()),
 			Rotation2d.fromRotations(positionVoltage.Position),
 			controlRequest,
 			positionVoltage::withFeedForward,

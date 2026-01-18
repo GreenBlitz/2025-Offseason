@@ -8,7 +8,7 @@ import frc.robot.hardware.interfaces.VelocityPositionRequest;
 
 public class VelocityPositionArm extends Arm {
 
-	VelocityPositionRequest velocityPositionRequest;
+	private final VelocityPositionRequest velocityPositionRequest;
 
 	public VelocityPositionArm(
 		String logPath,
