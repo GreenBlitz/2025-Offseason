@@ -3,6 +3,7 @@ package frc.robot.statemachine.funnelstatehandler;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
+import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.subsystems.roller.Roller;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -64,14 +65,20 @@ public class FunnelStateHandler {
 	private Command shoot() {
 		return new ParallelCommandGroup(
 			omni.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getOmniVoltage()),
-			belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getBellyVoltage())
+			new SequentialCommandGroup(
+				new WaitCommand(StateMachineConstants.TIME_FOR_OMNI_TO_ACCELERATE_SECONDS),
+				belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT.getBellyVoltage())
+			)
 		);
 	}
 
 	private Command shootWhileIntake() {
 		return new ParallelCommandGroup(
 			omni.getCommandsBuilder().setVoltage(FunnelState.SHOOT_WHILE_INTAKE.getOmniVoltage()),
-			belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT_WHILE_INTAKE.getBellyVoltage())
+			new SequentialCommandGroup(
+				new WaitCommand(StateMachineConstants.TIME_FOR_OMNI_TO_ACCELERATE_SECONDS),
+				belly.getCommandsBuilder().setVoltage(FunnelState.SHOOT_WHILE_INTAKE.getBellyVoltage())
+			)
 		);
 	}
 
@@ -79,7 +86,7 @@ public class FunnelStateHandler {
 		return new SequentialCommandGroup(
 			new ParallelCommandGroup(
 				belly.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getBellyVoltage()),
-				new SequentialCommandGroup(new WaitCommand(0.05), omni.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getOmniVoltage()))
+				omni.getCommandsBuilder().setVoltage(FunnelState.INTAKE.getOmniVoltage())
 			).until(() -> this.isBallAtSensor()),
 			new ParallelCommandGroup(omni.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop())
 		);
