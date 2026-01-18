@@ -8,7 +8,6 @@ import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
 
-
 public class TurretSafeMoveToPosition extends Command {
 
 	private final Arm turret;
