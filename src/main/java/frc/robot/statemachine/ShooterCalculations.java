@@ -36,8 +36,6 @@ public class ShooterCalculations {
 		return Field.getHubMiddle().getDistance(pose);
 	}
 
-	private static Rotation2d targetAngle;
-
 	public static Pose2d getFieldRelativeTurretPosition(Pose2d robotPose, Rotation2d turretAngle) {
 		Translation2d turretPositionRelativeToRobotRelativeToField = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
 			.rotateBy(robotPose.getRotation());
