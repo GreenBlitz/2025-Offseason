@@ -132,10 +132,7 @@ public class Robot {
 	}
 
 	public boolean isTurretMoveLegal() {
-		return TurretCalculations.isTurretMoveLegal(
-			TurretCalculations.getRobotRelativeLookAtHubAngleForTurret(poseEstimator.getEstimatedPose(), turret.getPosition()),
-			turret.getPosition()
-		);
+		return TurretCalculations.isTurretMoveLegal(ShooterCalculations.getShootingParams().targetTurretPosition(), turret.getPosition());
 	}
 
 	public void periodic() {
@@ -146,7 +143,7 @@ public class Robot {
 		swerve.update();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
-		ShooterCalculations.updateShootingParams(poseEstimator.getEstimatedPose(), turret.getPosition());
+		ShooterCalculations.updateShootingParams(poseEstimator.getEstimatedPose());
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
