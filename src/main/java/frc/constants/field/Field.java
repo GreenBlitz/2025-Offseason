@@ -69,7 +69,7 @@ public class Field {
 	}
 
 	public static boolean isRobotAllianceAutoWinner() {
-		return DriverStationUtil.getAlliance() == HubUtil.getAutoWinner();
+		return DriverStationUtil.getAlliance() == HubUtil.getAutoWinnerAlliance();
 	}
 
 	public static Pose2d getAllianceRelative(Pose2d pose2d) {
