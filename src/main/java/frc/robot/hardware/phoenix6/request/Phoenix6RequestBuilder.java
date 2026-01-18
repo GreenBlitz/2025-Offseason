@@ -90,5 +90,4 @@ public class Phoenix6RequestBuilder {
 		return new Phoenix6Request<>(torqueCurrentFOC.Output, torqueCurrentFOC, torqueCurrentFOC::withOutput);
 	}
 
-
 }

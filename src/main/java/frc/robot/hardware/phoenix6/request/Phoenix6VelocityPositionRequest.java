@@ -36,7 +36,6 @@ public class Phoenix6VelocityPositionRequest extends Phoenix6FeedForwardRequest 
 		return position;
 	}
 
-
 	@Override
 	public VelocityPositionRequest setVelocity(Rotation2d velocity) {
 		this.velocity = velocity;

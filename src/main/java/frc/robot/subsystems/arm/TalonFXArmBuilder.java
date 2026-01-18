@@ -258,7 +258,6 @@ public class TalonFXArmBuilder {
 		);
 	}
 
-
 	private static TalonFXConfiguration buildConfiguration(
 		FeedbackConfigs feedbackConfigs,
 		Slot0Configs simulationConfigSlots,
