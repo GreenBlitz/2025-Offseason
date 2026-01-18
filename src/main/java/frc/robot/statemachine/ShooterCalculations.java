@@ -6,14 +6,35 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import frc.constants.field.Field;
+import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
 import frc.utils.math.FieldMath;
 import frc.utils.math.ToleranceMath;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.Map;
 
 public class ShooterCalculations {
+
+	private static final String LOG_PATH = "ShooterCalculations";
+
+	public static ShootingParams getShootingParams(Pose2d robotPose, Rotation2d turretPosition) {
+		Rotation2d turretTargetPosition = ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose, turretPosition);
+
+		double distanceFromHubMeters = getDistanceFromHub(robotPose.getTranslation());
+		Rotation2d hoodTargetPosition = hoodInterpolation(distanceFromHubMeters);
+		Rotation2d flywheelTargetRPS = flywheelInterpolation(distanceFromHubMeters);
+
+		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
+		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
+		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
+		return new ShootingParams(flywheelTargetRPS, hoodTargetPosition, turretTargetPosition, new Rotation2d());
+	}
+
+	public static double getDistanceFromHub(Translation2d pose) {
+		return Field.getHubMiddle().getDistance(pose);
+	}
 
 	private static Rotation2d targetAngle;
 
@@ -49,16 +70,12 @@ public class ShooterCalculations {
 		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose, turretPosition).getTranslation();
 		Rotation2d targetAngle = Rotation2d.fromDegrees(
 			FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().getDegrees()
-				* robotPose.getRotation().getDegrees()
+				- robotPose.getRotation().getDegrees()
 		);
 		return Rotation2d.fromRadians(
 			MathUtil.inputModulus(targetAngle.getRadians(), TurretConstants.MIN_POSITION.getRadians(), TurretConstants.MAX_POSITION.getRadians())
 		);
 	}
-	// בקומנד נק ויט פוזישן וויז ולוסיטי.
-	// ט פרמטר אחד מקבל ליצור חדש\\
-	// איי רקווס
-	// מימוש של איירקווסט שאפשר לעשות בו וולוסיטי ופוזישן
 
 	public static Rotation2d getRangeEdge(Rotation2d angle, Rotation2d tolerance) {
 		return Rotation2d.fromRadians(
