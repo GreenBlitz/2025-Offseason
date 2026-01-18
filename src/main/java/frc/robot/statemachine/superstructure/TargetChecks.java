@@ -36,8 +36,8 @@ public class TargetChecks {
 		return isInAngleRange;
 	}
 
-	private static boolean isTurretAtTarget(Pose2d robotPose, Arm turret, double tolerance) {
-		Rotation2d wantedAngle = ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose);
+	private static boolean isTurretAtTarget(Arm turret, double tolerance) {
+		Rotation2d wantedAngle = ShooterCalculations.getShootingParams().targetTurretPosition();
 		boolean isAtHeading = MathUtil.isNear(wantedAngle.getDegrees(), turret.getPosition().getDegrees(), tolerance);
 		Logger.recordOutput(isReadyToShootLogPath + "/isAtHeading", isAtHeading);
 		return isAtHeading;
@@ -81,7 +81,7 @@ public class TargetChecks {
 
 		boolean isInRange = isInAngleRange(robotPose.getTranslation(), maxAngleFromHubCenter);
 
-		boolean isAtHeading = isTurretAtTarget(robotPose, robot.getTurret(), headingTolerance.getDegrees());
+		boolean isAtHeading = isTurretAtTarget(robot.getTurret(), headingTolerance.getDegrees());
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
 			wantedFlywheelVelocityRotation2dPerSecond,
