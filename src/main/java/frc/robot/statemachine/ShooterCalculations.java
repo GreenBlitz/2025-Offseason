@@ -42,7 +42,7 @@ public class ShooterCalculations {
 		return new ShootingParams(flywheelTargetRPS, hoodTargetPosition, turretTargetPosition, new Rotation2d());
 	}
 
-	public static Translation2d getFieldRelativeTurretPosition(Pose2d robotPose) {
+	private static Translation2d getFieldRelativeTurretPosition(Pose2d robotPose) {
 		Translation2d turretPositionRelativeToRobotRelativeToField = TurretConstants.TURRET_POSITION_RELATIVE_TO_ROBOT.toTranslation2d()
 			.rotateBy(robotPose.getRotation());
 		return new Translation2d(
@@ -51,7 +51,7 @@ public class ShooterCalculations {
 		);
 	}
 
-	public static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose) {
+	private static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose) {
 		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose);
 		Rotation2d targetAngle = Rotation2d.fromDegrees(
 			FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().getDegrees()
