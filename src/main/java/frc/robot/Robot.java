@@ -11,7 +11,6 @@ import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
-import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
@@ -32,6 +31,7 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
+import frc.utils.TurretCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
@@ -126,8 +126,8 @@ public class Robot {
 	}
 
 	public boolean isTurretMoveLegal() {
-		return ShooterCalculations.isTurretMoveLegal(
-			ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(poseEstimator.getEstimatedPose(), turret.getPosition()),
+		return TurretCalculations.isTurretMoveLegal(
+			TurretCalculations.getRobotRelativeLookAtHubAngleForTurret(poseEstimator.getEstimatedPose(), turret.getPosition()),
 			turret.getPosition()
 		);
 	}

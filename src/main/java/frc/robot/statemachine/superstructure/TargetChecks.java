@@ -6,9 +6,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.Robot;
-import frc.robot.statemachine.ShooterCalculations;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
 import frc.robot.subsystems.arm.Arm;
+import frc.utils.TurretCalculations;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -37,7 +37,7 @@ public class TargetChecks {
 	}
 
 	private static boolean isTurretAtTarget(Pose2d robotPose, Arm turret, double tolerance) {
-		Rotation2d wantedAngle = ShooterCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose, turret.getPosition());
+		Rotation2d wantedAngle = TurretCalculations.getRobotRelativeLookAtHubAngleForTurret(robotPose, turret.getPosition());
 		boolean isAtHeading = MathUtil.isNear(wantedAngle.getDegrees(), turret.getPosition().getDegrees(), tolerance);
 		Logger.recordOutput(isReadyToShootLogPath + "/isAtHeading", isAtHeading);
 		return isAtHeading;

@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
-import static frc.robot.statemachine.ShooterCalculations.getRangeEdge;
+import frc.utils.TurretCalculations;
 
 public class TurretConstants {
 
@@ -56,13 +56,9 @@ public class TurretConstants {
 	public static final Rotation2d DEFAULT_MAX_VELOCITY_PER_SECOND = Rotation2d.fromRotations(3.0);
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 
-	public static final Rotation2d SCREW_MAX_RANGE_EDGE = getRangeEdge(
-		TurretConstants.MAX_POSITION,
-		ShooterConstants.MAX_DISTANCE_FROM_MAX_OR_MIN_POSITION_NOT_TO_ROTATE.times(-1)
-	);
-	public static final Rotation2d SCREW_MIN_RANGE_EDGE = getRangeEdge(
-		TurretConstants.MIN_POSITION,
-		ShooterConstants.MAX_DISTANCE_FROM_MAX_OR_MIN_POSITION_NOT_TO_ROTATE
-	);
+	public static final Rotation2d SCREW_MAX_RANGE_EDGE = TurretCalculations
+		.getRangeEdge(TurretConstants.MAX_POSITION, ShooterConstants.MAX_DISTANCE_FROM_MAX_OR_MIN_POSITION_NOT_TO_ROTATE.times(-1));
+	public static final Rotation2d SCREW_MIN_RANGE_EDGE = TurretCalculations
+		.getRangeEdge(TurretConstants.MIN_POSITION, ShooterConstants.MAX_DISTANCE_FROM_MAX_OR_MIN_POSITION_NOT_TO_ROTATE);
 
 }
