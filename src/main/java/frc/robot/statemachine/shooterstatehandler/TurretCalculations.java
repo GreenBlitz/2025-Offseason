@@ -1,4 +1,4 @@
-package frc.utils;
+package frc.robot.statemachine.shooterstatehandler;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;

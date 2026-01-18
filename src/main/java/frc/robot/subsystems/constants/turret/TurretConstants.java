@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
-import frc.utils.TurretCalculations;
+import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 
 public class TurretConstants {
 
