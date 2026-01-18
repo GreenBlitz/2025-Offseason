@@ -8,4 +8,3 @@ belly calibrations
 - [ ] Gear ratio
 - [ ] Current limit
 - [ ] Is inverted
-- [ ] kS

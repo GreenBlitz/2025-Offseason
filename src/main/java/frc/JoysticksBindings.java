@@ -162,7 +162,7 @@ public class JoysticksBindings {
 		joystick.Y.onTrue(omni.getCommandsBuilder().setPower(-0.5 * maxCalibrationPower));
 	}
 
-	private static void applyFunnelBellyCalibrationBindings(Roller belly, SmartJoystick joystick, double maxCalibrationPower) {
+	private static void applyBellyCalibrationBindings(Roller belly, SmartJoystick joystick, double maxCalibrationPower) {
 		joystick.POV_DOWN.onTrue(new InstantCommand(() -> belly.getCommandsBuilder().setIsSubsystemRunningIndependently(true)));
 		joystick.POV_UP.onTrue(new InstantCommand(() -> belly.getCommandsBuilder().setIsSubsystemRunningIndependently(false)));
 
