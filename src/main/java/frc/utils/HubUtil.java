@@ -23,14 +23,10 @@ public class HubUtil {
 			default -> null;
 		};
 		if (alliance == null) {
-			new Alert("Unknown starting alliance", Alert.AlertType.kWarning);
+			new Alert("Unknown starting alliance", Alert.AlertType.kWarning).set(true);
 			return DriverStationUtil.DEFAULT_ALLIANCE;
 		}
 		return alliance;
-	}
-
-	public static boolean isStartingAlliancesShift(int startingAllianceShift) {
-		return startingAllianceShift != 0;
 	}
 
 	public static DriverStation.Alliance getStartingAlliance() {
@@ -61,8 +57,7 @@ public class HubUtil {
 				return DriverStationUtil.getAlliance();
 			}
 
-			DriverStation.Alliance autoWinningAlliance = getAutoWinnerAlliance();
-			return isShiftOfStartingAlliance ? autoWinningAlliance : getStartingAlliance();
+			return isShiftOfStartingAlliance ? getAutoWinnerAlliance() : getStartingAlliance();
 		}
 		return DriverStationUtil.DEFAULT_ALLIANCE;
 	}
