@@ -131,12 +131,12 @@ public class Robot {
 	}
 
 	private void updateAllSubsystems() {
-        swerve.update();
-        fourBar.update();
-        intakeRoller.update();
-        belly.update();
-        omni.update();
-        turret.update();
+		swerve.update();
+		fourBar.update();
+		intakeRoller.update();
+		belly.update();
+		omni.update();
+		turret.update();
 		hood.update();
 		flyWheel.update();
 	}
