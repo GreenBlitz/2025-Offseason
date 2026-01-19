@@ -1,9 +1,8 @@
 package frc;
 
-import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
@@ -70,9 +69,9 @@ public class JoysticksBindings {
 			new CameraPoseCalibration(
 				"Vision",
 				"limelight-new",
-				1.215,
-				1.16,
-				new Pose3d(new Translation3d(160.39, 130.17, 12.13), new Rotation3d(0, 0, Math.toRadians(240))),
+				1.615,
+				1.05,
+				AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded).getTagPose(9).get(),
 				15000
 			)
 		);
