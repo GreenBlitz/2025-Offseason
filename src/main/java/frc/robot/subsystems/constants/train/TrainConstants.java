@@ -1,10 +1,10 @@
-package frc.robot.subsystems.constants.belly;
+package frc.robot.subsystems.constants.train;
 
 import frc.robot.RobotConstants;
 
-public class BellyConstants {
+public class TrainConstants {
 
-	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Belly";
+	public static final String LOG_PATH = RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Train";
 	public final static int GEAR_RATIO = 1 / 1;
 	public final static int CURRENT_LIMIT = 40;
 	public final static double MOMENT_OF_INERTIA = 0.0001;
