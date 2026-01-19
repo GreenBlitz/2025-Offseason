@@ -138,7 +138,8 @@ public class Robot {
 		omni.update();
 		intakeRoller.update();
 		belly.update();
-	}
+        swerve.update();
+    }
 
 
 	public boolean isTurretMoveLegal() {
@@ -150,10 +151,10 @@ public class Robot {
 
 	public void periodic() {
 		BusChain.refreshAll();
-		resetSubsystems();
+        updateAllSubsystems();
+        resetSubsystems();
 		simulationManager.logPoses();
 
-		swerve.update();
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
 
