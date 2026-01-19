@@ -1,6 +1,6 @@
 package frc.constants;
 
-public class GameConstants {
+public class GamePeriodConstants {
 
 	public static final int TRANSITION_SHIFT_TIME_SECONDS = 10;
 	public static final int ALLIANCE_SHIFT_LENGTH_SECONDS = 25;

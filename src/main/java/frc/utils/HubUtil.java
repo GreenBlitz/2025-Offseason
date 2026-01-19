@@ -3,7 +3,7 @@ package frc.utils;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.RobotManager;
-import frc.constants.GameConstants;
+import frc.constants.GamePeriodConstants;
 import frc.utils.time.TimeUtil;
 
 public class HubUtil {
@@ -29,7 +29,11 @@ public class HubUtil {
 		return alliance;
 	}
 
-	public static DriverStation.Alliance getStartingAlliance() {
+	public static double getTimeSinceTeleopInit() {
+		return TimeUtil.getCurrentTimeSeconds() - RobotManager.getTeleopStartTime();
+	}
+
+	public static DriverStation.Alliance isShiftOfStartingAlliance() {
 		return switch (getAutoWinnerAlliance()) {
 			case Red -> DriverStation.Alliance.Blue;
 			case Blue -> DriverStation.Alliance.Red;
@@ -40,58 +44,57 @@ public class HubUtil {
 	public static DriverStation.Alliance getActiveHub() {
 		if (DriverStation.isAutonomous()) {
 			return DriverStationUtil.getAlliance();
-		} else if (DriverStation.isTeleop()) {
-			double howMuchTimeSinceTeleopInitSeconds = (TimeUtil.getCurrentTimeSeconds() - (RobotManager.getTeleopStartTime()));
-
-			if (howMuchTimeSinceTeleopInitSeconds <= GameConstants.TRANSITION_SHIFT_TIME_SECONDS) {
-				return DriverStationUtil.getAlliance();
-			}
-
-			double howManyShiftsPassed = (howMuchTimeSinceTeleopInitSeconds - GameConstants.TRANSITION_SHIFT_TIME_SECONDS)
-				/ GameConstants.ALLIANCE_SHIFT_LENGTH_SECONDS;
-			boolean isShiftOfStartingAlliance = ((int) Math.floor(howManyShiftsPassed) % 2) != 0;
-
-			if (howMuchTimeSinceTeleopInitSeconds >= GameConstants.ENDGAME_END_TIME_SECONDS) {
-				return DriverStationUtil.DEFAULT_ALLIANCE;
-			} else if (howMuchTimeSinceTeleopInitSeconds >= GameConstants.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP) {
-				return DriverStationUtil.getAlliance();
-			}
-
-			return isShiftOfStartingAlliance ? getAutoWinnerAlliance() : getStartingAlliance();
+		} else if (!DriverStation.isAutonomous() && !DriverStation.isTeleop()) {
+			return DriverStationUtil.DEFAULT_ALLIANCE;
 		}
-		return DriverStationUtil.DEFAULT_ALLIANCE;
+			double timeSinceTeleopInitSeconds = getTimeSinceTeleopInit();
+
+			if (timeSinceTeleopInitSeconds <= GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS) {
+				return DriverStationUtil.getAlliance();
+			}
+
+			int shiftsPassed = (int)(timeSinceTeleopInitSeconds - GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS)
+				/ GamePeriodConstants.ALLIANCE_SHIFT_LENGTH_SECONDS;
+			boolean isAutoWinnerShift = ((shiftsPassed) % 2) != 0;
+
+			if (timeSinceTeleopInitSeconds >= GamePeriodConstants.ENDGAME_END_TIME_SECONDS) {
+				return DriverStationUtil.DEFAULT_ALLIANCE;
+			} else if (timeSinceTeleopInitSeconds >= GamePeriodConstants.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP) {
+				return DriverStationUtil.getAlliance();
+			}
+
+			return isAutoWinnerShift ? getAutoWinnerAlliance() : isShiftOfStartingAlliance();
 	}
 
 	public static boolean isMyHubActive() {
 		return getActiveHub() == DriverStationUtil.getAlliance();
 	}
 
-	public static double timeUntilCurrentShiftEnds() {
-		double howMuchTImePassedSinceTeleopInit = TimeUtil.getCurrentTimeSeconds() - RobotManager.getTeleopStartTime();
-		if (howMuchTImePassedSinceTeleopInit <= GameConstants.TRANSITION_SHIFT_TIME_SECONDS) {
-			return GameConstants.TRANSITION_SHIFT_TIME_SECONDS - howMuchTImePassedSinceTeleopInit;
-		} else if (howMuchTImePassedSinceTeleopInit >= GameConstants.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP) {
-			return GameConstants.ENDGAME_LENGTH_SECONDS
-				- (howMuchTImePassedSinceTeleopInit - GameConstants.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP);
+	public static double timeUntilCurrentShiftEndsSeconds() {
+		double timePassedSinceTeleopInit = getTimeSinceTeleopInit();
+		if (timePassedSinceTeleopInit <= GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS) {
+			return GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS - timePassedSinceTeleopInit;
+		} else if (timePassedSinceTeleopInit >= GamePeriodConstants.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP) {
+			return GamePeriodConstants.ENDGAME_LENGTH_SECONDS
+				- (timePassedSinceTeleopInit - GamePeriodConstants.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP);
 		}
-		return GameConstants.ALLIANCE_SHIFT_LENGTH_SECONDS
-			- ((howMuchTImePassedSinceTeleopInit - GameConstants.TRANSITION_SHIFT_TIME_SECONDS) % GameConstants.ALLIANCE_SHIFT_LENGTH_SECONDS);
+		return GamePeriodConstants.ALLIANCE_SHIFT_LENGTH_SECONDS
+			- ((timePassedSinceTeleopInit - GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS) % GamePeriodConstants.ALLIANCE_SHIFT_LENGTH_SECONDS);
 	}
 
-	public static double countUntilAllianceHubIsActiveSeconds() {
+	public static double getTimeLeftUntilActive() {
 		if (isMyHubActive()) {
 			return 0;
-		} else {
-			return timeUntilCurrentShiftEnds();
 		}
+			return timeUntilCurrentShiftEndsSeconds();
 	}
 
-	public static double howMuchTimeLeftForMyActiveHub() {
-		double howMuchTimePassedSinceTeleopInit = TimeUtil.getCurrentTimeSeconds() - RobotManager.getTeleopStartTime();
-		if (!isMyHubActive() || howMuchTimePassedSinceTeleopInit >= GameConstants.ENDGAME_END_TIME_SECONDS) {
+	public static double getTimeLeftUntilInactive() {
+		double timePassedSinceTeleopInit = getTimeSinceTeleopInit();
+		if (!isMyHubActive() || timePassedSinceTeleopInit >= GamePeriodConstants.ENDGAME_END_TIME_SECONDS) {
 			return 0;
 		}
-		return timeUntilCurrentShiftEnds();
+		return timeUntilCurrentShiftEndsSeconds();
 	}
 
 }
