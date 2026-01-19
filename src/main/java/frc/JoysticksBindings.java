@@ -1,7 +1,5 @@
 package frc;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.joysticks.Axis;
@@ -13,7 +11,6 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.utils.battery.BatteryUtil;
-import frc.utils.calibration.camera.CameraPoseCalibration;
 
 public class JoysticksBindings {
 
@@ -65,16 +62,6 @@ public class JoysticksBindings {
 	private static void secondJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SECOND_JOYSTICK;
 		// bindings...
-		usedJoystick.A.onTrue(
-			new CameraPoseCalibration(
-				"Vision",
-				"limelight-new",
-				1.615,
-				1.05,
-				AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded).getTagPose(9).get(),
-				15000
-			)
-		);
 	}
 
 	private static void thirdJoystickButtons(Robot robot) {
