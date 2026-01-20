@@ -41,29 +41,60 @@ public class HubUtil {
 		};
 	}
 
+	public static boolean isAutoWinnerShift() {
+		return getShiftsPassed() % 2 != 0;
+	}
+
+	public static int getShiftsPassed() {
+		double timeSinceTeleopInitSeconds = getTimeSinceTeleopInitSeconds();
+
+		return (int) (timeSinceTeleopInitSeconds - GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS)
+			/ GamePeriodConstants.ALLIANCE_SHIFT_LENGTH_SECONDS;
+	}
+
+	public static DriverStation.Alliance isTransitionShift() {
+		double timeSinceTeleopInitSeconds = getTimeSinceTeleopInitSeconds();
+		if (timeSinceTeleopInitSeconds <= GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS) {
+			return DriverStationUtil.getAlliance();
+		} else {
+			return null;
+		}
+	}
+
+	public static DriverStation.Alliance hasGameEnded() {
+		double timeSinceTeleopInitSeconds = getTimeSinceTeleopInitSeconds();
+
+		if (timeSinceTeleopInitSeconds >= GamePeriodConstants.GAME_END_TIME_SECONDS) {
+			return DriverStationUtil.DEFAULT_ALLIANCE;
+		}
+		return null;
+	}
+
+	public static DriverStation.Alliance hasEndGameStarted() {
+		double timeSinceTeleopInitSeconds = getTimeSinceTeleopInitSeconds();
+
+		if (timeSinceTeleopInitSeconds >= GamePeriodConstants.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP) {
+			return DriverStationUtil.getAlliance();
+		}
+		return null;
+	}
+
 	public static DriverStation.Alliance getActiveHub() {
 		if (DriverStation.isAutonomous()) {
 			return DriverStationUtil.getAlliance();
 		} else if (!DriverStation.isTeleop()) {
 			return DriverStationUtil.DEFAULT_ALLIANCE;
 		}
-		double timeSinceTeleopInitSeconds = getTimeSinceTeleopInitSeconds();
 
-		if (timeSinceTeleopInitSeconds <= GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS) {
-			return DriverStationUtil.getAlliance();
+		if (isTransitionShift() != null) {
+			return isTransitionShift();
+		} else if (hasGameEnded() != null) {
+			return hasGameEnded();
+		} else if (hasEndGameStarted() != null) {
+			return hasEndGameStarted();
 		}
 
-		int shiftsPassed = (int) (timeSinceTeleopInitSeconds - GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS)
-			/ GamePeriodConstants.ALLIANCE_SHIFT_LENGTH_SECONDS;
-		boolean isAutoWinnerShift = (shiftsPassed % 2) != 0;
-
-		if (timeSinceTeleopInitSeconds >= GamePeriodConstants.GAME_END_TIME_SECONDS) {
-			return DriverStationUtil.DEFAULT_ALLIANCE;
-		} else if (timeSinceTeleopInitSeconds >= GamePeriodConstants.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP) {
-			return DriverStationUtil.getAlliance();
-		}
-
-		return isAutoWinnerShift ? getAutoWinnerAlliance() : isShiftOfStartingAlliance();
+		return isAutoWinnerShift() ? getAutoWinnerAlliance() : isShiftOfStartingAlliance();
 	}
 
 	public static boolean isMyHubActive() {
