@@ -31,7 +31,7 @@ public class RobotManager extends LoggedRobot {
 	private final Robot robot;
 	private PathPlannerAutoWrapper autonomousCommand;
 	private int roborioCycles;
-	private static double teleopStartTime;
+	private static double teleopStartTimeSeconds;
 
 	public RobotManager() {
 		if (Robot.ROBOT_TYPE.isReplay()) {
@@ -87,11 +87,11 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void teleopInit() {
-		teleopStartTime = TimeUtil.getCurrentTimeSeconds();
+		teleopStartTimeSeconds = TimeUtil.getCurrentTimeSeconds();
 	}
 
-	public static double getTeleopStartTime() {
-		return teleopStartTime;
+	public static double getTeleopStartTimeSeconds() {
+		return teleopStartTimeSeconds;
 	}
 
 	@Override
