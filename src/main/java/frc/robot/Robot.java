@@ -13,6 +13,7 @@ import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
+import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.subsystems.constants.belly.BellyConstants;
 import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
@@ -33,10 +34,13 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
 import frc.robot.subsystems.swerve.factories.modules.ModulesFactory;
+import frc.utils.HubUtil;
 import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import frc.utils.time.TimeUtil;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -151,6 +155,13 @@ public class Robot {
 		updateAllSubsystems();
 		resetSubsystems();
 		simulationManager.logPoses();
+		Logger.recordOutput("which hub is active", HubUtil.getActiveHub());
+		Logger.recordOutput("shifts passed", HubUtil.getShiftsPassed());
+		Logger.recordOutput("is our hub active", HubUtil.isOurHubActive());
+		Logger.recordOutput("time left until active", HubUtil.getTimeLeftUntilActive());
+		Logger.recordOutput("time until shift ends", HubUtil.timeUntilCurrentShiftEndsSeconds());
+		Logger.recordOutput("time until inactive", HubUtil.getTimeLeftUntilInactive());
+		Logger.recordOutput("time since teleop init", TimeUtil.getTimeSinceTeleopInitSeconds());
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
@@ -176,7 +187,7 @@ public class Robot {
 		);
 	}
 
-	private Arm createTurret() {
+	private VelocityPositionArm createTurret() {
 		ArmSimulationConstants turretSimulationConstants = new ArmSimulationConstants(
 			TurretConstants.MAX_POSITION,
 			TurretConstants.MIN_POSITION,
