@@ -12,11 +12,11 @@ public class TurretCalculations {
 	}
 
 	public static boolean isTurretMoveLegal(Rotation2d targetRobotRelative, Rotation2d position) {
-		boolean isTargetInMaxRange = !(targetRobotRelative.getDegrees() > TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees()
-			&& position.getDegrees() < TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees());
+		boolean isTargetInMaxRange = !(targetRobotRelative.getDegrees() > ShooterConstants.SCREW_MAX_RANGE_EDGE.getDegrees()
+			&& position.getDegrees() < ShooterConstants.SCREW_MIN_RANGE_EDGE.getDegrees());
 
-		boolean isTargetInMinRange = !(targetRobotRelative.getDegrees() < TurretConstants.SCREW_MIN_RANGE_EDGE.getDegrees()
-			&& position.getDegrees() > TurretConstants.SCREW_MAX_RANGE_EDGE.getDegrees());
+		boolean isTargetInMinRange = !(targetRobotRelative.getDegrees() < ShooterConstants.SCREW_MIN_RANGE_EDGE.getDegrees()
+			&& position.getDegrees() > ShooterConstants.SCREW_MAX_RANGE_EDGE.getDegrees());
 
 		boolean isTargetBehindSoftwareLimits = ToleranceMath.isInRange(
 			targetRobotRelative.getDegrees(),
