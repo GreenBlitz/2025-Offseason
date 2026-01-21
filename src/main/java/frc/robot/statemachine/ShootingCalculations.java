@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import frc.constants.field.Field;
 import frc.robot.statemachine.shooterstatehandler.ShootingParams;
-import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
@@ -53,10 +52,7 @@ public class ShootingCalculations {
 
 	private static Rotation2d getRobotRelativeLookAtHubAngleForTurret(Pose2d robotPose) {
 		Translation2d fieldRelativeTurretPose = getFieldRelativeTurretPosition(robotPose);
-		Rotation2d targetPosition = FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle())
-			.getAngle()
-			.minus(robotPose.getRotation());
-		return TurretCalculations.getWrappedTurretPosition(targetPosition);
+		return FieldMath.getRelativeTranslation(fieldRelativeTurretPose, Field.getHubMiddle()).getAngle().minus(robotPose.getRotation());
 	}
 
 	public static double getDistanceFromHub(Translation2d pose) {

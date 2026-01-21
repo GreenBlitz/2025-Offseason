@@ -22,8 +22,7 @@ public class TurretSafeMoveToPosition extends Command {
 
 	@Override
 	public void execute() {
-		Rotation2d targetPosition = this.targetPosition.get();
-
+		Rotation2d targetPosition = TurretCalculations.getWrappedTurretPosition(this.targetPosition.get());
 		if (TurretCalculations.isTurretMoveLegal(targetPosition, turret.getPosition())) {
 			Logger.recordOutput(logPath + "/IsTurretGoingToPosition", true);
 		} else {
