@@ -12,7 +12,7 @@ public class GamePeriodUtils {
 	public static final int GAME_END_TIME_SECONDS = ENDGAME_START_TIME_SECONDS_SINCE_TELEOP + ENDGAME_LENGTH_SECONDS;
 
 	public static boolean isTransitionShift() {
-		if (TimeUtil.getTimeSinceTeleopInitSeconds() == -1) {
+		if (!DriverStation.isTeleop()) {
 			return false;
 		}
 		return TimeUtil.getTimeSinceTeleopInitSeconds() <= TRANSITION_SHIFT_TIME_SECONDS;
@@ -23,9 +23,6 @@ public class GamePeriodUtils {
 	}
 
 	public static boolean hasEndGameStarted() {
-		if (TimeUtil.getTimeSinceTeleopInitSeconds() == -1) {
-			return false;
-		}
 		return TimeUtil.getTimeSinceTeleopInitSeconds() >= ENDGAME_START_TIME_SECONDS_SINCE_TELEOP;
 	}
 
