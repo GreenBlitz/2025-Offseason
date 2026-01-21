@@ -14,7 +14,7 @@ public class HubUtil {
 	private static DriverStation.Alliance getAutoWinningAlliance() {
 		String gameData = DriverStation.getGameSpecificMessage();
 		if (gameData.isEmpty()) {
-			return alertWarningForEmptyAlliance("Unknown auto winner alliance");
+			alertWarningForEmptyAlliance("Unknown auto winner alliance");
 		}
 		DriverStation.Alliance alliance = switch (GameSpecificMessageResponse.responseToEnum(gameData.charAt(0))) {
 			case BLUE -> DriverStation.Alliance.Blue;
@@ -22,14 +22,13 @@ public class HubUtil {
 			case DEFAULT -> null;
 		};
 		if (alliance == null) {
-			return alertWarningForEmptyAlliance("Didn't get auto winning alliance");
+			alertWarningForEmptyAlliance("Didn't get auto winning alliance");
 		}
 		return alliance;
 	}
 
-	public static DriverStation.Alliance alertWarningForEmptyAlliance(String name) {
+	public static void alertWarningForEmptyAlliance(String name) {
 		new Alert(Alert.AlertType.WARNING, name).report();
-		return null;
 	}
 
 	public static void refreshAlliances() {
