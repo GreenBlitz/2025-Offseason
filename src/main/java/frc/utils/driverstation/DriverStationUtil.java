@@ -8,7 +8,7 @@ public class DriverStationUtil {
 	public static final DriverStation.Alliance DEFAULT_ALLIANCE = DriverStation.Alliance.Red;
 
 	public static DriverStation.Alliance getAlliance() {
-		return DriverStation.Alliance.Blue;
+		return DriverStation.getAlliance().orElse(DEFAULT_ALLIANCE);
 	}
 
 	public static boolean isBlueAlliance() {
