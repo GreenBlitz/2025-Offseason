@@ -12,20 +12,14 @@ import java.util.function.Supplier;
 
 public class ShooterStateHandler {
 
-	private final VelocityPositionArm turret;
+	private final Arm turret;
 	private final Arm hood;
 	private final FlyWheel flyWheel;
 	private final Supplier<ShootingParams> shootingParamsSupplier;
 	private final String logPath;
 	private ShooterState currentState;
 
-	public ShooterStateHandler(
-		VelocityPositionArm turret,
-		Arm hood,
-		FlyWheel flyWheel,
-		Supplier<ShootingParams> shootingParamsSupplier,
-		String logPath
-	) {
+	public ShooterStateHandler(Arm turret, Arm hood, FlyWheel flyWheel, Supplier<ShootingParams> shootingParamsSupplier, String logPath) {
 		this.turret = turret;
 		this.hood = hood;
 		this.flyWheel = flyWheel;

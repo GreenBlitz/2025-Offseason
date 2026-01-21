@@ -46,7 +46,7 @@ import frc.utils.brakestate.BrakeStateManager;
 public class Robot {
 
 	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(false);
-	private final VelocityPositionArm turret;
+	private final Arm turret;
 	private final FlyWheel flyWheel;
 	private final Roller intakeRoller;
 	private final Arm fourBar;
@@ -167,7 +167,7 @@ public class Robot {
 		);
 	}
 
-	private VelocityPositionArm createTurret() {
+	private Arm createTurret() {
 		ArmSimulationConstants turretSimulationConstants = new ArmSimulationConstants(
 			TurretConstants.MAX_POSITION,
 			TurretConstants.MIN_POSITION,
@@ -288,7 +288,7 @@ public class Robot {
 		return intakeRoller;
 	}
 
-	public VelocityPositionArm getTurret() {
+	public Arm getTurret() {
 		return turret;
 	}
 

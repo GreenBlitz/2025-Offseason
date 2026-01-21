@@ -97,7 +97,7 @@ public class TalonFXArmBuilder {
 		);
 	}
 
-	public static VelocityPositionArm buildMotionMagicArm(
+	public static Arm buildMotionMagicArm(
 		String logPath,
 		Phoenix6DeviceID deviceID,
 		boolean isInverted,
