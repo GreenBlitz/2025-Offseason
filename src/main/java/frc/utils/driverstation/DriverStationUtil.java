@@ -1,8 +1,6 @@
 package frc.utils.driverstation;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.constants.GamePeriodConstants;
-import frc.utils.HubUtil;
 
 import java.util.Optional;
 
@@ -54,42 +52,6 @@ public class DriverStationUtil {
 
 	public static boolean isMatch() {
 		return DriverStation.getMatchType() != DriverStation.MatchType.None;
-	}
-
-	public static boolean isTransitionShift() {
-		return HubUtil.getTimeSinceTeleopInitSeconds() <= GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS;
-	}
-
-	public static boolean hasGameEnded() {
-		return HubUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodConstants.GAME_END_TIME_SECONDS;
-	}
-
-	public static boolean hasEndGameStarted() {
-		return HubUtil.getTimeSinceTeleopInitSeconds() >= GamePeriodConstants.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP;
-	}
-
-	public static double timeUntilTransitionShiftEnds() {
-		if (DriverStationUtil.isTransitionShift()) {
-			return GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS - HubUtil.getTimeSinceTeleopInitSeconds();
-		}
-		return -1;
-	}
-
-	public static double timeUntilEndgameEnds() {
-		if (DriverStationUtil.hasEndGameStarted()) {
-			return GamePeriodConstants.ENDGAME_LENGTH_SECONDS
-				- (HubUtil.getTimeSinceTeleopInitSeconds() - GamePeriodConstants.ENDGAME_START_TIME_SECONDS_SINCE_TELEOP);
-		}
-		return -1;
-	}
-
-	public static double timeUntilShiftEnds() {
-		if (DriverStation.isTeleop()) {
-			return GamePeriodConstants.ALLIANCE_SHIFT_LENGTH_SECONDS
-				- ((HubUtil.getTimeSinceTeleopInitSeconds() - GamePeriodConstants.TRANSITION_SHIFT_TIME_SECONDS)
-					% GamePeriodConstants.ALLIANCE_SHIFT_LENGTH_SECONDS);
-		}
-		return -1;
 	}
 
 }
