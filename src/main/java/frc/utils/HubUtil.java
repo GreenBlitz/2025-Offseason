@@ -6,15 +6,17 @@ import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.time.TimeUtil;
 import frc.utils.alerts.Alert;
 
+import java.util.Optional;
+
 public class HubUtil {
 
 	private static DriverStation.Alliance autoWinnerAlliance = getAutoWinningAlliance();
 	private static DriverStation.Alliance autoLosingAlliance = getAutoLosingAlliance();
 
 	private static DriverStation.Alliance getAutoWinningAlliance() {
-		String gameData = DriverStation.getGameSpecificMessage();
+		String gameData = /*DriverStation.getGameSpecificMessage();*/"GGG";
 		if (gameData.isEmpty()) {
-			alertWarningForEmptyAlliance("Unknown auto winner alliance");
+			return alertWarningForEmptyAlliance("Unknown auto winner alliance");
 		}
 		DriverStation.Alliance alliance = switch (GameSpecificMessageResponse.responseToEnum(gameData.charAt(0))) {
 			case BLUE -> DriverStation.Alliance.Blue;
@@ -22,13 +24,14 @@ public class HubUtil {
 			case DEFAULT -> null;
 		};
 		if (alliance == null) {
-			alertWarningForEmptyAlliance("Didn't get auto winning alliance");
+			return alertWarningForEmptyAlliance("Didn't get auto winning alliance");
 		}
 		return alliance;
 	}
 
-	public static void alertWarningForEmptyAlliance(String name) {
+	public static DriverStation.Alliance alertWarningForEmptyAlliance(String name) {
 		new Alert(Alert.AlertType.WARNING, name).report();
+		return null;
 	}
 
 	public static void refreshAlliances() {
@@ -39,6 +42,9 @@ public class HubUtil {
 	}
 
 	private static DriverStation.Alliance getAutoLosingAlliance() {
+		if (autoWinnerAlliance == null) {
+			return null;
+		}
 		return switch (autoWinnerAlliance) {
 			case Red -> DriverStation.Alliance.Blue;
 			case Blue -> DriverStation.Alliance.Red;
@@ -83,6 +89,9 @@ public class HubUtil {
 	}
 
 	public static boolean isOurHubActive() {
+		if (getActiveHub() == null) {
+			return false;
+		}
 		return getActiveHub().equals(DriverStationUtil.getAlliance());
 	}
 
