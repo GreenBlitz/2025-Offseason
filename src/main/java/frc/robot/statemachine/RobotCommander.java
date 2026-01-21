@@ -92,9 +92,20 @@ public class RobotCommander extends GBSubsystem {
 	private boolean isReadyToShoot() {
 		return TargetChecks.isReadyToShoot(
 			robot,
-			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND,
-			HoodConstants.HOOD_POSITION_TOLERANCE,
-			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE,
+			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND_TO_START_SHOOTING,
+			HoodConstants.HOOD_POSITION_TOLERANCE_TO_START_SHOOTING,
+			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_START_SHOOTING,
+			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
+			StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
+		);
+	}
+
+	private boolean canContinueShooting() {
+		return TargetChecks.canContinueShooting(
+			robot,
+			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND_TO_CONTINUE_SHOOTING,
+			HoodConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SHOOTING,
+			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_CONTINUE_SHOOTING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
 			StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
 		);
@@ -103,8 +114,8 @@ public class RobotCommander extends GBSubsystem {
 	private boolean calibrationIsReadyToShoot() {
 		return TargetChecks.calibrationIsReadyToShoot(
 			robot,
-			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND,
-			HoodConstants.HOOD_POSITION_TOLERANCE
+			Constants.FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND_TO_START_SHOOTING,
+			HoodConstants.HOOD_POSITION_TOLERANCE_TO_START_SHOOTING
 		);
 	}
 
@@ -112,7 +123,8 @@ public class RobotCommander extends GBSubsystem {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
 				driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
-				driveWith(RobotState.SHOOT).until(() -> !getSuperstructure().getFunnelStateHandler().isBallAtSensor())
+				driveWith(RobotState.SHOOT)
+					.until(() -> (!getSuperstructure().getFunnelStateHandler().isBallAtSensor() || !canContinueShooting()))
 			)
 		);
 	}

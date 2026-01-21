@@ -98,6 +98,43 @@ public class TargetChecks {
 		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget;
 	}
 
+	public static boolean canContinueShooting(
+		Robot robot,
+		Rotation2d flywheelVelocityToleranceRotation2dPerSecond,
+		Rotation2d hoodPositionTolerance,
+		Rotation2d headingTolerance,
+		Rotation2d maxAngleFromHubCenter,
+		double maxShootingDistanceFromTargetMeters
+	) {
+		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
+		Rotation2d flywheelVelocityRotation2dPerSecond = robot.getFlyWheel().getVelocity();
+		Rotation2d hoodPosition = robot.getHood().getPosition();
+
+		boolean isWithinDistance = isWithinDistance(robotPose.getTranslation(), maxShootingDistanceFromTargetMeters);
+
+		boolean isInRange = isInAngleRange(robotPose.getTranslation(), maxAngleFromHubCenter);
+
+		boolean isAtTurretAtTarget = isTurretAtTarget(
+			robot.getTurret().getPosition(),
+			ShootingCalculations.getShootingParams().targetTurretPosition(),
+			headingTolerance
+		);
+
+		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
+			ShootingCalculations.getShootingParams().targetFlywheelVelocityRPS(),
+			flywheelVelocityRotation2dPerSecond,
+			flywheelVelocityToleranceRotation2dPerSecond
+		);
+
+		boolean isHoodAtPosition = isHoodAtPositon(
+			ShootingCalculations.getShootingParams().targetHoodPosition(),
+			hoodPosition,
+			hoodPositionTolerance
+		);
+
+		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget;
+	}
+
 	public static boolean calibrationIsReadyToShoot(
 		Robot robot,
 		Rotation2d flywheelVelocityToleranceRotation2dPerSecond,
