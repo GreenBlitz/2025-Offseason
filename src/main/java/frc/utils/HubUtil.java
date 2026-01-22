@@ -70,7 +70,7 @@ public class HubUtil {
 	}
 
 	public static Optional<DriverStation.Alliance> getActiveHub() {
-		if (DriverStation.isAutonomous() || GamePeriodUtils.isTransitionShift() || GamePeriodUtils.hasEndGameStarted()) {
+		if (DriverStation.isAutonomous() || GamePeriodUtils.isTransitionShift() || GamePeriodUtils.isInEndgame()) {
 			return Optional.of(DriverStationUtil.getAlliance());
 		} else if (!DriverStationUtil.isTeleop() || GamePeriodUtils.hasGameEnded()) {
 			return Optional.empty();
@@ -94,7 +94,7 @@ public class HubUtil {
 		}
 		if (GamePeriodUtils.isTransitionShift()) {
 			return GamePeriodUtils.getTimeUntilTransitionShiftEnds();
-		} else if (GamePeriodUtils.hasEndGameStarted()) {
+		} else if (GamePeriodUtils.isInEndgame()) {
 			return GamePeriodUtils.getTimeUntilGameEnds();
 		}
 		return GamePeriodUtils.getTimeUntilShiftEnds();
@@ -115,6 +115,9 @@ public class HubUtil {
 	}
 
 	public static boolean isRobotAllianceAutoWinner() {
+		if (autoWinnerAlliance.isEmpty()) {
+			return false;
+		}
 		return DriverStationUtil.getAlliance().equals(autoWinnerAlliance.get());
 	}
 

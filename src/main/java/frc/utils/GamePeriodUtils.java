@@ -22,7 +22,7 @@ public class GamePeriodUtils {
 		return TimeUtil.getTimeSinceTeleopInitSeconds() >= GAME_DURATION_SECONDS;
 	}
 
-	public static boolean hasEndGameStarted() {
+	public static boolean isInEndgame() {
 		return TimeUtil.getTimeSinceTeleopInitSeconds() >= TELEOP_DURATION_SECONDS
 			&& TimeUtil.getTimeSinceTeleopInitSeconds() <= GAME_DURATION_SECONDS;
 	}
