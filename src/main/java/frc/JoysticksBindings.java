@@ -67,7 +67,7 @@ public class JoysticksBindings {
 		usedJoystick.A.onTrue(
 			new CameraPoseCalibration(
 				"CamPoseCalib",
-				"limlight-left",
+				"limelight-left",
 				1.315,
 				0.855,
 				AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded).getTagPose(11).get(),

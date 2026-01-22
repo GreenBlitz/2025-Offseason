@@ -84,6 +84,7 @@ public class CameraPoseCalibration extends Command {
 	public void execute() {
 		cameraPoseCalibrationInputs.cameraPoseFieldRelative = LimelightHelpers.getBotPose3d_wpiBlue(cameraName);
 		Logger.processInputs(logPath, cameraPoseCalibrationInputs);
+		Logger.recordOutput("AAAAAAAAAAAAAA", cameraPoseCalibrationInputs.cameraPoseFieldRelative);
 
 		currentRobotRelativeCameraPose = calculateRobotRelativeCameraPosition();
 		sumMeasurementsValues();
