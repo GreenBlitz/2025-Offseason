@@ -13,15 +13,15 @@ import org.littletonrobotics.junction.Logger;
 
 public class CameraPoseCalibration extends Command {
 
-	private final int neededNumberOfCycles;
 	private final String logPath;
 	private final String cameraName;
-	private final double tagCenterHeightFromGroundInMeters;
-	private final Pose3d tagPoseFieldRelative;
-	private final CameraPoseCalibrationInputsAutoLogged cameraPoseCalibrationInputs;
-	private final Pose2d expectedRobotPoseFieldRelative;
 
-	private int currentCycle;
+	private final Pose3d tagPoseFieldRelative;
+	private final Pose2d expectedRobotPoseFieldRelative;
+	private final double tagCenterHeightFromGroundMeters;
+
+	private final CameraPoseCalibrationInputsAutoLogged cameraPoseCalibrationInputs;
+
 	private double cameraRobotRelativeYawCosSum = 0, cameraRobotRelativeYawSinSum = 0;
 	private double cameraRobotRelativePitchCosSum = 0, cameraRobotRelativePitchSinSum = 0;
 	private double cameraRobotRelativeRollCosSum = 0, cameraRobotRelativeRollSinSum = 0;
@@ -29,37 +29,47 @@ public class CameraPoseCalibration extends Command {
 	private Translation3d robotRelativeCameraTranslationSum;
 	private Pose3d currentRobotRelativeCameraPose;
 
+	private int currentCycle;
+	private final int neededNumberOfCycles;
+
 	/**
 	 *
-	 * @param cameraName                        - the name of the limelight in use
-	 * @param robotXAxisDistanceFromTag         -the middle of the robot's distance from the tag , IMPORTANT "real life measurement"
-	 * @param tagCenterHeightFromGroundInMeters - IMPORTANT !!! the middle of the tag height relative to THE FLOOR , "real life measurement"
-	 * @param tagPoseFieldRelative              - synthetic measurement
-	 * @param neededNumberOfCycles              - number of measurements decided by user IMPORTANT SPECIFICATIONS; limelight is funny so we
-	 *                                          invert y-axis; Y difference from the tag is 0.;
+	 * @param cameraName                      - the name of the limelight in use
+	 * @param robotXAxisDistanceFromTag       - the middle of the robot's distance from the tag , IMPORTANT "real life measurement"
+	 * @param tagCenterHeightFromGroundMeters - IMPORTANT !!! the middle of the tag height relative to THE FLOOR , "real life measurement"
+	 * @param tagPoseFieldRelative            - synthetic measurement
+	 * @param neededNumberOfCycles            - number of measurements decided by user IMPORTANT SPECIFICATIONS; limelight is funny so we invert
+	 *                                        y-axis; Y difference from the tag is 0.;
 	 *
 	 */
 	public CameraPoseCalibration(
 		String logPathPrefix,
 		String cameraName,
 		double robotXAxisDistanceFromTag,
-		double tagCenterHeightFromGroundInMeters,
+		double tagCenterHeightFromGroundMeters,
 		Pose3d tagPoseFieldRelative,
 		int neededNumberOfCycles
 	) {
-		this.neededNumberOfCycles = neededNumberOfCycles;
-		this.cameraName = cameraName;
-		this.tagCenterHeightFromGroundInMeters = tagCenterHeightFromGroundInMeters;
 		this.logPath = logPathPrefix + "/cameraPositionCalibration";
+		this.cameraName = cameraName;
+
 		this.tagPoseFieldRelative = tagPoseFieldRelative;
 		this.expectedRobotPoseFieldRelative = new Pose2d(
 			tagPoseFieldRelative.getX() - robotXAxisDistanceFromTag,
 			tagPoseFieldRelative.getY(),
 			FieldMath.transformAngle(tagPoseFieldRelative.getRotation().toRotation2d(), AngleTransform.INVERT)
-		).rotateAround(tagPoseFieldRelative.getTranslation().toTranslation2d(), tagPoseFieldRelative.getRotation().toRotation2d().rotateBy(MathConstants.HALF_CIRCLE));
+		).rotateAround(
+			tagPoseFieldRelative.getTranslation().toTranslation2d(),
+			tagPoseFieldRelative.getRotation().toRotation2d().rotateBy(MathConstants.HALF_CIRCLE)
+		);
+		this.tagCenterHeightFromGroundMeters = tagCenterHeightFromGroundMeters;
+
 		this.cameraPoseCalibrationInputs = new CameraPoseCalibrationInputsAutoLogged();
+
 		this.robotRelativeCameraTranslationSum = new Translation3d();
 		this.currentRobotRelativeCameraPose = new Pose3d();
+
+		this.neededNumberOfCycles = neededNumberOfCycles;
 
 		LimelightHelpers.setCameraPose_RobotSpace(cameraName, 0, 0, 0, 0, 0, 0);
 	}
@@ -74,8 +84,10 @@ public class CameraPoseCalibration extends Command {
 	public void execute() {
 		cameraPoseCalibrationInputs.cameraPoseFieldRelative = LimelightHelpers.getBotPose3d_wpiBlue(cameraName);
 		Logger.processInputs(logPath, cameraPoseCalibrationInputs);
+
 		currentRobotRelativeCameraPose = calculateRobotRelativeCameraPosition();
 		sumMeasurementsValues();
+
 		Logger.recordOutput(logPath + "/current/currentPose", currentRobotRelativeCameraPose);
 		currentCycle++;
 	}
@@ -93,6 +105,7 @@ public class CameraPoseCalibration extends Command {
 			Math.atan2(cameraRobotRelativePitchSinSum / currentCycle, cameraRobotRelativePitchCosSum / currentCycle),
 			Math.atan2(cameraRobotRelativeRollSinSum / currentCycle, cameraRobotRelativeRollCosSum / currentCycle)
 		);
+
 		Pose3d averageCameraPoseFieldRelative = new Pose3d(finalRobotRelativeCameraTranslation, finalRobotRelativeCameraRotation);
 		Logger.recordOutput(logPath + "/solution/endPose", averageCameraPoseFieldRelative);
 	}
@@ -102,7 +115,7 @@ public class CameraPoseCalibration extends Command {
 		return new Pose3d(
 			cameraPoseCalibrationInputs.cameraPoseFieldRelative.getX() - expectedRobotPoseFieldRelative.getX(),
 			-(cameraPoseCalibrationInputs.cameraPoseFieldRelative.getY() - expectedRobotPoseFieldRelative.getY()),
-			cameraPoseCalibrationInputs.cameraPoseFieldRelative.getZ() - tagPoseFieldRelative.getZ() + tagCenterHeightFromGroundInMeters,
+			cameraPoseCalibrationInputs.cameraPoseFieldRelative.getZ() - tagPoseFieldRelative.getZ() + tagCenterHeightFromGroundMeters,
 			new Rotation3d(
 				cameraPoseCalibrationInputs.cameraPoseFieldRelative.getRotation().getX(),
 				-cameraPoseCalibrationInputs.cameraPoseFieldRelative.getRotation().getY(),
@@ -114,10 +127,13 @@ public class CameraPoseCalibration extends Command {
 
 	private void sumMeasurementsValues() {
 		robotRelativeCameraTranslationSum = robotRelativeCameraTranslationSum.plus(currentRobotRelativeCameraPose.getTranslation());
+
 		cameraRobotRelativeYawCosSum += Math.cos(currentRobotRelativeCameraPose.getRotation().getX());
 		cameraRobotRelativeYawSinSum += Math.sin(currentRobotRelativeCameraPose.getRotation().getX());
+
 		cameraRobotRelativePitchCosSum += Math.cos(currentRobotRelativeCameraPose.getRotation().getY());
 		cameraRobotRelativePitchSinSum += Math.sin(currentRobotRelativeCameraPose.getRotation().getY());
+
 		cameraRobotRelativeRollCosSum += Math.cos(currentRobotRelativeCameraPose.getRotation().getZ());
 		cameraRobotRelativeRollSinSum += Math.sin(currentRobotRelativeCameraPose.getRotation().getZ());
 	}
