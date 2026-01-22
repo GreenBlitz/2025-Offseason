@@ -22,6 +22,6 @@ public class Constants {
 	public final static int CURRENT_LIMIT = 40;
 	public final static double WHEEL_RADIUS_METERS = 0.05;
 	public final static Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND_TO_START_SHOOTING = Rotation2d.fromRotations(1);
-	public final static Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND_TO_CONTINUE_SHOOTING = Rotation2d.fromRotations(0.5);
+	public final static Rotation2d FLYWHEEL_VELOCITY_TOLERANCE_ROTATION2D_PER_SECOND_TO_CONTINUE_SHOOTING = Rotation2d.fromRotations(1);
 
 }
