@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.constants.MathConstants;
 import frc.utils.limelight.LimelightHelpers;
 import frc.utils.math.AngleTransform;
 import frc.utils.math.FieldMath;
@@ -55,7 +56,7 @@ public class CameraPoseCalibration extends Command {
 			tagPoseFieldRelative.getX() - robotXAxisDistanceFromTag,
 			tagPoseFieldRelative.getY(),
 			FieldMath.transformAngle(tagPoseFieldRelative.getRotation().toRotation2d(), AngleTransform.INVERT)
-		).rotateAround(tagPoseFieldRelative.getTranslation().toTranslation2d(), tagPoseFieldRelative.getRotation().toRotation2d().unaryMinus());
+		).rotateAround(tagPoseFieldRelative.getTranslation().toTranslation2d(), tagPoseFieldRelative.getRotation().toRotation2d().rotateBy(MathConstants.HALF_CIRCLE));
 		this.cameraPoseCalibrationInputs = new CameraPoseCalibrationInputsAutoLogged();
 		this.robotRelativeCameraTranslationSum = new Translation3d();
 		this.currentRobotRelativeCameraPose = new Pose3d();
@@ -71,8 +72,7 @@ public class CameraPoseCalibration extends Command {
 
 	@Override
 	public void execute() {
-		cameraPoseCalibrationInputs.cameraPoseFieldRelative = LimelightHelpers.getBotPose3d_wpiBlue(cameraName)
-			.rotateAround(tagPoseFieldRelative.getTranslation(), tagPoseFieldRelative.getRotation().unaryMinus());
+		cameraPoseCalibrationInputs.cameraPoseFieldRelative = LimelightHelpers.getBotPose3d_wpiBlue(cameraName);
 		Logger.processInputs(logPath, cameraPoseCalibrationInputs);
 		currentRobotRelativeCameraPose = calculateRobotRelativeCameraPosition();
 		sumMeasurementsValues();
