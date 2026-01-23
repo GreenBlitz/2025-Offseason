@@ -33,7 +33,8 @@ public class CameraPoseCalibration extends Command {
 
 	/**
 	 * limelight is funny so we invert the solution's y-axis </br>
-	 * Important specifications: tag pose in the field (tagPoseFieldRelative) yaw must be 180 degrees, Y difference from the tag should be 0.
+	 * Important specifications: tag pose in the field (tagPoseFieldRelative) yaw must be 180 degrees, Y difference from the tag should be 0,
+	 * robot should be parallel to tag.
 	 *
 	 * @param cameraName                      - name of the limelight in use
 	 * @param neededNumberOfCycles            - number of measurements decided by user
