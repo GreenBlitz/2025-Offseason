@@ -1,6 +1,9 @@
 package frc.utils.calibration.camera;
 
-import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.utils.limelight.LimelightHelpers;
 import frc.utils.math.AngleTransform;
@@ -11,6 +14,7 @@ public class CameraPoseCalibration extends Command {
 
 	private final String logPath;
 	private final String cameraName;
+	private final int neededNumberOfCycles;
 
 	private final Pose3d tagPoseFieldRelative;
 	private final Pose2d expectedRobotPoseFieldRelative;
@@ -26,7 +30,6 @@ public class CameraPoseCalibration extends Command {
 	private Pose3d currentRobotRelativeCameraPose;
 
 	private int currentCycle;
-	private final int neededNumberOfCycles;
 
 	/**
 	 *
@@ -41,13 +44,14 @@ public class CameraPoseCalibration extends Command {
 	public CameraPoseCalibration(
 		String logPathPrefix,
 		String cameraName,
+		int neededNumberOfCycles,
 		double robotXAxisDistanceFromTag,
 		double tagCenterHeightFromGroundMeters,
-		Pose3d tagPoseFieldRelative,
-		int neededNumberOfCycles
+		Pose3d tagPoseFieldRelative
 	) {
 		this.logPath = logPathPrefix + "/cameraPositionCalibration";
 		this.cameraName = cameraName;
+		this.neededNumberOfCycles = neededNumberOfCycles;
 
 		this.tagPoseFieldRelative = tagPoseFieldRelative;
 		this.expectedRobotPoseFieldRelative = new Pose2d(
@@ -61,8 +65,6 @@ public class CameraPoseCalibration extends Command {
 
 		this.robotRelativeCameraTranslationSum = new Translation3d();
 		this.currentRobotRelativeCameraPose = new Pose3d();
-
-		this.neededNumberOfCycles = neededNumberOfCycles;
 
 		LimelightHelpers.setCameraPose_RobotSpace(cameraName, 0, 0, 0, 0, 0, 0);
 	}
