@@ -42,15 +42,15 @@ public class ShootingChecks {
 	}
 
 	private static boolean isFlywheelAtVelocity(
-		Rotation2d wantedFlywheelVelocityRotation2dPerSecond,
-		Rotation2d flywheelVelocityRotation2dPerSecond,
-		Rotation2d flywheelVelocityToleranceRotation2dPerSecond,
+		Rotation2d wantedFlywheelVelocityRPS,
+		Rotation2d flywheelVelocityRPS,
+		Rotation2d flywheelVelocityToleranceRPS,
 		String logPath
 	) {
 		boolean isFlywheelAtVelocity = isNear(
-			wantedFlywheelVelocityRotation2dPerSecond.getDegrees(),
-			flywheelVelocityRotation2dPerSecond.getDegrees(),
-			flywheelVelocityToleranceRotation2dPerSecond.getDegrees()
+			wantedFlywheelVelocityRPS.getDegrees(),
+			flywheelVelocityRPS.getDegrees(),
+			flywheelVelocityToleranceRPS.getDegrees()
 		);
 		Logger.recordOutput(logPath + "/isFlywheelAtVelocity", isFlywheelAtVelocity);
 		return isFlywheelAtVelocity;
@@ -64,7 +64,7 @@ public class ShootingChecks {
 
 	public static boolean isReadyToShoot(
 		Robot robot,
-		Rotation2d flywheelVelocityToleranceRotation2dPerSecond,
+		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
 		Rotation2d headingTolerance,
 		Rotation2d maxAngleFromHubCenter,
@@ -72,7 +72,7 @@ public class ShootingChecks {
 	) {
 		String logPath = shootingChacksLogPath + "/IsReadyRoShoot";
 		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
-		Rotation2d flywheelVelocityRotation2dPerSecond = robot.getFlyWheel().getVelocity();
+		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
 		boolean isWithinDistance = isWithinDistance(robotPose.getTranslation(), maxShootingDistanceFromTargetMeters, logPath);
@@ -88,8 +88,8 @@ public class ShootingChecks {
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
 			ShootingCalculations.getShootingParams().targetFlywheelVelocityRPS(),
-			flywheelVelocityRotation2dPerSecond,
-			flywheelVelocityToleranceRotation2dPerSecond,
+			flywheelVelocityRPS,
+			flywheelVelocityToleranceRPS,
 			logPath
 		);
 
@@ -105,7 +105,7 @@ public class ShootingChecks {
 
 	public static boolean canContinueShooting(
 		Robot robot,
-		Rotation2d flywheelVelocityToleranceRotation2dPerSecond,
+		Rotation2d flywheelVelocityToleranceRPS,
 		Rotation2d hoodPositionTolerance,
 		Rotation2d headingTolerance,
 		Rotation2d maxAngleFromHubCenter,
@@ -113,7 +113,7 @@ public class ShootingChecks {
 	) {
 		String logPath = shootingChacksLogPath + "/CanContinueShooting";
 		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
-		Rotation2d flywheelVelocityRotation2dPerSecond = robot.getFlyWheel().getVelocity();
+		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
 		boolean isWithinDistance = isWithinDistance(robotPose.getTranslation(), maxShootingDistanceFromTargetMeters, logPath);
@@ -129,8 +129,8 @@ public class ShootingChecks {
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
 			ShootingCalculations.getShootingParams().targetFlywheelVelocityRPS(),
-			flywheelVelocityRotation2dPerSecond,
-			flywheelVelocityToleranceRotation2dPerSecond,
+			flywheelVelocityRPS,
+			flywheelVelocityToleranceRPS,
 			logPath
 		);
 
@@ -144,19 +144,15 @@ public class ShootingChecks {
 		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget;
 	}
 
-	public static boolean calibrationIsReadyToShoot(
-		Robot robot,
-		Rotation2d flywheelVelocityToleranceRotation2dPerSecond,
-		Rotation2d hoodPositionTolerance
-	) {
+	public static boolean calibrationIsReadyToShoot(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
 		String logPath = shootingChacksLogPath + "IsReadyToShootCalibrations";
-		Rotation2d flywheelVelocityRotation2dPerSecond = robot.getFlyWheel().getVelocity();
+		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
 		boolean isFlywheelReadyToShoot = isFlywheelAtVelocity(
 			ShooterConstants.flywheelCalibrationRotations.get(),
-			flywheelVelocityRotation2dPerSecond,
-			flywheelVelocityToleranceRotation2dPerSecond,
+			flywheelVelocityRPS,
+			flywheelVelocityToleranceRPS,
 			logPath
 		);
 
