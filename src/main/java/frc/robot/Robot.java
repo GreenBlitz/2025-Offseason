@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -58,7 +59,6 @@ public class Robot {
 	private final Arm hood;
 	private final IDigitalInput intakeRollerSensor;
 	private final VelocityRoller train;
-	private final IDigitalInput funnelDigitalInput;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
 
@@ -89,9 +89,7 @@ public class Robot {
 		this.intakeRollerSensor = intakeRollerAndDigitalInput.getSecond();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
 
-		Pair<Roller, IDigitalInput> trainAndDigitalInput = createTrainAndSignal();
 		this.train = createTrain();
-		this.funnelDigitalInput = trainAndDigitalInput.getSecond();
 		BrakeStateManager.add(() -> train.setBrake(true), () -> train.setBrake(false));
 
 		this.belly = createBelly();
@@ -270,23 +268,8 @@ public class Robot {
 		);
 	}
 
-	private Pair<Roller, IDigitalInput> createTrainAndSignal() {
-		return SparkMaxRollerBuilder.buildWithDigitalInput(
-			TrainConstant.LOG_PATH,
-			IDs.SparkMAXIDs.TRAIN,
-			TrainConstant.IS_INVERTED,
-			TrainConstant.GEAR_RATIO,
-			TrainConstant.CURRENT_LIMIT,
-			TrainConstant.MOMENT_OF_INERTIA,
-			TrainConstant.FUNNEL_INPUT_NAME,
-			TrainConstant.DEBOUNCE_TIME,
-			TrainConstant.IS_FORWARD_LIMIT_SWITCH,
-			TrainConstant.IS_FORWARD_LIMIT_SWITCH_INVERTED
-		);
-	}
-
 	private VelocityRoller createTrain() {
-		return TalonFXRollerBuilder.buildVelocityRoller(TrainConstant.LOG_PATH,new Phoenix6DeviceID(40,BusChain.ROBORIO),0.43,0,40,0,TrainConstant.GEAR_RATIO,0.0001);
+		return TalonFXRollerBuilder.buildVelocityRoller(TrainConstant.LOG_PATH,IDs.TalonFXIDs.TRAIN, TrainConstant.REAL_SLOTS_CONFIG, TrainConstant.CURRENT_LIMIT,0,TrainConstant.GEAR_RATIO,TrainConstant.MOMENT_OF_INERTIA,TrainConstant.IS_INVERTED);
 	}
 
 	private Roller createBelly() {
@@ -326,10 +309,6 @@ public class Robot {
 
 	public Roller getBelly() {
 		return belly;
-	}
-
-	public IDigitalInput getFunnelDigitalInput() {
-		return funnelDigitalInput;
 	}
 
 	public Arm getHood() {

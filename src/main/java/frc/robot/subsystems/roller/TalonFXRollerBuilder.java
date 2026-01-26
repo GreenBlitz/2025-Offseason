@@ -1,6 +1,5 @@
 package frc.robot.subsystems.roller;
 
-import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -30,19 +29,19 @@ public class TalonFXRollerBuilder {
 	public static VelocityRoller buildVelocityRoller(
 		String logPath,
 		Phoenix6DeviceID deviceID,
-		double kV,
-		double kA,
+		Slot0Configs slot0Configs,
 		int currentLimit,
 		double arbitraryFeedForward,
 		double gearRatio,
-		double momentOfInertia
+		double momentOfInertia,
+		boolean isInverted
 	) {
 		SimpleMotorSimulation rollerSimulation = new SimpleMotorSimulation(
 			new DCMotorSim(LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), momentOfInertia, gearRatio), DCMotor.getKrakenX60(1))
 		);
 		TalonFXMotor roller = new TalonFXMotor(logPath, deviceID, new TalonFXFollowerConfig(), new SysIdRoutine.Config(), rollerSimulation);
 
-		roller.applyConfiguration(buildConfiguration(gearRatio, currentLimit, kV, kA));
+		roller.applyConfiguration(buildConfiguration(isInverted, gearRatio, currentLimit, slot0Configs));
 
 		InputSignal<Double> voltageSignal = Phoenix6SignalBuilder
 			.build(roller.getDevice().getMotorVoltage(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, deviceID.busChain());
@@ -106,15 +105,15 @@ public class TalonFXRollerBuilder {
 		return (configs);
 	}
 
-	public static TalonFXConfiguration buildConfiguration(double gearRatio, int currentLimit, double kV, double kA) {
+	public static TalonFXConfiguration buildConfiguration(boolean inverted, double gearRatio, int currentLimit, Slot0Configs slot0Configs) {
 		TalonFXConfiguration configs = new TalonFXConfiguration();
+		configs.Slot0 = slot0Configs;
 		configs.CurrentLimits.StatorCurrentLimit = currentLimit;
 		configs.CurrentLimits.StatorCurrentLimitEnable = true;
 		configs.Feedback.SensorToMechanismRatio = gearRatio;
-		configs.Slot0.kV = kV;
-		configs.Slot0.kA = kA;
 		configs.Voltage.PeakForwardVoltage = BatteryUtil.DEFAULT_VOLTAGE;
-		configs.Voltage.PeakReverseVoltage = BatteryUtil.DEFAULT_VOLTAGE;
+		configs.Voltage.PeakReverseVoltage = -BatteryUtil.DEFAULT_VOLTAGE;
+		configs.MotorOutput.Inverted = inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 		return (configs);
 	}
 
