@@ -22,7 +22,14 @@ import frc.utils.battery.BatteryUtil;
 
 public class TalonFXRollerBuilder {
 
-	public static Roller build(String logPath, Phoenix6DeviceID id, boolean inverted, double gearRatio, int currentLimit, double momentOfInertia) {
+	public static Roller build(
+		String logPath,
+		Phoenix6DeviceID id,
+		boolean inverted,
+		double gearRatio,
+		int currentLimit,
+		double momentOfInertia
+	) {
 		SimpleMotorSimulation rollerSimulation = new SimpleMotorSimulation(
 			new DCMotorSim(LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), momentOfInertia, gearRatio), DCMotor.getKrakenX60(1))
 		);
