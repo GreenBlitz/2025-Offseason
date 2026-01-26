@@ -3,6 +3,7 @@ package frc.robot.subsystems.swerve;
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -177,9 +178,10 @@ public class Swerve extends GBSubsystem {
 
 		Logger.recordOutput(getLogPath() + "/isCollisionDetected", isCollisionDetected());
 
-		Logger.recordOutput(getLogPath() + "/isOnBump", isTilted());
-	}
+		Logger.recordOutput(getLogPath() + "/isTilted", isTilted());
 
+		Logger.recordOutput(getLogPath() + "/isOnBump", isOnBump());
+	}
 
 	public int getNumberOfOdometrySamples() {
 		return Math.min(imuSignals.yawSignal().asArray().length, modules.getNumberOfOdometrySamples());
@@ -342,6 +344,11 @@ public class Swerve extends GBSubsystem {
 	public boolean isTilted() {
 		return Math.abs(imuSignals.rollSignal().getLatestValue().getRadians()) >= SwerveConstants.TILTED_ROBOT_ROLL_TOLERANCE.getRadians()
 			|| Math.abs(imuSignals.pitchSignal().getLatestValue().getRadians()) >= SwerveConstants.TILTED_ROBOT_PITCH_TOLERANCE.getRadians();
+	}
+
+	public boolean isOnBump() {
+		Debouncer a = new Debouncer(0.25);
+		return a.calculate(isTilted());
 	}
 
 	public void applyCalibrationBindings(SmartJoystick joystick, Supplier<Pose2d> robotPoseSupplier) {
