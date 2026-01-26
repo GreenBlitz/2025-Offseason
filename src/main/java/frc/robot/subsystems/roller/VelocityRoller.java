@@ -14,9 +14,11 @@ public class VelocityRoller extends Roller {
 		InputSignal<Double> voltageSignal,
 		InputSignal<Double> currentSignal,
 		InputSignal<Rotation2d> positionSignal,
-		IRequest<Double> voltageRequest
+		IRequest<Double> voltageRequest,
+		VelocityRequest velocityRoller
 	) {
 		super(logPath, roller, voltageSignal, currentSignal, positionSignal, voltageRequest);
+		this.velocityRequest = velocityRoller;
 	}
 
 

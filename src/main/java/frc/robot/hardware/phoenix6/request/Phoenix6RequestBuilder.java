@@ -11,6 +11,17 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class Phoenix6RequestBuilder {
 
+//	public static Phoenix6VelocityRequest build(VelocityVoltage velocityVoltage, double defaultArbitraryFeedForward, boolean enableFOC){
+//		return new Phoenix6VelocityRequest(
+//				Rotation2d.fromRotations(velocityVoltage.Velocity),
+//				velocityVoltage,
+//				setPoint -> velocityVoltage.withVelocity(setPoint.getRotations()),
+//				velocityVoltage::withFeedForward,
+//				defaultArbitraryFeedForward
+//		);
+//	}
+
+
 	public static Phoenix6VelocityPositionRequest build(PositionVoltage positionVoltage, double defaultArbitraryFeedForward, boolean enableFOC) {
 		return new Phoenix6VelocityPositionRequest(
 			setPoint -> positionVoltage.withVelocity(setPoint.getRotations()),
@@ -33,8 +44,8 @@ public class Phoenix6RequestBuilder {
 		);
 	}
 
-	public static Phoenix6FeedForwardRequest build(VelocityTorqueCurrentFOC velocityTorqueCurrentFOC, double defaultArbitraryFeedForward) {
-		return new Phoenix6FeedForwardRequest(
+	public static Phoenix6VelocityRequest build(VelocityTorqueCurrentFOC velocityTorqueCurrentFOC, double defaultArbitraryFeedForward) {
+		return new Phoenix6VelocityRequest(
 			Rotation2d.fromRotations(velocityTorqueCurrentFOC.Velocity),
 			velocityTorqueCurrentFOC,
 			setPoint -> velocityTorqueCurrentFOC.withVelocity(setPoint.getRotations()),
