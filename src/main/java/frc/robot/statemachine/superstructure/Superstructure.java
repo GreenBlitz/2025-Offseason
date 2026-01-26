@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.StateMachineConstants;
-import frc.robot.statemachine.ShootingChecks;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.funnelstatehandler.FunnelStateHandler;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
@@ -75,10 +74,6 @@ public class Superstructure {
 
 	public void setIsSubsystemRunningIndependently(boolean isSubsystemRunningIndependently) {
 		this.isSubsystemRunningIndependently = isSubsystemRunningIndependently;
-	}
-
-	public ShootingChecks getTargetChecks() {
-		return shootingChecks;
 	}
 
 	public Command setState(RobotState robotState) {

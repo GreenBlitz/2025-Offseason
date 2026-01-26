@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.constants.field.Field;
 import frc.robot.Robot;
 import frc.robot.statemachine.shooterstatehandler.ShooterConstants;
-import frc.robot.statemachine.superstructure.Superstructure;
 import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
@@ -16,7 +15,7 @@ import static edu.wpi.first.math.MathUtil.isNear;
 public class ShootingChecks {
 
 	private static final String shootingChacksLogPath = "Statemachine/ShootingChecks";
-	
+
 	private static boolean isWithinDistance(Translation2d robotPosition, double maxShootingDistanceFromTargetMeters, String logPath) {
 		boolean isWithinDistance = robotPosition.getDistance(Field.getHubMiddle()) <= maxShootingDistanceFromTargetMeters;
 		Logger.recordOutput(logPath + "/isInDistance", isWithinDistance);
