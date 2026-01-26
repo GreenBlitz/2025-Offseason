@@ -2,7 +2,7 @@ package frc.robot.subsystems.constants.flywheel;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
-public class Constants {
+public class FlywheelConstants {
 
 	public final static double kP = 12;
 	public final static double kI = 2;
