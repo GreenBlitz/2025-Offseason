@@ -6,7 +6,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class VelocityRoller extends Roller {
 
-	private VelocityRequest velocityRequest;
+	private IRequest<Rotation2d> velocityRequest;
 
 	public VelocityRoller(
 		String logPath,
@@ -15,20 +15,20 @@ public class VelocityRoller extends Roller {
 		InputSignal<Double> currentSignal,
 		InputSignal<Rotation2d> positionSignal,
 		IRequest<Double> voltageRequest,
-		VelocityRequest velocityRoller
+		IRequest<Rotation2d> velocityRequest
 	) {
 		super(logPath, roller, voltageSignal, currentSignal, positionSignal, voltageRequest);
-		this.velocityRequest = velocityRoller;
+		this.velocityRequest = velocityRequest;
 	}
 
 
 	public void setTargetVelocity(Rotation2d targetVelocity) {
-		velocityRequest.setVelocity(targetVelocity);
+		velocityRequest.withSetPoint(targetVelocity);
 		roller.applyRequest(velocityRequest);
 	}
 
 	public void log() {
-		Logger.recordOutput(getLogPath() + "/VelocityRollerTargetVelocity", velocityRequest.getVelocityRPS());
+		Logger.recordOutput(getLogPath() + "/VelocityRollerTargetVelocity", velocityRequest.getSetPoint());
 	}
 
 }

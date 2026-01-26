@@ -17,6 +17,7 @@ import frc.robot.hardware.mechanisms.wpilib.SimpleMotorSimulation;
 import frc.robot.hardware.phoenix6.Phoenix6DeviceID;
 import frc.robot.hardware.phoenix6.motors.TalonFXFollowerConfig;
 import frc.robot.hardware.phoenix6.motors.TalonFXMotor;
+import frc.robot.hardware.phoenix6.request.Phoenix6FeedForwardRequest;
 import frc.robot.hardware.phoenix6.request.Phoenix6Request;
 import frc.robot.hardware.phoenix6.request.Phoenix6RequestBuilder;
 import frc.robot.hardware.phoenix6.request.Phoenix6VelocityRequest;
@@ -64,13 +65,9 @@ public class TalonFXRollerBuilder {
 		);
 
 		Phoenix6Request<Double> voltageRequest = Phoenix6RequestBuilder.build(new VoltageOut(0), true);
-		VelocityVoltage velocityVoltage = new VelocityVoltage(0);
+		Phoenix6FeedForwardRequest velocityVoltage = Phoenix6RequestBuilder.build(new VelocityVoltage(0),arbitraryFeedForward,true);
 
-//		VelocityVoltage velocityVoltage, double defaultArbitraryFeedForward, boolean enableFOC
-		Phoenix6VelocityRequest velocityRequest = Phoenix6RequestBuilder.build(new VelocityTorqueCurrentFOC(0), arbitraryFeedForward);
-
-
-		return new VelocityRoller(logPath, roller, voltageSignal, currentSignal, positionSignal, voltageRequest, velocityRequest);
+		return new VelocityRoller(logPath, roller, voltageSignal, currentSignal, positionSignal, voltageRequest, velocityVoltage);
 	}
 
 	public static Roller build(String logPath, Phoenix6DeviceID id, double gearRatio, int currentLimit, double momentOfInertia) {
