@@ -3,9 +3,7 @@ package frc.robot.statemachine.funnelstatehandler;
 public enum FunnelState {
 
 	STOP,
-	INTAKE(3, 1),
 	SHOOT(3, 1),
-	SHOOT_WHILE_INTAKE(3, 1),
 	DRIVE,
 	CALIBRATION;
 

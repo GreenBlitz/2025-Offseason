@@ -61,4 +61,33 @@ public class IntakeStateHandler {
 		);
 	}
 
+	public Command open() {
+		return new ParallelCommandGroup(
+			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.INTAKE.getFourBarPosition()),
+			rollers.getCommandsBuilder().setPower(IntakeState.INTAKE.getIntakePower())
+		);
+	}
+
+	public Command close() {
+		return new ParallelCommandGroup(
+			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.CLOSED.getFourBarPosition()),
+			rollers.getCommandsBuilder().setPower(IntakeState.CLOSED.getIntakePower())
+		);
+	}
+
+	public Command stayInPlace() {
+		return new ParallelCommandGroup(
+			fourBar.getCommandsBuilder().setTargetPosition(IntakeState.STAY_IN_PLACE.getFourBarPosition()),
+			rollers.getCommandsBuilder().setPower(IntakeState.STAY_IN_PLACE.getIntakePower())
+		);
+	}
+
+	public Command openCloseIntake() {
+		return switch (currentState) {
+			case INTAKE -> close();
+			case CLOSED -> open();
+			default -> stayInPlace();
+		};
+	}
+
 }

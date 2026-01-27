@@ -12,6 +12,7 @@ import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.ShootingCalculations;
+import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.subsystems.constants.belly.BellyConstants;
@@ -57,11 +58,12 @@ public class Robot {
 	private final IDigitalInput funnelDigitalInput;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
-
 	private final RobotCommander robotCommander;
 
 	private final Swerve swerve;
 	private final IPoseEstimator poseEstimator;
+
+	private final IntakeStateHandler intakeStateHandler;
 
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
@@ -84,6 +86,8 @@ public class Robot {
 		this.intakeRoller = intakeRollerAndDigitalInput.getFirst();
 		this.intakeRollerSensor = intakeRollerAndDigitalInput.getSecond();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
+
+		this.intakeStateHandler = createIntakeStateHandler();
 
 		Pair<Roller, IDigitalInput> trainAndDigitalInput = createTrainAndSignal();
 		this.train = trainAndDigitalInput.getFirst();
@@ -288,6 +292,10 @@ public class Robot {
 		);
 	}
 
+	private IntakeStateHandler createIntakeStateHandler() {
+		return new IntakeStateHandler(getFourBar(), getIntakeRoller(), getIntakeRollerSensor(), "/IntakeStateHandler");
+	}
+
 	public IDigitalInput getIntakeRollerSensor() {
 		return intakeRollerSensor;
 	}
@@ -322,6 +330,10 @@ public class Robot {
 
 	public Arm getHood() {
 		return hood;
+	}
+
+	public IntakeStateHandler getIntakeStateHandler() {
+		return intakeStateHandler;
 	}
 
 	public IPoseEstimator getPoseEstimator() {

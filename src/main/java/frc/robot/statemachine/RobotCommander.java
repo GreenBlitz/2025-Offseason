@@ -42,17 +42,7 @@ public class RobotCommander extends GBSubsystem {
 						.schedule(
 							new DeferredCommand(
 								() -> endState(currentState),
-								Set.of(
-									this,
-									swerve,
-									robot.getIntakeRoller(),
-									robot.getTurret(),
-									robot.getFourBar(),
-									robot.getHood(),
-									robot.getTrain(),
-									robot.getBelly(),
-									robot.getFlyWheel()
-								)
+								Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getTrain(), robot.getBelly(), robot.getFlyWheel())
 							)
 						)
 				),
@@ -127,7 +117,7 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public Command shootWhileIntakeSequence() {
-		return new SequentialCommandGroup(driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot), driveWith(RobotState.SHOOT_WHILE_INTAKE));
+		return new SequentialCommandGroup(driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot), driveWith(RobotState.SHOOT));
 	}
 
 	private Command asSubsystemCommand(Command command, RobotState state) {
@@ -137,7 +127,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-			case DRIVE, INTAKE, SHOOT, SHOOT_WHILE_INTAKE, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT -> driveWith(RobotState.DRIVE);
+			case DRIVE, SHOOT, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT -> driveWith(RobotState.DRIVE);
 			case PRE_SHOOT -> driveWith(RobotState.PRE_SHOOT);
 		};
 	}
