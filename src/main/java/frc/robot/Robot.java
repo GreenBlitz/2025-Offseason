@@ -273,7 +273,7 @@ public class Robot {
 			TrainConstant.REAL_SLOTS_CONFIG,
 			TrainConstant.SIMULATION_SLOTS_CONFIG,
 			TrainConstant.CURRENT_LIMIT,
-			TrainConstant.GEAR_RATIO,
+			TrainConstant.FEEDBACK_CONFIGS,
 			TrainConstant.MOMENT_OF_INERTIA,
 			TrainConstant.IS_INVERTED
 		);

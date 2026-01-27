@@ -1,5 +1,6 @@
 package frc.robot.subsystems.roller;
 
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -32,19 +33,26 @@ public class TalonFXRollerBuilder {
 		Slot0Configs realVelocityControlConfig,
 		Slot0Configs simulationVelocityControlConfig,
 		int currentLimit,
-		double gearRatio,
+		FeedbackConfigs feedbackConfigs,
 		double momentOfInertia,
 		boolean isInverted
 	) {
 		SimpleMotorSimulation rollerSimulation = new SimpleMotorSimulation(
-			new DCMotorSim(LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), momentOfInertia, gearRatio), DCMotor.getKrakenX60(1))
+			new DCMotorSim(
+				LinearSystemId.createDCMotorSystem(
+					DCMotor.getKrakenX60(1),
+					momentOfInertia,
+					feedbackConfigs.SensorToMechanismRatio * feedbackConfigs.RotorToSensorRatio
+				),
+				DCMotor.getKrakenX60(1)
+			)
 		);
 		TalonFXMotor roller = new TalonFXMotor(logPath, deviceID, new TalonFXFollowerConfig(), new SysIdRoutine.Config(), rollerSimulation);
 
 		roller.applyConfiguration(
 			buildConfiguration(
 				isInverted,
-				gearRatio,
+				feedbackConfigs,
 				currentLimit,
 				Robot.ROBOT_TYPE.isSimulation() ? simulationVelocityControlConfig : realVelocityControlConfig
 			)
@@ -83,16 +91,23 @@ public class TalonFXRollerBuilder {
 		String logPath,
 		Phoenix6DeviceID id,
 		boolean inverted,
-		double gearRatio,
+		FeedbackConfigs feedbackConfigs,
 		int currentLimit,
 		double momentOfInertia
 	) {
 		SimpleMotorSimulation rollerSimulation = new SimpleMotorSimulation(
-			new DCMotorSim(LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), momentOfInertia, gearRatio), DCMotor.getKrakenX60(1))
+			new DCMotorSim(
+				LinearSystemId.createDCMotorSystem(
+					DCMotor.getKrakenX60(1),
+					momentOfInertia,
+					feedbackConfigs.SensorToMechanismRatio * feedbackConfigs.RotorToSensorRatio
+				),
+				DCMotor.getKrakenX60(1)
+			)
 		);
 		TalonFXMotor roller = new TalonFXMotor(logPath, id, new TalonFXFollowerConfig(), new SysIdRoutine.Config(), rollerSimulation);
 
-		roller.applyConfiguration(buildConfiguration(inverted, gearRatio, currentLimit, new Slot0Configs()));
+		roller.applyConfiguration(buildConfiguration(inverted, feedbackConfigs, currentLimit, new Slot0Configs()));
 
 		InputSignal<Double> voltageSignal = Phoenix6SignalBuilder
 			.build(roller.getDevice().getMotorVoltage(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, id.busChain());
@@ -113,7 +128,7 @@ public class TalonFXRollerBuilder {
 
 	public static TalonFXConfiguration buildConfiguration(
 		boolean inverted,
-		double gearRatio,
+		FeedbackConfigs feedbackConfigs,
 		int currentLimit,
 		Slot0Configs velocityControlConfig
 	) {
@@ -121,7 +136,7 @@ public class TalonFXRollerBuilder {
 		configs.Slot0 = velocityControlConfig;
 		configs.CurrentLimits.StatorCurrentLimit = currentLimit;
 		configs.CurrentLimits.StatorCurrentLimitEnable = true;
-		configs.Feedback.SensorToMechanismRatio = gearRatio;
+		configs.Feedback = feedbackConfigs;
 		configs.MotorOutput.Inverted = inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 		return (configs);
 	}
