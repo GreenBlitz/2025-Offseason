@@ -7,10 +7,12 @@ import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
 import frc.robot.statemachine.RobotState;
+import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
 import frc.utils.battery.BatteryUtil;
+
 
 public class JoysticksBindings {
 
@@ -55,8 +57,9 @@ public class JoysticksBindings {
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
-		usedJoystick.L1.onTrue(robot.getIntakeStateHandler().openCloseIntake());
-		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().shootWhileIntakeSequence());
+		usedJoystick.B.onTrue(robot.getIntakeStateHandler().openOrCloseIntake());
+		usedJoystick.X.onTrue(robot.getIntakeStateHandler().setState(IntakeState.INTAKE));
+		usedJoystick.Y.onTrue(robot.getIntakeStateHandler().setState(IntakeState.CLOSED));
 	}
 
 	private static void secondJoystickButtons(Robot robot) {

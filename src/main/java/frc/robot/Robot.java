@@ -40,6 +40,7 @@ import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -88,7 +89,7 @@ public class Robot {
 		this.intakeRollerSensor = intakeRollerAndDigitalInput.getSecond();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
 
-		this.intakeStateHandler = createIntakeStateHandler();
+		this.intakeStateHandler = new IntakeStateHandler(fourBar, intakeRoller, intakeRollerSensor, "");
 
 		Pair<Roller, IDigitalInput> trainAndDigitalInput = createTrainAndSignal();
 		this.train = trainAndDigitalInput.getFirst();
@@ -161,6 +162,10 @@ public class Robot {
 		updateAllSubsystems();
 		resetSubsystems();
 		simulationManager.logPoses();
+
+		Logger.recordOutput("aaa", intakeStateHandler.oppositeIntakeState());
+
+		intakeStateHandler.periodic();
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
@@ -295,10 +300,6 @@ public class Robot {
 			BellyConstants.CURRENT_LIMIT,
 			BellyConstants.MOMENT_OF_INERTIA
 		);
-	}
-
-	private IntakeStateHandler createIntakeStateHandler() {
-		return new IntakeStateHandler(getFourBar(), getIntakeRoller(), getIntakeRollerSensor(), "/IntakeStateHandler");
 	}
 
 	public IDigitalInput getIntakeRollerSensor() {
