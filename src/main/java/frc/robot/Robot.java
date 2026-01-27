@@ -40,7 +40,6 @@ import frc.robot.statemachine.shooterstatehandler.TurretCalculations;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.battery.BatteryUtil;
 import frc.utils.brakestate.BrakeStateManager;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very little robot logic should
@@ -162,8 +161,6 @@ public class Robot {
 		updateAllSubsystems();
 		resetSubsystems();
 		simulationManager.logPoses();
-
-		Logger.recordOutput("aaa", intakeStateHandler.oppositeIntakeState());
 
 		intakeStateHandler.periodic();
 

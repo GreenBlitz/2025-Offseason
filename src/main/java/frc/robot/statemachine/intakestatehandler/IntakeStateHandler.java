@@ -1,15 +1,13 @@
 package frc.robot.statemachine.intakestatehandler;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.utils.LoggedNetworkRotation2d;
+import frc.utils.time.TimeUtil;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
@@ -60,7 +58,18 @@ public class IntakeStateHandler {
 	}
 
 	public Command openOrCloseIntake() {
-		return new DeferredCommand(() -> setState(oppositeIntakeState()), Set.of(fourBar, rollers));
+		Command command = new ParallelCommandGroup(
+				new DeferredCommand(
+						() -> new ConditionalCommand(
+								setState(IntakeState.CLOSED),
+								setState(IntakeState.INTAKE),
+								() -> currentState == IntakeState.INTAKE
+						),
+						Set.of(fourBar, rollers)
+				),
+				new RunCommand(() -> Logger.recordOutput("bbbb", TimeUtil.getCurrentTimeSeconds()))
+		).withInterruptBehavior(Command.InterruptionBehavior.kCancelSelf);
+		
 	}
 
 	public Command intake(IntakeState state) {
