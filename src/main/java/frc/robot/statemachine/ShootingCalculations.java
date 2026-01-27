@@ -28,12 +28,12 @@ public class ShootingCalculations {
 		return shootingParams;
 	}
 
-	private static ShootingParams calculateShootingParams(Pose2d robotPose) {
+	private static ShootingParams calculateShootingParams(Pose2d robotPose, Translation2d targetLandingSpot) {
 		Rotation2d turretTargetPosition = getRobotRelativeLookAtHubAngleForTurret(robotPose);
 
-		double distanceFromHubMeters = getDistanceFromHub(robotPose.getTranslation());
-		Rotation2d hoodTargetPosition = hoodInterpolation(distanceFromHubMeters);
-		Rotation2d flywheelTargetRPS = flywheelInterpolation(distanceFromHubMeters);
+		double distanceFromTargetMeters = targetLandingSpot.getDistance(robotPose.getTranslation());
+		Rotation2d hoodTargetPosition = hoodShootingInterpolation(distanceFromTargetMeters);
+		Rotation2d flywheelTargetRPS = flywheelShootingInterpolation(distanceFromTargetMeters);
 
 		Logger.recordOutput(LOG_PATH + "/turretTarget", turretTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
@@ -57,6 +57,10 @@ public class ShootingCalculations {
 
 	public static double getDistanceFromHub(Translation2d pose) {
 		return Field.getHubMiddle().getDistance(pose);
+	}
+
+	public static Translation2d getOptimalPassingPosition(Translation2d robotPosition) {
+		return new Translation2d(3, 3);
 	}
 
 	private static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP_SHOOT_AT_HUB = new InterpolationMap<Double, Rotation2d>(
@@ -119,16 +123,21 @@ public class ShootingCalculations {
 		)
 	);
 
-	public static Rotation2d hoodInterpolation(double distanceFromTower) {
+	public static Rotation2d hoodShootingInterpolation(double distanceFromTower) {
 		return HOOD_INTERPOLATION_MAP_SHOOT_AT_HUB.get(distanceFromTower);
 	}
 
-	public static Rotation2d flywheelInterpolation(double distanceFromTower) {
+	public static Rotation2d flywheelShootingInterpolation(double distanceFromTower) {
 		return FLYWHEEL_INTERPOLATION_MAP_SHOOT_AT_HUB.get(distanceFromTower);
 	}
 
+
 	public static void updateShootingParams(Pose2d robotPose) {
-		shootingParams = calculateShootingParams(robotPose);
+		if (Field.isInAllianceZone(robotPose.getTranslation())) {
+			shootingParams = calculateShootingParams(robotPose, Field.getHubMiddle());
+		} else {
+			shootingParams = calculateShootingParams(robotPose, getOptimalPassingPosition(robotPose.getTranslation()));
+		}
 	}
 
 }
