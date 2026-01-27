@@ -20,9 +20,9 @@ public class ShootingChecks {
 		Translation2d robotPosition,
 		double maxShootingDistanceFromTargetMeters,
 		String logPath,
-		Translation2d targetLandingSpot
+		Translation2d targetTranslation
 	) {
-		boolean isWithinDistance = robotPosition.getDistance(targetLandingSpot) <= maxShootingDistanceFromTargetMeters;
+		boolean isWithinDistance = robotPosition.getDistance(targetTranslation) <= maxShootingDistanceFromTargetMeters;
 		Logger.recordOutput(logPath + "/isInDistance", isWithinDistance);
 		return isWithinDistance;
 	}
@@ -116,7 +116,7 @@ public class ShootingChecks {
 		Rotation2d headingTolerance,
 		Rotation2d maxAngleFromHubCenter,
 		double maxShootingDistanceFromTargetMeters,
-		Translation2d targetLandingSpot,
+		Translation2d targetTranslation,
 		String actionLogPath
 
 	) {
@@ -125,9 +125,9 @@ public class ShootingChecks {
 		Rotation2d flywheelVelocityRPS = robot.getFlyWheel().getVelocity();
 		Rotation2d hoodPosition = robot.getHood().getPosition();
 
-		boolean isWithinDistance = isWithinDistance(robotPose.getTranslation(), maxShootingDistanceFromTargetMeters, logPath, targetLandingSpot);
+		boolean isWithinDistance = isWithinDistance(robotPose.getTranslation(), maxShootingDistanceFromTargetMeters, logPath, targetTranslation);
 
-		boolean isInRange = isInAngleRange(robotPose.getTranslation(), maxAngleFromHubCenter, logPath, targetLandingSpot);
+		boolean isInRange = isInAngleRange(robotPose.getTranslation(), maxAngleFromHubCenter, logPath, targetTranslation);
 
 		boolean isAtTurretAtTarget = isTurretAtTarget(
 			robot.getTurret().getPosition(),
