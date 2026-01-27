@@ -10,6 +10,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Robot;
 import frc.robot.RobotConstants;
 import frc.robot.hardware.interfaces.InputSignal;
 import frc.robot.hardware.mechanisms.wpilib.SimpleMotorSimulation;
@@ -22,16 +23,15 @@ import frc.robot.hardware.phoenix6.request.Phoenix6Request;
 import frc.robot.hardware.phoenix6.request.Phoenix6RequestBuilder;
 import frc.robot.hardware.phoenix6.signal.Phoenix6SignalBuilder;
 import frc.utils.AngleUnit;
-import frc.utils.battery.BatteryUtil;
 
 public class TalonFXRollerBuilder {
 
 	public static VelocityRoller buildVelocityRoller(
 		String logPath,
 		Phoenix6DeviceID deviceID,
-		Slot0Configs slot0Configs,
+		Slot0Configs realVelocityControlConfig,
+		Slot0Configs simulationVelocityControlConfig,
 		int currentLimit,
-		double arbitraryFeedForward,
 		double gearRatio,
 		double momentOfInertia,
 		boolean isInverted
@@ -41,7 +41,14 @@ public class TalonFXRollerBuilder {
 		);
 		TalonFXMotor roller = new TalonFXMotor(logPath, deviceID, new TalonFXFollowerConfig(), new SysIdRoutine.Config(), rollerSimulation);
 
-		roller.applyConfiguration(buildConfiguration(isInverted, gearRatio, currentLimit, slot0Configs));
+		roller.applyConfiguration(
+			buildConfiguration(
+				isInverted,
+				gearRatio,
+				currentLimit,
+				Robot.ROBOT_TYPE.isSimulation() ? simulationVelocityControlConfig : realVelocityControlConfig
+			)
+		);
 
 		InputSignal<Double> voltageSignal = Phoenix6SignalBuilder
 			.build(roller.getDevice().getMotorVoltage(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, deviceID.busChain());
@@ -58,7 +65,7 @@ public class TalonFXRollerBuilder {
 			.build(roller.getDevice().getVelocity(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, AngleUnit.ROTATIONS, BusChain.ROBORIO);
 
 		Phoenix6Request<Double> voltageRequest = Phoenix6RequestBuilder.build(new VoltageOut(0), true);
-		Phoenix6FeedForwardRequest velocityVoltage = Phoenix6RequestBuilder.build(new VelocityVoltage(0), arbitraryFeedForward, true);
+		Phoenix6FeedForwardRequest velocityVoltage = Phoenix6RequestBuilder.build(new VelocityVoltage(0), 0, true);
 
 		return new VelocityRoller(
 			logPath,
@@ -85,7 +92,7 @@ public class TalonFXRollerBuilder {
 		);
 		TalonFXMotor roller = new TalonFXMotor(logPath, id, new TalonFXFollowerConfig(), new SysIdRoutine.Config(), rollerSimulation);
 
-		roller.applyConfiguration(buildConfiguration(inverted, gearRatio, currentLimit));
+		roller.applyConfiguration(buildConfiguration(inverted, gearRatio, currentLimit, new Slot0Configs()));
 
 		InputSignal<Double> voltageSignal = Phoenix6SignalBuilder
 			.build(roller.getDevice().getMotorVoltage(), RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ, id.busChain());
@@ -104,25 +111,17 @@ public class TalonFXRollerBuilder {
 		return new Roller(logPath, roller, voltageSignal, currentSignal, positionSignal, VoltageRequest);
 	}
 
-	public static TalonFXConfiguration buildConfiguration(boolean inverted, double gearRatio, int currentLimit) {
+	public static TalonFXConfiguration buildConfiguration(
+		boolean inverted,
+		double gearRatio,
+		int currentLimit,
+		Slot0Configs velocityControlConfig
+	) {
 		TalonFXConfiguration configs = new TalonFXConfiguration();
+		configs.Slot0 = velocityControlConfig;
 		configs.CurrentLimits.StatorCurrentLimit = currentLimit;
 		configs.CurrentLimits.StatorCurrentLimitEnable = true;
 		configs.Feedback.SensorToMechanismRatio = gearRatio;
-		configs.Voltage.PeakForwardVoltage = BatteryUtil.DEFAULT_VOLTAGE;
-		configs.Voltage.PeakReverseVoltage = -BatteryUtil.DEFAULT_VOLTAGE;
-		configs.MotorOutput.Inverted = inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
-		return (configs);
-	}
-
-	public static TalonFXConfiguration buildConfiguration(boolean inverted, double gearRatio, int currentLimit, Slot0Configs slot0Configs) {
-		TalonFXConfiguration configs = new TalonFXConfiguration();
-		configs.Slot0 = slot0Configs;
-		configs.CurrentLimits.StatorCurrentLimit = currentLimit;
-		configs.CurrentLimits.StatorCurrentLimitEnable = true;
-		configs.Feedback.SensorToMechanismRatio = gearRatio;
-		configs.Voltage.PeakForwardVoltage = BatteryUtil.DEFAULT_VOLTAGE;
-		configs.Voltage.PeakReverseVoltage = -BatteryUtil.DEFAULT_VOLTAGE;
 		configs.MotorOutput.Inverted = inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 		return (configs);
 	}

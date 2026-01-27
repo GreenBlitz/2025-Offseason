@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 
 public class VelocityRollerCommandBuilder extends RollerCommandsBuilder {
 
-	VelocityRoller roller;
+	private final VelocityRoller roller;
 
 	public VelocityRollerCommandBuilder(VelocityRoller roller) {
 		super(roller);

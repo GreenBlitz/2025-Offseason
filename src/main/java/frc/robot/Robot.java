@@ -271,8 +271,8 @@ public class Robot {
 			TrainConstant.LOG_PATH,
 			IDs.TalonFXIDs.TRAIN,
 			TrainConstant.REAL_SLOTS_CONFIG,
+			TrainConstant.SIMULATION_SLOTS_CONFIG,
 			TrainConstant.CURRENT_LIMIT,
-			0,
 			TrainConstant.GEAR_RATIO,
 			TrainConstant.MOMENT_OF_INERTIA,
 			TrainConstant.IS_INVERTED
