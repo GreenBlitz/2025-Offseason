@@ -4,6 +4,7 @@ Turret Calibration
 #### ID
 - [ ] Check motor ID
 - [ ] Check bus chain
+- [ ] Check reset check sensor channel
 
 #### Limits
 - [ ] Check current limit
@@ -31,3 +32,5 @@ Turret Calibration
 - [ ] Amount of degrees for the look at hub not to move
 - [ ] Max position
 - [ ] Min position
+- [ ] Is reset check sensor inverted
+- [ ] Reset check sensor debounce time

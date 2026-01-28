@@ -16,26 +16,17 @@ public class IntakeStateHandler {
 
 	private final Arm fourBar;
 	private final Roller rollers;
-	private final IDigitalInput beamBreaker;
 	private final String logPath;
-	private final DigitalInputInputsAutoLogged beamBreakerInputs;
 	private final LoggedNetworkNumber rollersCalibrationPower = new LoggedNetworkNumber("Tunable/IntakeRollerPower");
 	private final LoggedNetworkRotation2d fourBarCalibrationPosition = new LoggedNetworkRotation2d("Tunable/FourBarPosition", new Rotation2d());
 
 	private IntakeState currentState;
 
-	public IntakeStateHandler(Arm fourBar, Roller rollers, IDigitalInput beamBreaker, String logPath) {
+	public IntakeStateHandler(Arm fourBar, Roller rollers, String logPath) {
 		this.fourBar = fourBar;
 		this.rollers = rollers;
-		this.beamBreaker = beamBreaker;
-		this.beamBreakerInputs = new DigitalInputInputsAutoLogged();
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
-	}
-
-	public void periodic() {
-		beamBreaker.updateInputs(beamBreakerInputs);
-		Logger.processInputs(logPath, beamBreakerInputs);
 	}
 
 	public Command setState(IntakeState intakeState) {

@@ -8,6 +8,6 @@ Intake rollers calibrations
 - [ ] Is inverted
 
 #### Digital input
-- [ ] Is inverted
-- [ ] Forward or backward
-- [ ] Debounce time
+- [ ] Reset check sensor channel
+- [ ] Is reset check sensor inverted
+- [ ] Debounce time for reset check sensor

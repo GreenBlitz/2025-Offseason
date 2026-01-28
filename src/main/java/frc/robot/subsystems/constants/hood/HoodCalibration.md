@@ -4,6 +4,7 @@ Hood calibrations
 #### IDs
 - [ ] Motor id
 - [ ] Motor buschain
+- [ ] Reset check sensor channel
 
 #### Limits
 - [ ] Current limit
@@ -23,6 +24,7 @@ Hood calibrations
 - [ ] SysIdRoutineConfig
 - [ ] Starting position
 - [ ] Hood position tolerance
+- [ ] Is reset check sensor inverted
 
 #### PID
 - [ ] kP

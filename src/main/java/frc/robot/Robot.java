@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.SensorCollection;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -61,10 +62,9 @@ public class Robot {
 	private final Roller intakeRoller;
 	private final Arm fourBar;
 	private final Arm hood;
-	private final IDigitalInput intakeRollerSensor;
-	private final IDigitalInput intakeRollerResetCheck;
-	private final IDigitalInput hoodResetCheck;
-	private final IDigitalInput flyWheelResetCheck;
+	private final IDigitalInput intakeRollerResetCheckSensor;
+	private final IDigitalInput hoodResetCheckSensor;
+	private final IDigitalInput turretResetCheckSensor;
 	private final VelocityRoller train;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
@@ -78,6 +78,7 @@ public class Robot {
 		BatteryUtil.scheduleLimiter();
 
 		this.turret = createTurret();
+		this.turretResetCheckSensor = createTurretResetCheckSensor();
 		turret.setPosition(TurretConstants.MIN_POSITION);
 		BrakeStateManager.add(() -> turret.setBrake(true), () -> turret.setBrake(false));
 
@@ -88,13 +89,13 @@ public class Robot {
 		BrakeStateManager.add(() -> fourBar.setBrake(true), () -> fourBar.setBrake(false));
 
 		this.hood = createHood();
+		this.hoodResetCheckSensor = createHoodResetCheckSensor();
 		hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
-		Pair<Roller, IDigitalInput> intakeRollerAndDigitalInput = createIntakeRollers();
-		this.intakeRollerResetCheck = Robot.ROBOT_TYPE.isReal() ? new ChanneledDigitalInput(new DigitalInput(),new Debouncer()) : new ChooserDigitalInput("intakeRollerResetCheck")
-		this.intakeRoller = intakeRollerAndDigitalInput.getFirst();
-		this.intakeRollerSensor = intakeRollerAndDigitalInput.getSecond();
+		Roller intakeRollerAndDigitalInput = createIntakeRollers();
+		this.intakeRollerResetCheckSensor = createIntakeSensorResetCheck();
+		this.intakeRoller = intakeRollerAndDigitalInput;
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
 
 		this.train = createTrain();
@@ -176,23 +177,15 @@ public class Robot {
 		CommandScheduler.getInstance().run(); // Should be last
 	}
 
-	private Pair<Roller, IDigitalInput> createIntakeRollers() {
-		return SparkMaxRollerBuilder.buildWithDigitalInput(
+	private Roller createIntakeRollers() {
+		return SparkMaxRollerBuilder.build(
 			RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/IntakeRollers",
 			IDs.SparkMAXIDs.INTAKE_ROLLERS,
 			IntakeRollerConstants.IS_INVERTED,
 			IntakeRollerConstants.GEAR_RATIO,
 			IntakeRollerConstants.CURRENT_LIMIT,
-			IntakeRollerConstants.MOMENT_OF_INERTIA,
-			IntakeRollerConstants.DIGITAL_INPUT_NAME,
-			IntakeRollerConstants.DEBOUNCE_TIME,
-			IntakeRollerConstants.IS_FORWARD_LIMIT_SWITCH,
-			IntakeRollerConstants.IS_SENSOR_INVERTED
+			IntakeRollerConstants.MOMENT_OF_INERTIA
 		);
-	}
-
-	private IDigitalInput createIntakeSensorResetCheck(){
-		return ROBOT_TYPE.isReal() ? new ChanneledDigitalInput() : new ChooserDigitalInput("intakeResetCheck");
 	}
 
 	private VelocityPositionArm createTurret() {
@@ -304,16 +297,32 @@ public class Robot {
 		);
 	}
 
-	public IDigitalInput getIntakeRollerSensor() {
-		return intakeRollerSensor;
+	private IDigitalInput createIntakeSensorResetCheck(){
+		return ROBOT_TYPE.isReal() ? new ChanneledDigitalInput(new DigitalInput(IDs.DigitalInputsIDs.INTAKE_RESET_SENSOR),new Debouncer(IntakeRollerConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),IntakeRollerConstants.IS_RESET_CHECK_SENSOR_INVERTED) : new ChooserDigitalInput("intakeResetCheck");
+	}
+
+	private IDigitalInput createTurretResetCheckSensor(){
+		return ROBOT_TYPE.isReal() ? new ChanneledDigitalInput(new DigitalInput(IDs.DigitalInputsIDs.TURRET_RESET_SENSOR),new Debouncer(TurretConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),TurretConstants.IS_RESET_CHECK_SENSOR_INVERTED) : new ChooserDigitalInput("turretResetCheck");
+	}
+
+	private IDigitalInput createHoodResetCheckSensor(){
+		return ROBOT_TYPE.isReal() ? new ChanneledDigitalInput(new DigitalInput(IDs.DigitalInputsIDs.HOOD_RESET_SENOSR),new Debouncer(HoodConstants.RESET_CHECK_SENSOR_DEBOUNCE_TIME),HoodConstants.IS_RESET_CHECK_SENSOR_INVERTED) : new ChooserDigitalInput("hoodResetCheck");
 	}
 
 	public Roller getIntakeRoller() {
 		return intakeRoller;
 	}
 
+	public IDigitalInput getIntakeRollerSensor() {
+		return intakeRollerResetCheckSensor;
+	}
+
 	public Arm getTurret() {
 		return turret;
+	}
+
+	public IDigitalInput getTurretResetCheckSensor() {
+		return turretResetCheckSensor;
 	}
 
 	public FlyWheel getFlyWheel() {
@@ -334,6 +343,10 @@ public class Robot {
 
 	public Arm getHood() {
 		return hood;
+	}
+
+	public IDigitalInput getHoodResetCheckSensor(){
+		return hoodResetCheckSensor;
 	}
 
 	public IPoseEstimator getPoseEstimator() {
