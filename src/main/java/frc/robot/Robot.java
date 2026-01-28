@@ -5,10 +5,16 @@
 package frc.robot;
 
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.RobotManager;
+import frc.robot.hardware.digitalinput.DigitalInputInputs;
 import frc.robot.hardware.digitalinput.IDigitalInput;
+import frc.robot.hardware.digitalinput.channeled.ChanneledDigitalInput;
+import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
+import frc.robot.hardware.digitalinput.supplied.SuppliedDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
@@ -56,6 +62,9 @@ public class Robot {
 	private final Arm fourBar;
 	private final Arm hood;
 	private final IDigitalInput intakeRollerSensor;
+	private final IDigitalInput intakeRollerResetCheck;
+	private final IDigitalInput hoodResetCheck;
+	private final IDigitalInput flyWheelResetCheck;
 	private final VelocityRoller train;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
@@ -83,6 +92,7 @@ public class Robot {
 		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
 		Pair<Roller, IDigitalInput> intakeRollerAndDigitalInput = createIntakeRollers();
+		this.intakeRollerResetCheck = Robot.ROBOT_TYPE.isReal() ? new ChanneledDigitalInput(new DigitalInput(),new Debouncer()) : new ChooserDigitalInput("intakeRollerResetCheck")
 		this.intakeRoller = intakeRollerAndDigitalInput.getFirst();
 		this.intakeRollerSensor = intakeRollerAndDigitalInput.getSecond();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
@@ -179,6 +189,10 @@ public class Robot {
 			IntakeRollerConstants.IS_FORWARD_LIMIT_SWITCH,
 			IntakeRollerConstants.IS_SENSOR_INVERTED
 		);
+	}
+
+	private IDigitalInput createIntakeSensorResetCheck(){
+		return ROBOT_TYPE.isReal() ? new ChanneledDigitalInput() : new ChooserDigitalInput("intakeResetCheck");
 	}
 
 	private VelocityPositionArm createTurret() {
