@@ -55,10 +55,9 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
+//		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
 		usedJoystick.B.onTrue((robot.getIntakeStateHandler().openOrCloseIntake()));
-		usedJoystick.X.onTrue(robot.getFourBar().getCommandsBuilder().setTargetPosition(Rotation2d.fromDegrees(30)));
 		usedJoystick.Y.onTrue(robot.getIntakeStateHandler().setState(IntakeState.CLOSED));
 	}
 

@@ -50,15 +50,12 @@ public class IntakeStateHandler {
 	}
 
 	public Command openOrCloseIntake() {
-		return new InstantCommand(() -> {
-			if (currentState == IntakeState.CLOSED || currentState == IntakeState.INTAKE) {
-				Command command = currentState == IntakeState.CLOSED ? setState(IntakeState.INTAKE) : setState(IntakeState.CLOSED);
-				CommandScheduler.getInstance()
-					.schedule(
-						new ParallelCommandGroup(command, new RunCommand(() -> Logger.recordOutput("bbbb", TimeUtil.getCurrentTimeSeconds())))
-					);
-			}
-		}, fourBar, rollers);
+		return new ParallelCommandGroup(
+			new ConditionalCommand(setState(IntakeState.INTAKE), setState(IntakeState.CLOSED), () -> currentState == IntakeState.CLOSED),
+			new RunCommand(() -> Logger.recordOutput("bbbb", TimeUtil.getCurrentTimeSeconds())),
+			new RunCommand(() -> Logger.recordOutput("aaa", currentState)),
+			new RunCommand(() -> Logger.recordOutput("a", fourBar.getPosition().getDegrees()))
+		).withInterruptBehavior(Command.InterruptionBehavior.kCancelSelf);
 	}
 
 	public Command intake(IntakeState state) {
