@@ -8,9 +8,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Robot;
 import frc.robot.autonomous.AutonomousConstants;
-import frc.utils.DriverStationUtil;
+import frc.utils.HubUtil;
+import frc.utils.driverstation.DriverStationUtil;
 import frc.utils.alerts.AlertManager;
 import frc.utils.auto.PathPlannerAutoWrapper;
 import frc.utils.auto.PathPlannerUtil;
@@ -30,6 +32,7 @@ public class RobotManager extends LoggedRobot {
 	private final Robot robot;
 	private PathPlannerAutoWrapper autonomousCommand;
 	private int roborioCycles;
+	private static double teleopStartTimeSeconds = -1;
 
 	public RobotManager() {
 		if (Robot.ROBOT_TYPE.isReplay()) {
@@ -65,13 +68,13 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void autonomousInit() {
-		// robot.getRobotCommander().getSuperstructure().setIsSubsystemRunningIndependently(true);
-		// robot.getSwerve().getCommandsBuilder().setIsSubsystemRunningIndependently(true);
+		robot.getRobotCommander().getSuperstructure().setIsSubsystemRunningIndependently(true);
+		robot.getSwerve().getCommandsBuilder().setIsSubsystemRunningIndependently(true);
 
 		if (autonomousCommand == null) {
 			this.autonomousCommand = robot.getAutonomousCommand();
 		}
-		autonomousCommand.schedule();
+		CommandScheduler.getInstance().schedule(autonomousCommand);
 	}
 
 	@Override
@@ -79,14 +82,24 @@ public class RobotManager extends LoggedRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
-		// robot.getRobotCommander().getSuperstructure().setIsSubsystemRunningIndependently(false);
-		// robot.getSwerve().getCommandsBuilder().setIsSubsystemRunningIndependently(false);
+		robot.getRobotCommander().getSuperstructure().setIsSubsystemRunningIndependently(false);
+		robot.getSwerve().getCommandsBuilder().setIsSubsystemRunningIndependently(false);
+	}
+
+	@Override
+	public void teleopInit() {
+		teleopStartTimeSeconds = TimeUtil.getCurrentTimeSeconds();
+	}
+
+	public static double getTeleopStartTimeSeconds() {
+		return teleopStartTimeSeconds;
 	}
 
 	@Override
 	public void robotPeriodic() {
 		updateTimeRelatedData(); // Better to be first
 		JoysticksBindings.updateChassisDriverInputs();
+		HubUtil.refreshAlliances();
 		robot.periodic();
 		AlertManager.reportAlerts();
 	}
