@@ -11,7 +11,6 @@ import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import frc.robot.subsystems.constants.hood.HoodConstants;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.utils.InterpolationMap;
-import frc.utils.math.FieldMath;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Map;
