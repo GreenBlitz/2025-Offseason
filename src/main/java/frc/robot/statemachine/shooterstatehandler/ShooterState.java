@@ -5,7 +5,6 @@ public enum ShooterState {
 	STAY_IN_PLACE,
 	IDLE,
 	SHOOT,
-	PASS,
 	CALIBRATION
 
 }
