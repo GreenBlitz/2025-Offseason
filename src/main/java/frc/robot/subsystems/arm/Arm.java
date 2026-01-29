@@ -145,12 +145,11 @@ public class Arm extends GBSubsystem {
 	}
 
 	public void setSoftwareLimitSwitchEnableValue(boolean enableSoftwareLimits){
-		if (voltageRequest instanceof Phoenix6Request<Double>) {
-			if (((Phoenix6Request<Double>) voltageRequest).getControlRequest() instanceof VoltageOut) {
-				Logger.recordOutput("rafa123",enableSoftwareLimits);
-				((VoltageOut) ((Phoenix6Request<Double>) voltageRequest).getControlRequest()).IgnoreSoftwareLimits = enableSoftwareLimits;
-				motor.applyRequest(voltageRequest);
-			}
+		if (motor instanceof TalonFXMotor){
+			SoftwareLimitSwitchConfigs limitSwitchConfigs = new SoftwareLimitSwitchConfigs();
+			limitSwitchConfigs.ReverseSoftLimitEnable = false;
+			limitSwitchConfigs.ForwardSoftLimitEnable = false;
+			((TalonFXMotor) motor).getDevice().getConfigurator().apply(limitSwitchConfigs);
 		}
 
 	}
