@@ -34,12 +34,7 @@ public class ShootingChecks {
 		return isWithinDistance;
 	}
 
-	private static boolean isInAngleRange(
-		Translation2d robotPosition,
-		Rotation2d maxAngleFromCenter,
-		String logPath,
-		Translation2d Target
-	) {
+	private static boolean isInAngleRange(Translation2d robotPosition, Rotation2d maxAngleFromCenter, String logPath, Translation2d Target) {
 		Rotation2d AngleBetweenRobotAndTarget = FieldMath.getRelativeTranslation(Target, robotPosition).getAngle();
 		boolean isInAngleRange = Math.abs(AngleBetweenRobotAndTarget.getDegrees()) <= maxAngleFromCenter.getDegrees();
 		Logger.recordOutput(logPath + "/isInRange", isInAngleRange);
