@@ -117,7 +117,7 @@ public class ShootingCalculations {
 
 	public static Translation2d getOptimalPassingPosition(Pose2d robotPosition) {
 		Translation2d TurretPosition = getFieldRelativeTurretPosition(robotPosition);
-		return new Translation2d(5, 3);
+		return new Translation2d(3, 4);
 	}
 
 	private static final InterpolationMap<Double, Rotation2d> HOOD_INTERPOLATION_MAP_SHOOT_AT_HUB = new InterpolationMap<Double, Rotation2d>(
