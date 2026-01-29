@@ -23,5 +23,5 @@ public class ShooterConstants {
 		"Tunable/FlywheelRotations",
 		Rotation2d.fromRotations(0.0)
 	);
-	
+
 }

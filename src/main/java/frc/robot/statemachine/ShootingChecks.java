@@ -28,11 +28,13 @@ public class ShootingChecks {
 		return (turretPosition.getY() < ShooterConstants.MAX_Y_FOR_PASSING_AREA_OF_DANIEL
 			&& turretPosition.getY() > ShooterConstants.MIN_Y_FOR_PASSING_AREA_OF_DANIEL);
 	}
+
 	public static boolean isOnBumpOrUnderTrench(Pose2d robotPose) {
 		Translation2d turretPosition = ShootingCalculations.getFieldRelativeTurretPosition(robotPose);
 		Translation2d blueAllianceRelativeTurretPosition = Field.getAllianceRelative(turretPosition);
-		return (blueAllianceRelativeTurretPosition.getX() < Field.OUTPOST_TRENCH_MIDDLE.getX()+(Field.TRENCH_X_AXIS_LENGTH_METERS/2)
-			&& blueAllianceRelativeTurretPosition.getX() > ShooterConstants.MIN_Y_FOR_PASSING_AREA_OF_DANIEL-(Field.TRENCH_X_AXIS_LENGTH_METERS/2));
+		return (blueAllianceRelativeTurretPosition.getX() < Field.OUTPOST_TRENCH_MIDDLE.getX() + (Field.TRENCH_X_AXIS_LENGTH_METERS / 2)
+			&& blueAllianceRelativeTurretPosition.getX()
+				> ShooterConstants.MIN_Y_FOR_PASSING_AREA_OF_DANIEL - (Field.TRENCH_X_AXIS_LENGTH_METERS / 2));
 	}
 
 	private static boolean isWithinDistance(
@@ -120,7 +122,12 @@ public class ShootingChecks {
 			logPath
 		);
 
-		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget && isOnBumpOrUnderTrench(robotPose);
+		return isFlywheelReadyToShoot
+			&& isHoodAtPosition
+			&& isInRange
+			&& isWithinDistance
+			&& isAtTurretAtTarget
+			&& isOnBumpOrUnderTrench(robotPose);
 	}
 
 	private static boolean canContinueShooting(
@@ -164,7 +171,12 @@ public class ShootingChecks {
 			logPath
 		);
 
-		return isFlywheelReadyToShoot && isHoodAtPosition && isInRange && isWithinDistance && isAtTurretAtTarget && isOnBumpOrUnderTrench(robotPose);
+		return isFlywheelReadyToShoot
+			&& isHoodAtPosition
+			&& isInRange
+			&& isWithinDistance
+			&& isAtTurretAtTarget
+			&& isOnBumpOrUnderTrench(robotPose);
 	}
 
 	private static boolean calibrationIsReadyToShoot(
