@@ -38,7 +38,7 @@ public class ShootingCalculations {
 	) {
 		// Calculate distance from turret to target
 		Translation2d fieldRelativeTurretTranslation = getFieldRelativeTurretPosition(robotPose);
-		double turretToTargetDistanceMeters = target.getDistance(fieldRelativeTurretTranslation);
+		double distanceFromTurretToTargetMeters = target.getDistance(fieldRelativeTurretTranslation);
 		// Split Robot's Speeds
 		Translation2d robotTranslationalVelocity = new Translation2d(
 			fieldRelativeSpeeds.vxMetersPerSecond,
@@ -55,7 +55,7 @@ public class ShootingCalculations {
 		Translation2d turretPredictedPose = getPredictedTurretPose(
 			fieldRelativeTurretTranslation,
 			turretFieldRelativeVelocity,
-			turretToTargetDistanceMeters
+			distanceFromTurretToTargetMeters
 		);
 
 		Rotation2d predictedAngleToTarget = target.minus(turretPredictedPose).getAngle();
@@ -63,7 +63,7 @@ public class ShootingCalculations {
 		// Turret FeedForward
 		Translation2d targetRelativeTurretVelocity = turretFieldRelativeVelocity.rotateBy(predictedAngleToTarget.unaryMinus());
 		Rotation2d targetTurretVelocityCausedByTranslation = Rotation2d
-			.fromRadians(-targetRelativeTurretVelocity.getY() / turretToTargetDistanceMeters);
+			.fromRadians(-targetRelativeTurretVelocity.getY() / distanceFromTurretToTargetMeters);
 		Rotation2d turretTargetVelocityRPS = Rotation2d
 			.fromRadians(targetTurretVelocityCausedByTranslation.getRadians() - gyroYawAngularVelocity.getRadians());
 
@@ -78,7 +78,7 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/hoodTarget", hoodTargetPosition);
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
 		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
-		Logger.recordOutput(LOG_PATH + "/distanceFromHub", turretToTargetDistanceMeters);
+		Logger.recordOutput(LOG_PATH + "/distanceFromHub", distanceFromTurretToTargetMeters);
 		return new ShootingParams(flywheelTargetRPS, hoodTargetPosition, turretTargetPosition, turretTargetVelocityRPS, turretPredictedPose);
 	}
 
@@ -116,6 +116,7 @@ public class ShootingCalculations {
 	}
 
 	public static Translation2d getOptimalPassingPosition(Pose2d robotPosition) {
+	//to do
 		Translation2d TurretPosition = getFieldRelativeTurretPosition(robotPosition);
 		return new Translation2d(3, 4);
 	}

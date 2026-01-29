@@ -11,7 +11,6 @@ public class ShooterConstants {
 	public static final double MAX_Y_FOR_PASSING_AREA_OF_DANIEL = Field.getHubMiddle().getY() + 0.5;
 	public static final double MIN_Y_FOR_PASSING_AREA_OF_DANIEL = Field.getHubMiddle().getY() - 0.5;
 
-
 	public static final LoggedNetworkRotation2d turretCalibrationAngle = new LoggedNetworkRotation2d(
 		"Tunable/TurretAngle",
 		Rotation2d.fromDegrees(0.0)
@@ -24,6 +23,5 @@ public class ShooterConstants {
 		"Tunable/FlywheelRotations",
 		Rotation2d.fromRotations(0.0)
 	);
-
-
+	
 }
