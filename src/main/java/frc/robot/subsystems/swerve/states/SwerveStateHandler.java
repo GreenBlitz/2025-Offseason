@@ -98,7 +98,7 @@ public class SwerveStateHandler {
 
 	private ChassisSpeeds handlePassAimAssist(ChassisSpeeds speeds) {
 		Pose2d robotPose = robotPoseSupplier.get().get();
-		Translation2d passingTarget = ShootingCalculations.getOptimalPassingPosition(robotPoseSupplier.get().get().getTranslation());
+		Translation2d passingTarget = ShootingCalculations.getOptimalPassingPosition(robotPoseSupplier.get().get());
 		Rotation2d turretAngle = turretAngleSupplier.get().get();
 
 		double dY = passingTarget.getY() - robotPose.getY();

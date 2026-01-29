@@ -23,6 +23,12 @@ public class ShootingChecks {
 		return position.getX() > Field.getHubMiddle().getX();
 	}
 
+	public static boolean isInPassingAreaOfDenial(Pose2d robotPose) {
+		Translation2d turretPosition = ShootingCalculations.getFieldRelativeTurretPosition(robotPose);
+		return (turretPosition.getY() < ShooterConstants.MAX_Y_FOR_PASSING_AREA_OF_DANIEL
+			&& turretPosition.getY() > ShooterConstants.MIN_Y_FOR_PASSING_AREA_OF_DANIEL);
+	}
+
 	private static boolean isWithinDistance(
 		Translation2d robotPosition,
 		double maxShootingDistanceFromTargetMeters,
@@ -237,6 +243,7 @@ public class ShootingChecks {
 		double maxShootingDistanceFromTargetMeters
 	) {
 		String logPath = "Pass";
+		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
 		return isReadyToShoot(
 			robot,
 			flywheelVelocityToleranceRPS,
@@ -246,7 +253,7 @@ public class ShootingChecks {
 			maxShootingDistanceFromTargetMeters,
 			Field.getHubMiddle(),
 			logPath
-		);
+		) && !isInPassingAreaOfDenial(robotPose);
 	}
 
 	public static boolean canContinuePassing(
@@ -258,6 +265,7 @@ public class ShootingChecks {
 		double maxShootingDistanceFromTargetMeters
 	) {
 		String logPath = "Passing";
+		Pose2d robotPose = robot.getPoseEstimator().getEstimatedPose();
 		return canContinueShooting(
 			robot,
 			flywheelVelocityToleranceRPS,
@@ -267,7 +275,7 @@ public class ShootingChecks {
 			maxShootingDistanceFromTargetMeters,
 			Field.getHubMiddle(),
 			logPath
-		);
+		) && !isInPassingAreaOfDenial(robotPose);
 	}
 
 	public static boolean calibrationIsReadyToPass(Robot robot, Rotation2d flywheelVelocityToleranceRPS, Rotation2d hoodPositionTolerance) {
