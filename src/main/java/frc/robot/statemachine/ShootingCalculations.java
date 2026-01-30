@@ -23,7 +23,8 @@ public class ShootingCalculations {
 		HoodConstants.MINIMUM_POSITION,
 		TurretConstants.MIN_POSITION,
 		new Rotation2d(),
-		new Translation2d()
+		new Translation2d(),
+		Field.getHubMiddle()
 	);
 
 	public static ShootingParams getShootingParams() {
@@ -81,7 +82,7 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
 		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/distanceFromHub", distanceFromTurretToTargetMeters);
-		return new ShootingParams(flywheelTargetRPS, hoodTargetPosition, turretTargetPosition, turretTargetVelocityRPS, turretPredictedPose);
+		return new ShootingParams(flywheelTargetRPS, hoodTargetPosition, turretTargetPosition, turretTargetVelocityRPS, turretPredictedPose, target);
 	}
 
 	private static ShootingParams calculateShootingParams(

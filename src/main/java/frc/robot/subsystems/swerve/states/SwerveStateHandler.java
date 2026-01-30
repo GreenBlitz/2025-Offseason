@@ -52,7 +52,7 @@ public class SwerveStateHandler {
 			reportMissingSupplier("robot pose");
 			return speeds;
 		}
-		if (swerveState.getAimAssist() == AimAssist.LOOK_AT_HUB) {
+		if (swerveState.getAimAssist() == AimAssist.LOOK_AT_TARGET) {
 			if (isTurretMoveLegalSupplier.isEmpty()) {
 				reportMissingSupplier("is turret move legal");
 				return speeds;
@@ -62,47 +62,19 @@ public class SwerveStateHandler {
 				return speeds;
 			}
 			if (isTurretMoveLegalSupplier.get().get() == false) {
-				return handleLookAtHubAimAssist(speeds);
-			}
-		}
-
-		if (swerveState.getAimAssist() == AimAssist.LOOK_AT_PASSING_TARGET) {
-			if (isTurretMoveLegalSupplier.isEmpty()) {
-				reportMissingSupplier("is turret move legal");
-				return speeds;
-			}
-			if (turretAngleSupplier.isEmpty()) {
-				reportMissingSupplier("turret angle");
-				return speeds;
-			}
-			if (isTurretMoveLegalSupplier.get().get() == false) {
-				return handlePassAimAssist(speeds);
+				return handleLookAtTargetAimAssist(speeds);
 			}
 		}
 		return speeds;
 	}
 
-	private ChassisSpeeds handleLookAtHubAimAssist(ChassisSpeeds speeds) {
+	private ChassisSpeeds handleLookAtTargetAimAssist(ChassisSpeeds speeds) {
 		Pose2d robotPose = robotPoseSupplier.get().get();
-		Translation2d hub = Field.getHubMiddle();
+		Translation2d target = ShootingCalculations.getShootingParams().targetPosition();
 		Rotation2d turretAngle = turretAngleSupplier.get().get();
 
-		double dY = hub.getY() - robotPose.getY();
-		double dX = hub.getX() - robotPose.getX();
-
-		Rotation2d fieldRelativeTurretAngle = turretAngle.plus(robotPose.getRotation());
-		Rotation2d targetHeading = Rotation2d.fromRadians(Math.atan2(dY, dX));
-
-		return AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);
-	}
-
-	private ChassisSpeeds handlePassAimAssist(ChassisSpeeds speeds) {
-		Pose2d robotPose = robotPoseSupplier.get().get();
-		Translation2d passingTarget = ShootingCalculations.getOptimalPassingPosition(robotPoseSupplier.get().get());
-		Rotation2d turretAngle = turretAngleSupplier.get().get();
-
-		double dY = passingTarget.getY() - robotPose.getY();
-		double dX = passingTarget.getX() - robotPose.getX();
+		double dY = target.getY() - robotPose.getY();
+		double dX = target.getX() - robotPose.getX();
 
 		Rotation2d fieldRelativeTurretAngle = turretAngle.plus(robotPose.getRotation());
 		Rotation2d targetHeading = Rotation2d.fromRadians(Math.atan2(dY, dX));
