@@ -114,7 +114,7 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	private boolean calibrationCanContinueToShoot() {
+	private boolean calibrationCanContinueShooting() {
 		return ShootingChecks.calibrationCanContinueShooting(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SHOOTING,
@@ -136,7 +136,7 @@ public class RobotCommander extends GBSubsystem {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
 				driveWith(RobotState.CALIBRATION_PRE_SHOOT).until(this::calibrationIsReadyToShoot),
-				driveWith(RobotState.CALIBRATION_SHOOT).until(() -> !calibrationCanContinueToShoot())
+				driveWith(RobotState.CALIBRATION_SHOOT).until(() -> !calibrationCanContinueShooting())
 			)
 		);
 	}
