@@ -88,7 +88,7 @@ public class RobotCommander extends GBSubsystem {
 
 	private boolean isReadyToShoot() {
 		if (ShootingChecks.isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation())) {
-			return ShootingChecks.isReadyToShootAtHub(
+			return ShootingChecks.isReadyToShoot(
 				robot,
 				StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SHOOTING_AT_HUB,
 				StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SHOOTING_AT_HUB,
@@ -98,7 +98,7 @@ public class RobotCommander extends GBSubsystem {
 			);
 		}
 
-		return ShootingChecks.isReadyToPass(
+		return ShootingChecks.isReadyToShoot(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING,
@@ -110,7 +110,7 @@ public class RobotCommander extends GBSubsystem {
 
 	private boolean canContinueShooting() {
 		if (ShootingChecks.isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation())) {
-			return ShootingChecks.canContinueShootingAtHub(
+			return ShootingChecks.canContinueShooting(
 				robot,
 				StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SHOOTING_AT_HUB,
 				StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SHOOTING_AT_HUB,
@@ -120,7 +120,7 @@ public class RobotCommander extends GBSubsystem {
 			);
 		}
 
-		return ShootingChecks.canContinuePassing(
+		return ShootingChecks.canContinueShooting(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_PASSING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_PASSING,
@@ -132,14 +132,14 @@ public class RobotCommander extends GBSubsystem {
 
 	private boolean calibrationIsReadyToShoot() {
 		if (ShootingChecks.isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation())) {
-			return ShootingChecks.calibrationIsReadyToShootAtHub(
+			return ShootingChecks.calibrationIsReadyToShoot(
 				robot,
 				StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SHOOTING_AT_HUB,
 				StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SHOOTING_AT_HUB
 			);
 		}
 
-		return ShootingChecks.calibrationIsReadyToPass(
+		return ShootingChecks.calibrationIsReadyToShoot(
 			robot,
 			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING,
 			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING
