@@ -1,16 +1,14 @@
 package frc.robot.statemachine.superstructure;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.StateMachineConstants;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.funnelstatehandler.FunnelStateHandler;
-import frc.robot.statemachine.intakestatehandler.IntakeState;
-import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
+import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.Supplier;
@@ -18,25 +16,26 @@ import java.util.function.Supplier;
 public class Superstructure {
 
 	private final Robot robot;
-	private final TargetChecks targetChecks;
 	private boolean isSubsystemRunningIndependently;
 	private final String logPath;
 
 	private RobotState currentState;
 
-	private final IntakeStateHandler intakeStateHandler;
 	private final FunnelStateHandler funnelStateHandler;
 	private final ShooterStateHandler shooterStateHandler;
 
-	public Superstructure(String logPath, Robot robot, Supplier<Pose2d> robotPoseSupplier) {
+	public Superstructure(String logPath, Robot robot, Supplier<ShootingParams> shootingParamsSupplier) {
 		this.robot = robot;
 		this.logPath = logPath;
 
-		this.funnelStateHandler = new FunnelStateHandler(robot.getOmni(), robot.getBelly(), logPath, robot.getFunnelDigitalInput());
-		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), robot.getIntakeRollerSensor(), logPath);
-		this.shooterStateHandler = new ShooterStateHandler(robot.getTurret(), robot.getHood(), robot.getFlyWheel(), robotPoseSupplier, logPath);
-
-		this.targetChecks = new TargetChecks(this);
+		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath);
+		this.shooterStateHandler = new ShooterStateHandler(
+			robot.getTurret(),
+			robot.getHood(),
+			robot.getFlyWheel(),
+			shootingParamsSupplier,
+			logPath
+		);
 
 		this.currentState = RobotState.STAY_IN_PLACE;
 		this.isSubsystemRunningIndependently = false;
@@ -44,10 +43,6 @@ public class Superstructure {
 
 	public FunnelStateHandler getFunnelStateHandler() {
 		return funnelStateHandler;
-	}
-
-	public IntakeStateHandler getIntakeStateHandler() {
-		return intakeStateHandler;
 	}
 
 	public ShooterStateHandler getShooterStateHandler() {
@@ -60,21 +55,15 @@ public class Superstructure {
 
 	public boolean isSubsystemRunningIndependently() {
 		return isSubsystemRunningIndependently
-			|| robot.getIntakeRoller().getCommandsBuilder().isSubsystemRunningIndependently()
 			|| robot.getFlyWheel().getCommandBuilder().isSubsystemRunningIndependently()
-			|| robot.getBelly().getCommandsBuilder().isSubsystemRunningIndependently()
 			|| robot.getHood().getCommandsBuilder().isSubsystemRunningIndependently()
-			|| robot.getOmni().getCommandsBuilder().isSubsystemRunningIndependently()
-			|| robot.getTurret().getCommandsBuilder().isSubsystemRunningIndependently()
-			|| robot.getFourBar().getCommandsBuilder().isSubsystemRunningIndependently();
+			|| robot.getTrain().getCommandsBuilder().isSubsystemRunningIndependently()
+			|| robot.getBelly().getCommandsBuilder().isSubsystemRunningIndependently()
+			|| robot.getTurret().getCommandsBuilder().isSubsystemRunningIndependently();
 	}
 
 	public void setIsSubsystemRunningIndependently(boolean isSubsystemRunningIndependently) {
 		this.isSubsystemRunningIndependently = isSubsystemRunningIndependently;
-	}
-
-	public TargetChecks getTargetChecks() {
-		return targetChecks;
 	}
 
 	public Command setState(RobotState robotState) {
@@ -84,72 +73,44 @@ public class Superstructure {
 			switch (robotState) {
 				case STAY_IN_PLACE -> stayInPlace();
 				case DRIVE -> idle();
-				case INTAKE -> intake();
-				case PRE_SHOOT -> preShoot();
-				case SHOOT -> shoot();
-				case SHOOT_WHILE_INTAKE -> shootWhileIntake();
+				case PRE_SHOOT, PRE_PASS -> preShoot();
+				case SHOOT, PASS -> shoot();
+				case CALIBRATION_PRE_SHOOT -> calibrationPreShoot();
+				case CALIBRATION_SHOOT -> calibrationShoot();
 			}
 		);
 	}
 
 	private Command stayInPlace() {
-		return new ParallelCommandGroup(
-			shooterStateHandler.setState(ShooterState.STAY_IN_PLACE),
-			funnelStateHandler.setState(FunnelState.STOP),
-			intakeStateHandler.setState(IntakeState.STAY_IN_PLACE)
-		);
+		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.STAY_IN_PLACE), funnelStateHandler.setState(FunnelState.STOP));
 	}
 
 	private Command idle() {
-		return new ParallelCommandGroup(
-			shooterStateHandler.setState(ShooterState.IDLE),
-			funnelStateHandler.setState(FunnelState.DRIVE),
-			intakeStateHandler.setState(IntakeState.CLOSED)
-		);
-	}
-
-	private Command intake() {
-		return new ParallelCommandGroup(
-			shooterStateHandler.setState(ShooterState.IDLE),
-			funnelStateHandler.setState(FunnelState.INTAKE),
-			intakeStateHandler.setState(IntakeState.INTAKE)
-		);
+		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.IDLE), funnelStateHandler.setState(FunnelState.DRIVE));
 	}
 
 	private Command preShoot() {
-		return new ParallelCommandGroup(
-			shooterStateHandler.setState(ShooterState.SHOOT),
-			funnelStateHandler.setState(FunnelState.DRIVE),
-			intakeStateHandler.setState(IntakeState.CLOSED)
-		);
+		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.SHOOT), funnelStateHandler.setState(FunnelState.DRIVE));
 	}
 
 	private Command shoot() {
 		return new SequentialCommandGroup(
-			new ParallelDeadlineGroup(
-				funnelStateHandler.setState(FunnelState.SHOOT),
-				shooterStateHandler.setState(ShooterState.SHOOT),
-				intakeStateHandler.setState(IntakeState.CLOSED)
-			),
-			new ParallelCommandGroup(
-				intakeStateHandler.setState(IntakeState.CLOSED),
-				funnelStateHandler.setState(FunnelState.SHOOT),
-				shooterStateHandler.setState(ShooterState.SHOOT)
-			).withTimeout(StateMachineConstants.SECONDS_TO_WAIT_AFTER_SHOOT)
+			new ParallelDeadlineGroup(funnelStateHandler.setState(FunnelState.SHOOT), shooterStateHandler.setState(ShooterState.SHOOT)),
+			new ParallelCommandGroup(funnelStateHandler.setState(FunnelState.SHOOT), shooterStateHandler.setState(ShooterState.SHOOT))
+				.withTimeout(StateMachineConstants.SECONDS_TO_WAIT_AFTER_SHOOT)
 		);
 	}
 
-	private Command shootWhileIntake() {
-		return new ParallelCommandGroup(
-			shooterStateHandler.setState(ShooterState.SHOOT),
-			funnelStateHandler.setState(FunnelState.SHOOT_WHILE_INTAKE),
-			intakeStateHandler.setState(IntakeState.INTAKE)
-		);
+	private Command calibrationPreShoot() {
+		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.CALIBRATION), funnelStateHandler.setState(FunnelState.DRIVE));
+	}
+
+	private Command calibrationShoot() {
+		return new ParallelDeadlineGroup(shooterStateHandler.setState(ShooterState.CALIBRATION), funnelStateHandler.setState(FunnelState.SHOOT));
 	}
 
 	public void periodic() {
 		funnelStateHandler.periodic();
-		intakeStateHandler.periodic();
 		Logger.recordOutput(logPath + "/IsSubsystemRunningIndependently", isSubsystemRunningIndependently());
 	}
 

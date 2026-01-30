@@ -1,23 +1,30 @@
 package frc.robot.statemachine;
 
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import frc.robot.Robot;
-import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
+import frc.robot.statemachine.intakestatehandler.IntakeStateHandler;
 import frc.robot.statemachine.superstructure.Superstructure;
-import frc.robot.statemachine.superstructure.TargetChecks;
 import frc.robot.subsystems.GBSubsystem;
-import frc.robot.subsystems.constants.flywheel.Constants;
-import frc.robot.subsystems.constants.hood.HoodConstants;
+
 import frc.robot.subsystems.swerve.Swerve;
+import org.littletonrobotics.junction.Logger;
+
 import java.util.Set;
-import java.util.function.Supplier;
 
 public class RobotCommander extends GBSubsystem {
 
 	private final Robot robot;
 	private final Swerve swerve;
 	private final Superstructure superstructure;
-	private final PositionTargets positionTargets;
+	private final IntakeStateHandler intakeStateHandler;
 
 	private RobotState currentState;
 
@@ -25,32 +32,29 @@ public class RobotCommander extends GBSubsystem {
 		super(logPath);
 		this.robot = robot;
 		this.swerve = robot.getSwerve();
-		this.positionTargets = new PositionTargets(robot);
-		this.superstructure = new Superstructure("StateMachine/Superstructure", robot, () -> robot.getPoseEstimator().getEstimatedPose());
+		this.superstructure = new Superstructure("StateMachine/Superstructure", robot, () -> ShootingCalculations.getShootingParams());
+		this.intakeStateHandler = new IntakeStateHandler(
+			robot.getFourBar(),
+			robot.getIntakeRoller(),
+			robot.getIntakeRollerSensor(),
+			"/IntakeStateHandler"
+		);
 		this.currentState = RobotState.STAY_IN_PLACE;
 
 		setDefaultCommand(
 			new ConditionalCommand(
 				asSubsystemCommand(Commands.none(), "Disabled"),
 				new InstantCommand(
-					() -> new DeferredCommand(
-						() -> endState(currentState),
-						Set.of(
-							this,
-							swerve,
-							robot.getIntakeRoller(),
-							robot.getTurret(),
-							robot.getFourBar(),
-							robot.getBelly(),
-							robot.getHood(),
-							robot.getOmni(),
-							robot.getFlyWheel()
+					() -> CommandScheduler.getInstance()
+						.schedule(
+							new DeferredCommand(
+								() -> endState(currentState),
+								Set.of(this, swerve, robot.getTurret(), robot.getHood(), robot.getTrain(), robot.getBelly(), robot.getFlyWheel())
+							)
 						)
-					).schedule()
 				),
 				this::isSubsystemRunningIndependently
 			)
-
 		);
 	}
 
@@ -82,26 +86,106 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	private boolean isReadyToShoot() {
-		Supplier<Double> distanceFromTower = () -> ScoringHelpers.getDistanceFromClosestTower(robot.getPoseEstimator().getEstimatedPose());
-		return TargetChecks.isReadyToShoot(
+		Logger.recordOutput("isReadyToShoot", ShootingChecks.isReadyToShoot(
+				robot,
+				StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SHOOTING,
+				StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SHOOTING,
+				StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_START_SHOOTING,
+				StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
+				StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
+		));
+		return ShootingChecks.isReadyToShoot(
 			robot,
-			ShooterStateHandler.flywheelInterpolation(distanceFromTower).get(),
-			Constants.FLYWHEEL_VELOCITY_TOLERANCE_RPS,
-			ShooterStateHandler.hoodInterpolation((distanceFromTower)).get(),
-			HoodConstants.HOOD_POSITION_TOLERANCE,
-			StateMachineConstants.TURRET_LOOK_AT_TOWER_TOLERANCE,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SHOOTING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SHOOTING,
+			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_START_SHOOTING,
 			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
-			ScoringHelpers.getClosestTower(robot.getPoseEstimator().getEstimatedPose()).getPose(),
 			StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
 		);
 	}
 
-	public Command shootSequence() {
-		return new SequentialCommandGroup(driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot), driveWith(RobotState.SHOOT));
+	private boolean isReadyToPass() {
+		return ShootingChecks.isReadyToPass(
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING,
+			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_START_PASSING,
+			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
+			StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
+		);
 	}
 
-	public Command shootWhileIntakeSequence() {
-		return new SequentialCommandGroup(driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot), driveWith(RobotState.SHOOT_WHILE_INTAKE));
+	private boolean canContinueShooting() {
+		Logger.recordOutput("canContinueShooting",ShootingChecks.canContinueShooting(
+				robot,
+				StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SHOOTING,
+				StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SHOOTING,
+				StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_CONTINUE_SHOOTING,
+				StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
+				StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
+		));
+		return ShootingChecks.canContinueShooting(
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SHOOTING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SHOOTING,
+			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_CONTINUE_SHOOTING,
+			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
+			StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
+		);
+	}
+
+	private boolean canContinuePassing() {
+		return ShootingChecks.canContinuePassing(
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_PASSING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_PASSING,
+			StateMachineConstants.TURRET_LOOK_AT_HUB_TOLERANCE_TO_CONTINUE_PASSING,
+			StateMachineConstants.MAX_ANGLE_FROM_GOAL_CENTER,
+			StateMachineConstants.MAX_DISTANCE_TO_SHOOT_METERS
+		);
+	}
+
+	private boolean calibrationIsReadyToShoot() {
+		return ShootingChecks.calibrationIsReadyToShoot(
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_SHOOTING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_SHOOTING
+		);
+	}
+
+	private boolean calibrationIsReadyToPass() {
+		return ShootingChecks.calibrationIsReadyToPass(
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_START_PASSING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_START_PASSING
+		);
+	}
+
+	public Command shootSequence() {
+		return new RepeatCommand(
+			new SequentialCommandGroup(
+				driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
+				driveWith(RobotState.SHOOT).until(() -> (!canContinueShooting()))
+			)
+		);
+	}
+
+	public Command passSequence() {
+		return new RepeatCommand(
+			new SequentialCommandGroup(
+				driveWith(RobotState.PRE_PASS).until(this::isReadyToPass),
+				driveWith(RobotState.PASS).until(() -> (!canContinuePassing()))
+			)
+		);
+	}
+
+	public Command calibrationShootSequence() {
+		return new RepeatCommand(
+			new SequentialCommandGroup(
+				driveWith(RobotState.CALIBRATION_PRE_SHOOT).until(this::calibrationIsReadyToShoot),
+				driveWith(RobotState.CALIBRATION_SHOOT).until(() -> !canContinueShooting())
+			)
+		);
 	}
 
 	private Command asSubsystemCommand(Command command, RobotState state) {
@@ -111,9 +195,14 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-			case DRIVE, INTAKE, SHOOT, SHOOT_WHILE_INTAKE -> driveWith(RobotState.DRIVE);
+			case DRIVE, SHOOT, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT, PASS -> driveWith(RobotState.DRIVE);
 			case PRE_SHOOT -> driveWith(RobotState.PRE_SHOOT);
+			case PRE_PASS -> driveWith(RobotState.PRE_PASS);
 		};
+	}
+
+	public IntakeStateHandler getIntakeStateHandler() {
+		return intakeStateHandler;
 	}
 
 }

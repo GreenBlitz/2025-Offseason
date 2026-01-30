@@ -1,10 +1,10 @@
-package frc.utils;
+package frc.utils.driverstation;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class DriverStationUtil {
 
-	private static final DriverStation.Alliance DEFAULT_ALLIANCE = DriverStation.Alliance.Red;
+	public static final DriverStation.Alliance DEFAULT_ALLIANCE = DriverStation.Alliance.Red;
 
 	public static DriverStation.Alliance getAlliance() {
 		return DriverStation.getAlliance().orElse(DEFAULT_ALLIANCE);
@@ -31,7 +31,7 @@ public class DriverStationUtil {
 	}
 
 	public static boolean isTeleop() {
-		return DriverStation.isTeleop();
+		return !(DriverStation.isAutonomous() || DriverStation.isTest() || DriverStation.isDisabled());
 	}
 
 	public static boolean isTeleopEnabled() {
