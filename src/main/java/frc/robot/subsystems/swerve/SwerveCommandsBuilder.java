@@ -160,12 +160,10 @@ public class SwerveCommandsBuilder extends GBCommandsBuilder {
 
 	public Command driveByDriversInputs(SwerveState state) {
 		return swerve.asSubsystemCommand(
-			new SequentialCommandGroup(
-				new InstantCommand(swerve::resetPIDControllers),
-				new RunCommand(
-					() -> CommandScheduler.getInstance()
-						.schedule(new DeferredCommand(() -> new InstantCommand(() -> swerve.driveByDriversTargetsPowers(state)), Set.of(swerve)))
-				)
+			new InitExecuteCommand(
+				swerve::resetPIDControllers,
+				() -> CommandScheduler.getInstance()
+					.schedule(new DeferredCommand(() -> new InstantCommand(() -> swerve.driveByDriversTargetsPowers(state)), Set.of(swerve)))
 			),
 			"Drive by drivers inputs with state"
 		);
