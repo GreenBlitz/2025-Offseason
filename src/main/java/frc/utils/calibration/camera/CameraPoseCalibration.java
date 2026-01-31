@@ -41,9 +41,10 @@ public class CameraPoseCalibration extends Command {
 	 *
 	 * @param cameraName                      - name of the limelight in use
 	 * @param neededNumberOfCycles            - number of measurements decided by user
-	 * @param robotXAxisDistanceFromTag       - distance of the middle of the robot from the tag , "real life measurement"
-	 * @param tagCenterHeightFromGroundMeters - distance of the middle of the tag from the floor , "real life measurement"
+	 * @param robotXAxisDistanceFromTag       - distance of the middle of the robot from the tag, "real life measurement"
+	 * @param tagCenterHeightFromGroundMeters - distance of the middle of the tag from the floor, "real life measurement"
 	 * @param tagPoseFieldRelative            - position of the tag in the apriltag map on the camera
+	 * @param robotRelativeTagYaw             - the tag's yaw relative to the robot's front, "real life measurement"
 	 *
 	 */
 	public CameraPoseCalibration(
