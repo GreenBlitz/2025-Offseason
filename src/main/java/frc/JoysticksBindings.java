@@ -57,7 +57,7 @@ public class JoysticksBindings {
 		usedJoystick.X.onTrue(robot.getHood().getCommandsBuilder().setVoltageWithoutLimit(5.0,() -> robot.getHoodResetCheckInput()));
 		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getHood().getCommandsBuilder().setIsSubsystemRunningIndependently(true),robot.getHood()));
 		usedJoystick.A.onTrue(robot.getHood().getCommandsBuilder().setVoltage(5.0));
-		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.RESET_SUBSYSTEMS));
+		usedJoystick.B.onTrue(robot.getHood().getCommandsBuilder().setVoltage(-5.0));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
 		usedJoystick.L1.onTrue(robot.getRobotCommander().driveWith(RobotState.INTAKE));
 		usedJoystick.getAxisAsButton(Axis.LEFT_TRIGGER).onTrue(robot.getRobotCommander().shootWhileIntakeSequence());

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -139,19 +140,19 @@ public class Robot {
 	}
 
 	public void resetSubsystems() {
-		if (DriverStation.isEnabled()) {
-			return;
-		}
-
-		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians()) {
-			hood.setPosition(HoodConstants.MINIMUM_POSITION);
-		}
-		if (TurretConstants.MIN_POSITION.getRadians() > turret.getPosition().getRadians()) {
-			turret.setPosition(TurretConstants.MIN_POSITION);
-		}
-		if (FourBarConstants.MAXIMUM_POSITION.getRadians() < fourBar.getPosition().getRadians()) {
-			fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
-		}
+//		if (DriverStation.isEnabled()) {
+//			return;
+//		}
+//
+//		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians()) {
+//			hood.setPosition(HoodConstants.MINIMUM_POSITION);
+//		}
+//		if (TurretConstants.MIN_POSITION.getRadians() > turret.getPosition().getRadians()) {
+//			turret.setPosition(TurretConstants.MIN_POSITION);
+//		}
+//		if (FourBarConstants.MAXIMUM_POSITION.getRadians() < fourBar.getPosition().getRadians()) {
+//			fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
+//		}
 	}
 
 	private void updateResetCheckSensors(){
@@ -279,7 +280,7 @@ public class Robot {
 			HoodConstants.CURRENT_LIMIT,
 			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
 			HoodConstants.ARBITRARY_FEEDFORWARD,
-			HoodConstants.FORWARD_SOFTWARE_LIMIT,
+				Rotation2d.fromDegrees(150),
 			HoodConstants.BACKWARD_SOFTWARE_LIMIT,
 			hoodSimulationConstants,
 			HoodConstants.DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE,
