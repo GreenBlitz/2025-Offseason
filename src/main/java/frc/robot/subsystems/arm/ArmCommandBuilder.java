@@ -49,7 +49,7 @@ public class ArmCommandBuilder extends GBCommandsBuilder {
 	}
 
 	public Command setVoltageWithoutLimit(double voltage,BooleanSupplier isFinished) {
-		return arm.asSubsystemCommand(new FunctionalCommand(() -> arm.setSoftwareLimitSwitchEnableValue(true),() -> arm.setVoltage(voltage),(enableSensors) -> arm.setSoftwareLimitSwitchEnableValue(false), isFinished), "Set voltage to: " + voltage + " without limits");
+		return arm.asSubsystemCommand(new FunctionalCommand(() -> arm.setSoftwareLimitSwitchEnableValue(true),() -> arm.setVoltage(voltage),((enableSensors) -> {arm.setSoftwareLimitSwitchEnableValue(false);arm.stayInPlace();}), isFinished), "Set voltage to: " + voltage + " without limits");
 	}
 
 }

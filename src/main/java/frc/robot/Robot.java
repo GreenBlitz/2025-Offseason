@@ -182,8 +182,6 @@ public class Robot {
 		resetSubsystems();
 		simulationManager.logPoses();
 
-		robotCommander.getIntakeStateHandler().periodic();
-
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
 		updateResetCheckSensors();
@@ -384,6 +382,7 @@ public class Robot {
 	}
 
 	public Command getResetSubsystemsCommand(){
-		return new ParallelCommandGroup(turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE,this::getTurretResetCheckInput),fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE,this::getFourBarInput),hood.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE,this::getHoodResetCheckInput));
+		return new ParallelCommandGroup(turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE,this::getIsTurretReset),fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE,this::getIsFourBarReset),hood.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE,this::getIsHoodReset));
 	}
+
 }

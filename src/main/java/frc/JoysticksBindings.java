@@ -54,7 +54,7 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-		usedJoystick.X.onTrue(robot.getHood().getCommandsBuilder().setVoltageWithoutLimit(5.0,() -> robot.getHoodResetCheckInput()));
+		usedJoystick.X.onTrue(robot.getResetSubsystemsCommand());
 		usedJoystick.Y.onTrue(new InstantCommand(() -> robot.getHood().getCommandsBuilder().setIsSubsystemRunningIndependently(true),robot.getHood()));
 		usedJoystick.A.onTrue(robot.getHood().getCommandsBuilder().setVoltage(5.0));
 		usedJoystick.B.onTrue(robot.getHood().getCommandsBuilder().setVoltage(-5.0));

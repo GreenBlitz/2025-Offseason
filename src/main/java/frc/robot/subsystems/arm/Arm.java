@@ -2,6 +2,7 @@ package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -145,15 +146,12 @@ public class Arm extends GBSubsystem {
 	}
 
 	public void setSoftwareLimitSwitchEnableValue(boolean enableSoftwareLimits){
-		if (motor instanceof TalonFXMotor){
-			Logger.recordOutput("5","rafa123");
-			SoftwareLimitSwitchConfigs limitSwitchConfigs = new SoftwareLimitSwitchConfigs();
-			limitSwitchConfigs.ReverseSoftLimitEnable = false;
-			limitSwitchConfigs.ForwardSoftLimitEnable = false;
-			((TalonFXMotor) motor).getDevice().getConfigurator().apply(limitSwitchConfigs);
-//			Logger.recordOutput("rafa123",((TalonFXMotor) motor).getDevice());
+		if (voltageRequest instanceof Phoenix6Request<Double>) {
+			if (((Phoenix6Request<Double>) voltageRequest).getControlRequest() instanceof VoltageOut) {
+				((VoltageOut) ((Phoenix6Request<Double>) voltageRequest).getControlRequest()).IgnoreSoftwareLimits = enableSoftwareLimits;
+				motor.applyRequest(voltageRequest);
+			}
 		}
-
 	}
 
 }
