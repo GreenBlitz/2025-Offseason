@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.littletonrobotics.junction.Logger;
 
 public class HoodConstants {
 
@@ -39,8 +40,8 @@ public class HoodConstants {
 	public static final double MOMENT_OF_INERTIA = 0.001;
 	public static final double HOOD_LENGTH_METERS = 0.3;
 	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(200);
-	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(20);
-	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(BACKWARD_SOFTWARE_LIMIT.getDegrees() - 10);
+	public static final Rotation2d BACKWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(50);
+	public static final Rotation2d MINIMUM_POSITION = Rotation2d.fromDegrees(BACKWARD_SOFTWARE_LIMIT.getDegrees() + 10);
 	public static final Rotation2d MAXIMUM_POSITION = Rotation2d.fromDegrees(FORWARD_SOFTWARE_LIMIT.getDegrees());
 	public static final Rotation2d DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE = Rotation2d.fromRotations(3);
 	public static final Rotation2d DEFAULT_MAX_VELOCITY_PER_SECOND = Rotation2d.fromRotations(3);
@@ -50,5 +51,8 @@ public class HoodConstants {
 	public static final double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.5;
 	public static final double RESET_HOOD_VOLTAGE = 1;
 
+	static {
+		Logger.recordOutput("rara",MINIMUM_POSITION);
+	}
 }
 
