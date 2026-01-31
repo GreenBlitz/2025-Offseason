@@ -280,7 +280,7 @@ public class Robot {
 			HoodConstants.CURRENT_LIMIT,
 			RobotConstants.DEFAULT_SIGNALS_FREQUENCY_HERTZ,
 			HoodConstants.ARBITRARY_FEEDFORWARD,
-				Rotation2d.fromDegrees(150),
+				HoodConstants.FORWARD_SOFTWARE_LIMIT,
 			HoodConstants.BACKWARD_SOFTWARE_LIMIT,
 			hoodSimulationConstants,
 			HoodConstants.DEFAULT_MAX_ACCELERATION_PER_SECOND_SQUARE,
