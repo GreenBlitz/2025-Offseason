@@ -23,7 +23,7 @@ public class ShooterStateHandler {
 		this.hood = hood;
 		this.flyWheel = flyWheel;
 		this.shootingParamsSupplier = shootingParamsSupplier;
-		this.currentState = ShooterState.IDLE;
+		this.currentState = ShooterState.STAY_IN_PLACE;
 		this.logPath = logPath + "/ShooterStateHandler";
 	}
 
