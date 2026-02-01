@@ -1,7 +1,6 @@
 package frc.robot.statemachine.shooterstatehandler;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
@@ -114,7 +113,17 @@ public class ShooterStateHandler {
 	}
 
 	private Command resetSubsystems() {
-		return !hasBeenReset.getAsBoolean() ? new ParallelCommandGroup(turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE).until(() -> turretResetCheckInput.debouncedValue),hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE).until(() -> hoodResetCheckInput.debouncedValue),flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRPS())) : new InstantCommand();
+		return !hasBeenReset.getAsBoolean()
+			? new ParallelCommandGroup(
+				turret.getCommandsBuilder()
+					.setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE)
+					.until(() -> turretResetCheckInput.debouncedValue),
+				hood.getCommandsBuilder()
+					.setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE)
+					.until(() -> hoodResetCheckInput.debouncedValue),
+				flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRPS())
+			)
+			: new InstantCommand();
 	}
 
 	private Command calibration() {
@@ -125,7 +134,15 @@ public class ShooterStateHandler {
 		);
 	}
 
-	private void periodic(){
+	public boolean isTurretReset() {
+		return turretResetCheckInput.debouncedValue;
+	}
+
+	public boolean isHoodReset() {
+		return hoodResetCheckInput.debouncedValue;
+	}
+
+	private void periodic() {
 		turretResetCheckSensor.updateInputs(turretResetCheckInput);
 		hoodResetCheckSensor.updateInputs(hoodResetCheckInput);
 	}

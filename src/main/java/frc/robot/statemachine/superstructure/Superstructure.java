@@ -11,13 +11,13 @@ import frc.robot.statemachine.shooterstatehandler.ShooterStateHandler;
 import frc.robot.statemachine.shooterstatehandler.ShootingParams;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class Superstructure {
 
 	private final Robot robot;
 	private boolean isRunningIndependently;
-	public boolean hasBeenReset;
 	private final String logPath;
 
 	private RobotState currentState;
@@ -25,7 +25,7 @@ public class Superstructure {
 	private final FunnelStateHandler funnelStateHandler;
 	private final ShooterStateHandler shooterStateHandler;
 
-	public Superstructure(String logPath, Robot robot, Supplier<ShootingParams> shootingParamsSupplier) {
+	public Superstructure(String logPath, Robot robot, Supplier<ShootingParams> shootingParamsSupplier, BooleanSupplier hasBeenReset) {
 		this.robot = robot;
 		this.logPath = logPath;
 
@@ -35,14 +35,14 @@ public class Superstructure {
 			robot.getHood(),
 			robot.getFlyWheel(),
 			shootingParamsSupplier,
-			() -> hasBeenReset,
-			robot.
+			hasBeenReset,
+			robot.getTurretResetCheckSensor(),
+			robot.getHoodResetCheckSensor(),
 			logPath
 		);
 
 		this.currentState = RobotState.STAY_IN_PLACE;
 		this.isRunningIndependently = false;
-		this.hasBeenReset = false;
 	}
 
 	public FunnelStateHandler getFunnelStateHandler() {
@@ -79,7 +79,7 @@ public class Superstructure {
 				case DRIVE -> idle();
 				case PRE_SHOOT -> preShoot();
 				case SHOOT -> shoot();
-				case RESET_SUBSYSTEMS ->
+				case RESET_SUBSYSTEMS -> resetSubsystems();
 				case CALIBRATION_PRE_SHOOT -> calibrationPreShoot();
 				case CALIBRATION_SHOOT -> calibrationShoot();
 			}
@@ -92,6 +92,13 @@ public class Superstructure {
 
 	private Command idle() {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.IDLE), funnelStateHandler.setState(FunnelState.DRIVE));
+	}
+
+	private Command resetSubsystems() {
+		return new ParallelCommandGroup(
+			shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
+			funnelStateHandler.setState(FunnelState.DRIVE)
+		);
 	}
 
 	private Command preShoot() {
@@ -116,9 +123,6 @@ public class Superstructure {
 
 	public void periodic() {
 		funnelStateHandler.periodic();
-		if (!hasBeenReset){
-			hasBeenReset = robot.isTurretReset() && robot.isFourBarReset() && robot.isHoodReset();
-		}
 		Logger.recordOutput(logPath + "/isRunningIndependently", isRunningIndependently());
 	}
 

@@ -26,7 +26,7 @@ public class IntakeStateHandler {
 
 	private IntakeState currentState;
 
-	public IntakeStateHandler(Arm fourBar, Roller rollers,IDigitalInput fourBarResetCheckSensor, BooleanSupplier hasBeenReset,String logPath) {
+	public IntakeStateHandler(Arm fourBar, Roller rollers, IDigitalInput fourBarResetCheckSensor, BooleanSupplier hasBeenReset, String logPath) {
 		this.fourBar = fourBar;
 		this.rollers = rollers;
 		this.hasBeenReset = hasBeenReset;
@@ -48,7 +48,9 @@ public class IntakeStateHandler {
 	}
 
 	public Command resetFourBar() {
-		return ! hasBeenReset.getAsBoolean() ? fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE).until(() ->isFourBarReset()): new InstantCommand();
+		return !hasBeenReset.getAsBoolean()
+			? fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE).until(() -> isFourBarReset())
+			: new InstantCommand();
 	}
 
 	public Command toggleState() {
@@ -94,11 +96,11 @@ public class IntakeStateHandler {
 		);
 	}
 
-	public void periodic(){
+	public void periodic() {
 		fourBarResetCheckSensor.updateInputs(fourBarResetCheckInput);
 	}
 
-	public boolean isFourBarReset(){
+	public boolean isFourBarReset() {
 		return fourBarResetCheckInput.debouncedValue;
 	}
 

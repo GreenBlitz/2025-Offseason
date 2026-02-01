@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.RobotManager;
@@ -127,7 +128,11 @@ public class Robot {
 
 		simulationManager = new SimulationManager("SimulationManager", this);
 
-		new Trigger(() ->DriverStation.isEnabled()).onTrue(robotCommander.getSuperstructure().setState(RobotState.RESET_SUBSYSTEMS));
+		new Trigger(() -> DriverStation.isEnabled()).onTrue(
+			robotCommander.getSuperstructure()
+				.setState(RobotState.RESET_SUBSYSTEMS)
+				.withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
+		);
 	}
 
 	public void resetSubsystems() {
