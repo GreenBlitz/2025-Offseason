@@ -35,7 +35,6 @@ public class Roller extends GBSubsystem {
 		this.commandsBuilder = new RollerCommandsBuilder(this);
 		this.motor.resetPosition(Rotation2d.fromRotations(0));
 		this.targetPosition = Rotation2d.fromRotations(0);
-		setCommandsBuilder(commandsBuilder);
 		setDefaultCommand(commandsBuilder.stop());
 	}
 

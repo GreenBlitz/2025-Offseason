@@ -3,22 +3,16 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.*;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.Optional;
 
 public abstract class GBSubsystem extends SubsystemBase {
 
 	private final String logPath;
-	private Optional<GBCommandsBuilder> commandsBuilder;
 	private Command currentCommand;
+	private boolean isSubsystemRunningIndependently;
 
 	public GBSubsystem(String logPath) {
 		this.logPath = logPath;
-		this.commandsBuilder = Optional.empty();
 		this.currentCommand = Commands.none().withName("None");
-	}
-
-	protected void setCommandsBuilder(GBCommandsBuilder GBCommandsBuilder) {
-		this.commandsBuilder = Optional.of(GBCommandsBuilder);
 	}
 
 	@Override
@@ -28,6 +22,15 @@ public abstract class GBSubsystem extends SubsystemBase {
 
 	public String getLogPath() {
 		return logPath;
+	}
+
+
+	public boolean isSubsystemRunningIndependently() {
+		return isSubsystemRunningIndependently;
+	}
+
+	public void setIsSubsystemRunningIndependently(boolean isSubsystemRunningIndependently) {
+		this.isSubsystemRunningIndependently = isSubsystemRunningIndependently;
 	}
 
 	@Override
@@ -41,14 +44,11 @@ public abstract class GBSubsystem extends SubsystemBase {
 	public Command asSubsystemCommand(Command command, String commandName) {
 		command.setName(commandName);
 		command.addRequirements(this);
-		if (commandsBuilder.isPresent()) {
-			return command.beforeStarting(new InstantCommand(() -> {
-				currentCommand = command;
-				commandsBuilder.get().setIsSubsystemRunningIndependently(true);
-			})).andThen(new InstantCommand(() -> commandsBuilder.get().setIsSubsystemRunningIndependently(false)));
-		} else {
-			return command.beforeStarting(new InstantCommand(() -> currentCommand = command));
-		}
+
+		return command.beforeStarting(new InstantCommand(() -> {
+			currentCommand = command;
+			setIsSubsystemRunningIndependently(true);
+		})).andThen(new InstantCommand(() -> setIsSubsystemRunningIndependently(false)));
 	}
 
 }

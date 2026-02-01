@@ -1,7 +1,6 @@
 package frc.robot.subsystems.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.joysticks.Axis;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
@@ -37,7 +36,6 @@ public class Arm extends GBSubsystem {
 		this.kG = kG;
 		this.sysIdCalibrator = new SysIdCalibrator(motor.getSysidConfigInfo(), this, (voltage) -> setVoltage(voltage + getKgVoltage()));
 		commandBuilder = new ArmCommandBuilder(this);
-		setCommandsBuilder(commandBuilder);
 		setDefaultCommand(commandBuilder.stayInPlace());
 	}
 
@@ -125,9 +123,6 @@ public class Arm extends GBSubsystem {
 	}
 
 	public void applyCalibrationBindings(SmartJoystick joystick, double maxCalibrationPower) {
-		joystick.POV_DOWN.onTrue(new InstantCommand(() -> commandBuilder.setIsSubsystemRunningIndependently(true)));
-		joystick.POV_UP.onTrue(new InstantCommand(() -> commandBuilder.setIsSubsystemRunningIndependently(false)));
-
 		// Calibrate kG using phoenix tuner by setting the voltage
 
 		// Check limits

@@ -55,11 +55,11 @@ public class Superstructure {
 
 	public boolean isSubsystemRunningIndependently() {
 		return isSubsystemRunningIndependently
-			|| robot.getFlyWheel().getCommandBuilder().isSubsystemRunningIndependently()
-			|| robot.getHood().getCommandsBuilder().isSubsystemRunningIndependently()
-			|| robot.getTrain().getCommandsBuilder().isSubsystemRunningIndependently()
-			|| robot.getBelly().getCommandsBuilder().isSubsystemRunningIndependently()
-			|| robot.getTurret().getCommandsBuilder().isSubsystemRunningIndependently();
+			|| robot.getFlyWheel().isSubsystemRunningIndependently()
+			|| robot.getHood().isSubsystemRunningIndependently()
+			|| robot.getTrain().isSubsystemRunningIndependently()
+			|| robot.getBelly().isSubsystemRunningIndependently()
+			|| robot.getTurret().isSubsystemRunningIndependently();
 	}
 
 	public void setIsSubsystemRunningIndependently(boolean isSubsystemRunningIndependently) {
