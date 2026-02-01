@@ -3,12 +3,11 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.*;
 import org.littletonrobotics.junction.Logger;
 
-
 public abstract class GBSubsystem extends SubsystemBase {
 
 	private final String logPath;
 	private Command currentCommand;
-	private boolean isSubsystemRunningIndependently;
+	private boolean isRunningIndependently;
 
 	public GBSubsystem(String logPath) {
 		this.logPath = logPath;
@@ -24,12 +23,12 @@ public abstract class GBSubsystem extends SubsystemBase {
 		return logPath;
 	}
 
-	public boolean isSubsystemRunningIndependently() {
-		return isSubsystemRunningIndependently;
+	public boolean isRunningIndependently() {
+		return isRunningIndependently;
 	}
 
-	public void setIsSubsystemRunningIndependently(boolean isSubsystemRunningIndependently) {
-		this.isSubsystemRunningIndependently = isSubsystemRunningIndependently;
+	public void setIsRunningIndependently(boolean isRunningIndependently) {
+		this.isRunningIndependently = isRunningIndependently;
 	}
 
 	@Override
@@ -46,8 +45,8 @@ public abstract class GBSubsystem extends SubsystemBase {
 
 		return command.beforeStarting(new InstantCommand(() -> {
 			currentCommand = command;
-			setIsSubsystemRunningIndependently(true);
-		})).andThen(new InstantCommand(() -> setIsSubsystemRunningIndependently(false)));
+			setIsRunningIndependently(true);
+		})).andThen(new InstantCommand(() -> setIsRunningIndependently(false)));
 	}
 
 }
