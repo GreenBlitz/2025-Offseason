@@ -96,8 +96,7 @@ public class Robot {
 		hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
-		Roller intakeRoller = createIntakeRollers();
-		this.intakeRoller = intakeRoller;
+		this.intakeRoller = createIntakeRollers();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
 
 		this.train = createTrain();
@@ -399,9 +398,9 @@ public class Robot {
 
 	public Command getResetSubsystemsCommand() {
 		return new ParallelCommandGroup(
-			turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE, this::isTurretReset),
-			fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE, this::isFourBarReset),
-			hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE, this::isHoodReset)
+			turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE).until(this::isTurretReset),
+			fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE).until(this::isFourBarReset),
+			hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE).until(this::isHoodReset)
 		);
 	}
 

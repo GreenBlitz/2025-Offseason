@@ -2,11 +2,9 @@ package frc.robot.subsystems.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.utils.utilcommands.InitExecuteCommand;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -47,14 +45,9 @@ public class ArmCommandBuilder {
 		return arm.asSubsystemCommand(new RunCommand(() -> arm.setVoltage(voltage.getAsDouble())), "Set voltage by supplier");
 	}
 
-	public Command setVoltageWithoutLimit(double voltage, BooleanSupplier isFinished) {
-		return arm.asSubsystemCommand(
-			new FunctionalCommand(() -> arm.setIsSoftwareLimitSwitchEnabled(true), () -> arm.setVoltage(voltage), ((enableSensors) -> {
-				arm.setIsSoftwareLimitSwitchEnabled(false);
-				arm.stayInPlace();
-			}), isFinished),
-			"Set voltage to: " + voltage + " without limits"
-		);
+	public Command setVoltageWithoutLimit(double voltage) {
+		return arm
+			.asSubsystemCommand(new RunCommand(() -> arm.setVoltageWithoutLimit(voltage)), "Set voltage to: " + voltage + " without limits");
 	}
 
 }

@@ -92,7 +92,7 @@ public class Arm extends GBSubsystem {
 		Logger.recordOutput(getLogPath() + "/ArbitraryFeedForward", positionRequest.getArbitraryFeedForward());
 	}
 
-	public void setVoltage(Double voltage) {
+	public void setVoltage(double voltage) {
 		motor.applyRequest(voltageRequest.withSetPoint(voltage));
 	}
 
@@ -137,11 +137,13 @@ public class Arm extends GBSubsystem {
 		sysIdCalibrator.setAllButtonsForCalibration(joystick);
 	}
 
-	public void setIsSoftwareLimitSwitchEnabled(boolean enableSoftwareLimits) {
+	public void setVoltageWithoutLimit(double voltage) {
 		if (voltageRequest instanceof Phoenix6Request<Double>) {
 			if (((Phoenix6Request<Double>) voltageRequest).getControlRequest() instanceof VoltageOut) {
-				((VoltageOut) ((Phoenix6Request<Double>) voltageRequest).getControlRequest()).IgnoreSoftwareLimits = enableSoftwareLimits;
+				((VoltageOut) ((Phoenix6Request<Double>) voltageRequest).getControlRequest()).IgnoreSoftwareLimits = true;
+				((VoltageOut) ((Phoenix6Request<Double>) voltageRequest).getControlRequest()).Output = voltage;
 				motor.applyRequest(voltageRequest);
+				((VoltageOut) ((Phoenix6Request<Double>) voltageRequest).getControlRequest()).IgnoreSoftwareLimits = false;
 			}
 		}
 	}

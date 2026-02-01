@@ -53,6 +53,8 @@ public class JoysticksBindings {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
 		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
+		usedJoystick.Y.onTrue(robot.getTurret().getCommandsBuilder().setVoltage(5));
+		usedJoystick.X.onTrue(robot.getTurret().getCommandsBuilder().setVoltage(-5));
 		usedJoystick.R1.onTrue(robot.getRobotCommander().shootSequence());
 		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
 	}
