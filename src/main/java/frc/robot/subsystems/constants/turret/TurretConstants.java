@@ -46,7 +46,7 @@ public class TurretConstants {
 	public static final double ARBITRARY_FEED_FORWARD = 0.0;
 	public static final Translation3d TURRET_POSITION_RELATIVE_TO_ROBOT = new Translation3d(0.25, 0, 0);
 	public static final Rotation2d FORWARD_SOFTWARE_LIMIT = Rotation2d.fromDegrees(45);
-	public static final Rotation2d BACKWARDS_SOFTWARE_LIMIT = Rotation2d.fromDegrees(-150);
+	public static final Rotation2d BACKWARDS_SOFTWARE_LIMIT = Rotation2d.fromDegrees(0);
 	public static final Rotation2d MIN_POSITION = Rotation2d.fromDegrees(-183);
 	public static final Rotation2d MAX_POSITION = Rotation2d.fromDegrees(177);
 	public static final Rotation2d MIDDLE_OF_SHOOTING_RANGE = Rotation2d
@@ -58,7 +58,7 @@ public class TurretConstants {
 		.getRangeEdge(TurretConstants.MIN_POSITION, MAX_DISTANCE_FROM_LIMIT_NOT_TO_ROTATE);
 	public static final boolean IS_CONTINUOUS_WRAP = false;
 	public static final boolean IS_RESET_CHECK_SENSOR_INVERTED = false;
-	public static final double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.5;
+	public static final double RESET_CHECK_SENSOR_DEBOUNCE_TIME = 0.15;
 	public static final double RESET_TURRET_VOLTAGE = 1;
 
 }

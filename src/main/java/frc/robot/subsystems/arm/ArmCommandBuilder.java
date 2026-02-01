@@ -49,8 +49,8 @@ public class ArmCommandBuilder {
 
 	public Command setVoltageWithoutLimit(double voltage, BooleanSupplier isFinished) {
 		return arm.asSubsystemCommand(
-			new FunctionalCommand(() -> arm.setSoftwareLimitSwitchEnableValue(true), () -> arm.setVoltage(voltage), ((enableSensors) -> {
-				arm.setSoftwareLimitSwitchEnableValue(false);
+			new FunctionalCommand(() -> arm.setIsSoftwareLimitSwitchEnabled(true), () -> arm.setVoltage(voltage), ((enableSensors) -> {
+				arm.setIsSoftwareLimitSwitchEnabled(false);
 				arm.stayInPlace();
 			}), isFinished),
 			"Set voltage to: " + voltage + " without limits"

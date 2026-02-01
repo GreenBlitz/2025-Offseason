@@ -61,12 +61,12 @@ public class Robot {
 	private final Roller intakeRoller;
 	private final Arm fourBar;
 	private final Arm hood;
+	private final IDigitalInput turretResetCheckSensor;
 	private final IDigitalInput fourBarResetCheckSensor;
 	private final IDigitalInput hoodResetCheckSensor;
-	private final IDigitalInput turretResetCheckSensor;
 	private final DigitalInputInputsAutoLogged turretResetCheckInput;
-	private final DigitalInputInputsAutoLogged hoodResetCheckInput;
 	private final DigitalInputInputsAutoLogged fourBarResetCheckInput;
+	private final DigitalInputInputsAutoLogged hoodResetCheckInput;
 	private final VelocityRoller train;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
@@ -122,6 +122,7 @@ public class Robot {
 			swerve.getGyroAbsoluteYaw().getTimestamp(),
 			swerve.getIMUAcceleration()
 		);
+
 		robotCommander = new RobotCommander("/RobotCommander", this);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
@@ -344,7 +345,7 @@ public class Robot {
 		return intakeRoller;
 	}
 
-	public boolean getIsFourBarReset() {
+	public boolean isFourBarReset() {
 		return fourBarResetCheckInput.debouncedValue;
 	}
 
@@ -352,7 +353,7 @@ public class Robot {
 		return turret;
 	}
 
-	public boolean getIsTurretReset() {
+	public boolean isTurretReset() {
 		return turretResetCheckInput.debouncedValue;
 	}
 
@@ -376,7 +377,7 @@ public class Robot {
 		return hood;
 	}
 
-	public boolean getIsHoodReset() {
+	public boolean isHoodReset() {
 		return hoodResetCheckInput.debouncedValue;
 	}
 
@@ -398,9 +399,9 @@ public class Robot {
 
 	public Command getResetSubsystemsCommand() {
 		return new ParallelCommandGroup(
-			turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE, this::getIsTurretReset),
-			fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE, this::getIsFourBarReset),
-			hood.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE, this::getIsHoodReset)
+			turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE, this::isTurretReset),
+			fourBar.getCommandsBuilder().setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE, this::isFourBarReset),
+			hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE, this::isHoodReset)
 		);
 	}
 

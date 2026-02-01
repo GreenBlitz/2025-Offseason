@@ -137,7 +137,7 @@ public class Arm extends GBSubsystem {
 		sysIdCalibrator.setAllButtonsForCalibration(joystick);
 	}
 
-	public void setSoftwareLimitSwitchEnableValue(boolean enableSoftwareLimits) {
+	public void setIsSoftwareLimitSwitchEnabled(boolean enableSoftwareLimits) {
 		if (voltageRequest instanceof Phoenix6Request<Double>) {
 			if (((Phoenix6Request<Double>) voltageRequest).getControlRequest() instanceof VoltageOut) {
 				((VoltageOut) ((Phoenix6Request<Double>) voltageRequest).getControlRequest()).IgnoreSoftwareLimits = enableSoftwareLimits;
