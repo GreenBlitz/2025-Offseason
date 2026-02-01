@@ -117,10 +117,10 @@ public class ShooterStateHandler {
 			? new ParallelCommandGroup(
 				turret.getCommandsBuilder()
 					.setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE)
-					.until(() -> turretResetCheckInput.debouncedValue),
+					.until(() -> isTurretReset()),
 				hood.getCommandsBuilder()
 					.setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE)
-					.until(() -> hoodResetCheckInput.debouncedValue),
+					.until(() -> isHoodReset()),
 				flyWheel.getCommandBuilder().setVelocityAsSupplier(() -> shootingParamsSupplier.get().targetFlywheelVelocityRPS())
 			)
 			: new InstantCommand();

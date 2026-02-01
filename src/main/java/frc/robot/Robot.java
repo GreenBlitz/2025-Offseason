@@ -130,9 +130,13 @@ public class Robot {
 
 		simulationManager = new SimulationManager("SimulationManager", this);
 
-		new Trigger(() -> DriverStation.isEnabled()).onTrue(new ParallelCommandGroup(robotCommander.driveWith((RobotState.RESET_SUBSYSTEMS)),robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
-				.withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
-		));
+		new Trigger(() -> DriverStation.isEnabled()).onTrue(
+			new ParallelCommandGroup(
+				robotCommander.driveWith((RobotState.RESET_SUBSYSTEMS)),
+				robotCommander.getIntakeStateHandler()
+					.setState(IntakeState.RESET_FOUR_BAR)
+			).until(() ->robotCommander.hasBeenReset()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
+		);
 	}
 
 	public void resetSubsystems() {

@@ -172,4 +172,7 @@ public class RobotCommander extends GBSubsystem {
 		return intakeStateHandler;
 	}
 
+	public boolean hasBeenReset(){
+		return hasBeenReset;
+	}
 }
