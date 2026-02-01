@@ -2,35 +2,27 @@ package frc.robot.statemachine.intakestatehandler;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
-import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.roller.Roller;
 import frc.utils.LoggedNetworkRotation2d;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
-
 import java.util.Set;
-
 import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
 
 public class IntakeStateHandler {
 
 	private final Arm fourBar;
 	private final Roller rollers;
-	private final BooleanSupplier isReset;
 	private final String logPath;
 	private final LoggedNetworkNumber rollersCalibrationPower = new LoggedNetworkNumber("Tunable/IntakeRollerPower");
 	private final LoggedNetworkRotation2d fourBarCalibrationPosition = new LoggedNetworkRotation2d("Tunable/FourBarPosition", new Rotation2d());
 
 	private IntakeState currentState;
 
-	public IntakeStateHandler(Arm fourBar, Roller rollers, BooleanSupplier isReset, String logPath) {
+	public IntakeStateHandler(Arm fourBar, Roller rollers, String logPath) {
 		this.fourBar = fourBar;
 		this.rollers = rollers;
-		this.isReset = isReset;
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
 	}

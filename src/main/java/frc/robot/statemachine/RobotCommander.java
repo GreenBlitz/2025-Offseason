@@ -35,7 +35,6 @@ public class RobotCommander extends GBSubsystem {
 		this.intakeStateHandler = new IntakeStateHandler(
 			robot.getFourBar(),
 			robot.getIntakeRoller(),
-			() -> robot.getIsFourBarReset(),
 			"/IntakeStateHandler"
 		);
 		this.currentState = RobotState.STAY_IN_PLACE;
@@ -148,7 +147,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-            case DRIVE, SHOOT, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT -> driveWith(RobotState.DRIVE);
+			case DRIVE, SHOOT, CALIBRATION_PRE_SHOOT, CALIBRATION_SHOOT -> driveWith(RobotState.DRIVE);
 			case PRE_SHOOT -> driveWith(RobotState.PRE_SHOOT);
 		};
 	}

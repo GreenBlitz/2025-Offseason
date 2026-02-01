@@ -34,8 +34,6 @@ public class Superstructure {
 			robot.getHood(),
 			robot.getFlyWheel(),
 			shootingParamsSupplier,
-			() -> robot.getIsHoodReset(),
-			() -> robot.getIsTurretReset(),
 			logPath
 		);
 
@@ -79,7 +77,7 @@ public class Superstructure {
 				case SHOOT -> shoot();
 				case CALIBRATION_PRE_SHOOT -> calibrationPreShoot();
 				case CALIBRATION_SHOOT -> calibrationShoot();
-		}
+			}
 		);
 	}
 

@@ -73,6 +73,7 @@ public class RobotManager extends LoggedRobot {
 	public void autonomousInit() {
 		robot.getRobotCommander().getSuperstructure().setIsSubsystemRunningIndependently(true);
 		robot.getSwerve().getCommandsBuilder().setIsSubsystemRunningIndependently(true);
+
 		if (autonomousCommand == null) {
 			this.autonomousCommand = robot.getAutonomousCommand();
 		}

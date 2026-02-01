@@ -4,12 +4,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.constants.hood.HoodConstants;
-import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class ShooterStateHandler {
@@ -18,17 +15,13 @@ public class ShooterStateHandler {
 	private final Arm hood;
 	private final FlyWheel flyWheel;
 	private final Supplier<ShootingParams> shootingParamsSupplier;
-	private BooleanSupplier isTurretReset;
-	private BooleanSupplier isHoodReset;
 	private final String logPath;
 	private ShooterState currentState;
 
-	public ShooterStateHandler(Arm turret, Arm hood, FlyWheel flyWheel, Supplier<ShootingParams> shootingParamsSupplier,BooleanSupplier isHoodReset,BooleanSupplier isTurretReset, String logPath) {
+	public ShooterStateHandler(Arm turret, Arm hood, FlyWheel flyWheel, Supplier<ShootingParams> shootingParamsSupplier, String logPath) {
 		this.turret = turret;
 		this.hood = hood;
 		this.flyWheel = flyWheel;
-		this.isHoodReset = isHoodReset;
-		this.isTurretReset = isTurretReset;
 		this.shootingParamsSupplier = shootingParamsSupplier;
 		this.currentState = ShooterState.IDLE;
 		this.logPath = logPath + "/ShooterStateHandler";
