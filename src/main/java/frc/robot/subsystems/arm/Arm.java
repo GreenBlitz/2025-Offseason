@@ -141,7 +141,7 @@ public class Arm extends GBSubsystem {
 		if (voltageRequest instanceof Phoenix6Request<Double>) {
 			if (((Phoenix6Request<Double>) voltageRequest).getControlRequest() instanceof VoltageOut) {
 				((VoltageOut) ((Phoenix6Request<Double>) voltageRequest).getControlRequest()).IgnoreSoftwareLimits = true;
-				((VoltageOut) ((Phoenix6Request<Double>) voltageRequest).getControlRequest()).Output = voltage;
+				voltageRequest.withSetPoint(voltage);
 				motor.applyRequest(voltageRequest);
 				((VoltageOut) ((Phoenix6Request<Double>) voltageRequest).getControlRequest()).IgnoreSoftwareLimits = false;
 			}
