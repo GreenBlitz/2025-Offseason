@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.joysticks.Axis;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
@@ -130,9 +129,6 @@ public class Arm extends GBSubsystem {
 	}
 
 	public void applyCalibrationBindings(SmartJoystick joystick, double maxCalibrationPower) {
-		joystick.POV_DOWN.onTrue(new InstantCommand(() -> commandBuilder.setIsSubsystemRunningIndependently(true)));
-		joystick.POV_UP.onTrue(new InstantCommand(() -> commandBuilder.setIsSubsystemRunningIndependently(false)));
-
 		// Calibrate kG using phoenix tuner by setting the voltage
 
 		// Check limits
