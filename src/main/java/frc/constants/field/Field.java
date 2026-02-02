@@ -25,12 +25,13 @@ public class Field {
 	private static final Translation2d HUB_MIDDLE = new Translation2d(4.62, 4.03);
 
 	private static final Translation2d DEPOT_MIDDLE = new Translation2d(0.31, 5.97);
+	public static final double DEPOT_Y_AXIS_LENGTH_METERS = 1.0668;
+	public static final double DEPOT_X_AXIS_LENGTH_METERS = 0.6858;
 
 	private static final Translation2d OUTPOST_MIDDLE = new Translation2d(0, 0.67);
 	private static final Translation2d TOWER_MIDDLE = new Translation2d(1.06, 3.75);
 	private static final Translation2d DEPOT_TRENCH_MIDDLE = new Translation2d(4.62, 7.43);
 	private static final Translation2d OUTPOST_TRENCH_MIDDLE = new Translation2d(4.62, 0.64);
-	public static final double BUMP_X_AXIS_LENGTH_METERS = 1.128;
 
 	private static final Translation2d DEPOT_BUMP_MIDDLE = new Translation2d(4.62, 5.56);
 	private static final Translation2d OUTPOST_BUMP_MIDDLE = new Translation2d(4.62, 2.51);
