@@ -42,7 +42,6 @@ public abstract class GBSubsystem extends SubsystemBase {
 	public Command asSubsystemCommand(Command command, String commandName) {
 		command.setName(commandName);
 		command.addRequirements(this);
-
 		return command.beforeStarting(new InstantCommand(() -> currentCommand = command));
 	}
 
