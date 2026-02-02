@@ -74,7 +74,7 @@ public class Superstructure {
 				case STAY_IN_PLACE -> stayInPlace();
 				case DRIVE -> idle();
 				case PRE_SCORE, PRE_PASS -> preScore();
-				case SCORE, PASS -> Score();
+				case SCORE, PASS -> score();
 				case CALIBRATION_PRE_SCORE -> calibrationPreScore();
 				case CALIBRATION_SCORE -> calibrationScore();
 			}
@@ -93,7 +93,7 @@ public class Superstructure {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.SHOOT), funnelStateHandler.setState(FunnelState.DRIVE));
 	}
 
-	private Command Score() {
+	private Command score() {
 		return new SequentialCommandGroup(
 			new ParallelDeadlineGroup(funnelStateHandler.setState(FunnelState.SHOOT), shooterStateHandler.setState(ShooterState.SHOOT)),
 			new ParallelCommandGroup(funnelStateHandler.setState(FunnelState.SHOOT), shooterStateHandler.setState(ShooterState.SHOOT))

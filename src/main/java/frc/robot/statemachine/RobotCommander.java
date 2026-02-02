@@ -153,7 +153,7 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-	public Command ScoreSequence() {
+	public Command scoreSequence() {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
 				driveWith(RobotState.PRE_SCORE).until(this::isReadyToScore),

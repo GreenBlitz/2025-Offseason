@@ -92,7 +92,7 @@ public class ShootingCalculations {
 		);
 	}
 
-	private static ShootingParams calculateShootingParams(
+	private static ShootingParams calculateScoringParams(
 		Pose2d robotPose,
 		ChassisSpeeds fieldRelativeSpeeds,
 		Rotation2d gyroYawAngularVelocity
@@ -239,25 +239,9 @@ public class ShootingCalculations {
 		Map.of(2.0, 0.9, 4.0, 1.16, 5.85, 1.31)
 	);
 
-	public static Rotation2d hoodPassingInterpolationMap(double distance) {
-		return HOOD_PASSING_INTERPOLATION_MAP.get(distance);
-	}
-
-	public static Rotation2d hoodScoringInterpolationMap(double distance) {
-		return HOOD_SCORING_INTERPOLATION_MAP.get(distance);
-	}
-
-	public static Rotation2d flywheelPassingInterpolationMap(double distance) {
-		return FLYWHEEL_PASSING_INTERPOLATION_MAP.get(distance);
-	}
-
-	public static Rotation2d flywheelScoringInterpolationMap(double distance) {
-		return FLYWHEEL_SCORING_INTERPOLATION_MAP.get(distance);
-	}
-
 	public static void updateShootingParams(Pose2d robotPose, ChassisSpeeds speedsFieldRelative, Rotation2d gyroYawAngularVelocity) {
 		if (ShootingChecks.isInAllianceZone(robotPose.getTranslation())) {
-			shootingParams = calculateShootingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
+			shootingParams = calculateScoringParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 		} else {
 			shootingParams = calculatePassingParams(robotPose, speedsFieldRelative, gyroYawAngularVelocity);
 		}
