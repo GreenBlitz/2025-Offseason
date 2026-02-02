@@ -31,6 +31,8 @@ import frc.robot.subsystems.flywheel.FlyWheel;
 import frc.robot.subsystems.flywheel.KrakenX60FlyWheelBuilder;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.SparkMaxRollerBuilder;
+import frc.robot.subsystems.roller.TalonFXRollerBuilder;
+import frc.robot.subsystems.roller.VelocityRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.factories.constants.SwerveConstantsFactory;
 import frc.robot.subsystems.swerve.factories.imu.IMUFactory;
@@ -48,14 +50,13 @@ import frc.utils.brakestate.BrakeStateManager;
 public class Robot {
 
 	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(false);
-	private final Arm turret;
+	private final VelocityPositionArm turret;
 	private final FlyWheel flyWheel;
 	private final Roller intakeRoller;
 	private final Arm fourBar;
 	private final Arm hood;
 	private final IDigitalInput intakeRollerSensor;
-	private final Roller train;
-	private final IDigitalInput funnelDigitalInput;
+	private final VelocityRoller train;
 	private final SimulationManager simulationManager;
 	private final Roller belly;
 
@@ -86,9 +87,7 @@ public class Robot {
 		this.intakeRollerSensor = intakeRollerAndDigitalInput.getSecond();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
 
-		Pair<Roller, IDigitalInput> trainAndDigitalInput = createTrainAndSignal();
-		this.train = trainAndDigitalInput.getFirst();
-		this.funnelDigitalInput = trainAndDigitalInput.getSecond();
+		this.train = createTrain();
 		BrakeStateManager.add(() -> train.setBrake(true), () -> train.setBrake(false));
 
 		this.belly = createBelly();
@@ -158,9 +157,12 @@ public class Robot {
 		resetSubsystems();
 		simulationManager.logPoses();
 
+		robotCommander.getIntakeStateHandler().periodic();
+
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
-		ShootingCalculations.updateShootingParams(poseEstimator.getEstimatedPose());
+		ShootingCalculations
+			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
@@ -267,18 +269,16 @@ public class Robot {
 		);
 	}
 
-	private Pair<Roller, IDigitalInput> createTrainAndSignal() {
-		return SparkMaxRollerBuilder.buildWithDigitalInput(
+	private VelocityRoller createTrain() {
+		return TalonFXRollerBuilder.buildVelocityRoller(
 			TrainConstant.LOG_PATH,
-			IDs.SparkMAXIDs.TRAIN,
-			TrainConstant.IS_INVERTED,
-			TrainConstant.GEAR_RATIO,
+			IDs.TalonFXIDs.TRAIN,
+			TrainConstant.REAL_SLOTS_CONFIG,
+			TrainConstant.SIMULATION_SLOTS_CONFIG,
 			TrainConstant.CURRENT_LIMIT,
+			TrainConstant.FEEDBACK_CONFIGS,
 			TrainConstant.MOMENT_OF_INERTIA,
-			TrainConstant.FUNNEL_INPUT_NAME,
-			TrainConstant.DEBOUNCE_TIME,
-			TrainConstant.IS_FORWARD_LIMIT_SWITCH,
-			TrainConstant.IS_FORWARD_LIMIT_SWITCH_INVERTED
+			TrainConstant.IS_INVERTED
 		);
 	}
 
@@ -301,7 +301,7 @@ public class Robot {
 		return intakeRoller;
 	}
 
-	public Arm getTurret() {
+	public VelocityPositionArm getTurret() {
 		return turret;
 	}
 
@@ -313,16 +313,12 @@ public class Robot {
 		return fourBar;
 	}
 
-	public Roller getTrain() {
+	public VelocityRoller getTrain() {
 		return train;
 	}
 
 	public Roller getBelly() {
 		return belly;
-	}
-
-	public IDigitalInput getFunnelDigitalInput() {
-		return funnelDigitalInput;
 	}
 
 	public Arm getHood() {
