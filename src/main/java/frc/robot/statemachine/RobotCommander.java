@@ -52,7 +52,7 @@ public class RobotCommander extends GBSubsystem {
 							)
 						)
 				),
-				this::isSubsystemRunningIndependently
+				this::isRunningIndependently
 			)
 		);
 	}
@@ -65,8 +65,8 @@ public class RobotCommander extends GBSubsystem {
 		return superstructure;
 	}
 
-	public boolean isSubsystemRunningIndependently() {
-		return superstructure.isSubsystemRunningIndependently() || swerve.getCommandsBuilder().isSubsystemRunningIndependently();
+	public boolean isRunningIndependently() {
+		return superstructure.isRunningIndependently() || swerve.isRunningIndependently();
 	}
 
 	@Override
@@ -144,6 +144,15 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
+	private boolean calibrationCanContinueShooting() {
+		return ShootingChecks.calibrationCanContinueShooting(
+			robot,
+			StateMachineConstants.FLYWHEEL_VELOCITY_TOLERANCE_RPS_TO_CONTINUE_SHOOTING,
+			StateMachineConstants.HOOD_POSITION_TOLERANCE_TO_CONTINUE_SHOOTING
+
+		);
+	}
+
 	public Command shootSequence() {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
@@ -166,7 +175,7 @@ public class RobotCommander extends GBSubsystem {
 		return new RepeatCommand(
 			new SequentialCommandGroup(
 				driveWith(RobotState.CALIBRATION_PRE_SHOOT).until(this::calibrationIsReadyToShoot),
-				driveWith(RobotState.CALIBRATION_SHOOT).until(() -> !canContinueShooting())
+				driveWith(RobotState.CALIBRATION_SHOOT).until(() -> !calibrationCanContinueShooting())
 			)
 		);
 	}

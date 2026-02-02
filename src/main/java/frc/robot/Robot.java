@@ -50,7 +50,7 @@ import frc.utils.brakestate.BrakeStateManager;
 public class Robot {
 
 	public static final RobotType ROBOT_TYPE = RobotType.determineRobotType(false);
-	private final Arm turret;
+	private final VelocityPositionArm turret;
 	private final FlyWheel flyWheel;
 	private final Roller intakeRoller;
 	private final Arm fourBar;
@@ -162,7 +162,7 @@ public class Robot {
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
 		ShootingCalculations
-			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getGyroAbsoluteYaw().getValue());
+			.updateShootingParams(poseEstimator.getEstimatedPose(), swerve.getFieldRelativeVelocity(), swerve.getIMUAngularVelocityRPS()[2]);
 
 		BatteryUtil.logStatus();
 		BusChain.logChainsStatuses();
@@ -301,7 +301,7 @@ public class Robot {
 		return intakeRoller;
 	}
 
-	public Arm getTurret() {
+	public VelocityPositionArm getTurret() {
 		return turret;
 	}
 
