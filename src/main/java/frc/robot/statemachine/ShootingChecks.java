@@ -32,17 +32,6 @@ public class ShootingChecks {
 		return isInPositionForPassing;
 	}
 
-	public static boolean isOnBumpOrUnderTrench(Pose2d robotPose, String logPath) {
-		Translation2d turretPosition = ShootingCalculations.getFieldRelativeTurretPosition(robotPose);
-		Translation2d blueAllianceRelativeTurretPosition = Field.getAllianceRelative(turretPosition);
-		boolean isOnBumpOrUnderTrench = (blueAllianceRelativeTurretPosition.getX()
-			< Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getX() + (Field.BUMP_X_AXIS_LENGTH_METERS / 2)
-			&& blueAllianceRelativeTurretPosition.getX()
-				> Field.getAllianceRelative(Field.getTrenchMiddle(AllianceSide.DEPOT)).getX() - (Field.BUMP_X_AXIS_LENGTH_METERS / 2));
-		Logger.recordOutput(logPath + "/isOnBumpOrUnderTranch", isOnBumpOrUnderTrench);
-		return isOnBumpOrUnderTrench;
-	}
-
 	private static boolean isWithinDistance(
 		Translation2d robotPosition,
 		double maxShootingDistanceFromTargetMeters,
@@ -168,8 +157,7 @@ public class ShootingChecks {
 			&& isHoodAtPosition
 			&& isInRange
 			&& isWithinDistance
-			&& isAtTurretAtTarget
-			&& !isOnBumpOrUnderTrench(robotPose, logPath);
+			&& isAtTurretAtTarget;
 	}
 
 	private static boolean canContinueShooting(
@@ -219,8 +207,7 @@ public class ShootingChecks {
 			&& isHoodAtPosition
 			&& isInRange
 			&& isWithinDistance
-			&& isAtTurretAtTarget
-			&& !isOnBumpOrUnderTrench(robotPose, logPath);
+			&& isAtTurretAtTarget;
 	}
 
 	private static boolean calibrationIsReadyToScore(
