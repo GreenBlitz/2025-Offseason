@@ -105,16 +105,16 @@ public class Swerve extends GBSubsystem {
 		return imuSignals.getLatestOrientation();
 	}
 
-	public Translation3d getIMUAccelerationMagnitudeG() {
-		return imuSignals.getLatestAccelerationMagnitudeG();
+	public Translation3d getIMUAccelerationG() {
+		return imuSignals.getLatestAccelerationG();
 	}
 
 	public Translation3d getIMUAccelerationMetersPerSecondSquared() {
-		return getIMUAccelerationMagnitudeG().times(RobotConstants.GRAVITATIONAL_ACCELERATION_METERS_PER_SECOND_SQUARED_ISRAEL);
+		return getIMUAccelerationG().times(RobotConstants.GRAVITATIONAL_ACCELERATION_METERS_PER_SECOND_SQUARED_ISRAEL);
 	}
 
-	public double getIMUAccelerationTwoDimentionalNormMagnitudeG() {
-		return getIMUAccelerationMagnitudeG().toTranslation2d().getNorm();
+	public double getIMUAccelerationTwoDimentionalNormG() {
+		return getIMUAccelerationG().toTranslation2d().getNorm();
 	}
 
 	public void configPathPlanner(Supplier<Pose2d> currentPoseSupplier, Consumer<Pose2d> resetPoseConsumer, RobotConfig robotConfig) {
@@ -207,9 +207,7 @@ public class Swerve extends GBSubsystem {
 				imuSignals.yawSignal().getTimestamps()[i],
 				modules.getWheelPositions(i),
 				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.yawSignal().asArray()[i]),
-				imu instanceof EmptyIMU
-					? Optional.empty()
-					: Optional.of(imuSignals.getAllAccelerationsMagnitudeG()[i].toTranslation2d().getNorm())
+				imu instanceof EmptyIMU ? Optional.empty() : Optional.of(imuSignals.getAllAccelerationsG()[i].toTranslation2d().getNorm())
 			);
 		}
 
@@ -351,7 +349,7 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public boolean isCollisionDetected() {
-		return getIMUAccelerationTwoDimentionalNormMagnitudeG() > SwerveConstants.MIN_COLLISION_G_FORCE;
+		return getIMUAccelerationTwoDimentionalNormG() > SwerveConstants.MIN_COLLISION_G_FORCE;
 	}
 
 	public boolean isTilted() {
