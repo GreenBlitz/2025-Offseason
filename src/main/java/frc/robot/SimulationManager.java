@@ -29,7 +29,7 @@ public class SimulationManager {
 		Logger.recordOutput(logPath + "/Intake", getIntakePosition3d());
 	}
 
-	private void  logHopperPosition3d() {
+	private void logHopperPosition3d() {
 		Logger.recordOutput(logPath + "/Hopper", getHopperPosition3d());
 	}
 
@@ -44,15 +44,12 @@ public class SimulationManager {
 	public Pose3d getIntakePosition3d() {
 		return new Pose3d(
 			new Translation3d(0.2, 0.0, 0.2),
-			new Rotation3d(0.0 , Rotation2d.fromDegrees(110).minus(robot.getFourBar().getPosition()).getRadians(), 0.0)
+			new Rotation3d(0.0, Rotation2d.fromDegrees(110).minus(robot.getFourBar().getPosition()).getRadians(), 0.0)
 		);
 	}
 
 	public Pose3d getHopperPosition3d() {
-		return new Pose3d(
-				new Translation3d(findHopperExtensionLength(0.5), 0.0, 0.0),
-				new Rotation3d(0.0, 0.0 ,0.0)
-		);
+		return new Pose3d(new Translation3d(findHopperExtensionLength(0.5), 0.0, 0.0), new Rotation3d(0.0, 0.0, 0.0));
 	}
 
 	public Pose3d getTurretPosition3d() {
@@ -74,7 +71,7 @@ public class SimulationManager {
 	}
 
 	public double findHopperExtensionLength(double intakeLength) {
-		return 0.35 - intakeLength * Math.cos(getIntakePosition3d().getRotation().getAngle())*1.2;
+		return 0.35 - intakeLength * Math.cos(getIntakePosition3d().getRotation().getAngle()) * 1.2;
 	}
 
 }
