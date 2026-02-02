@@ -83,13 +83,6 @@ public class JoysticksBindings {
 		// bindings...
 	}
 
-	private static void applySuperstructureCalibrationBindings(SmartJoystick joystick, Robot robot) {
-		joystick.A.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.SHOOT));
-		joystick.B.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.PRE_SHOOT));
-		joystick.X.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.DRIVE));
-		joystick.POV_DOWN.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.STAY_IN_PLACE));
-	}
-
 	private static void applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
 		joystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
 		joystick.B.onTrue(robot.getRobotCommander().driveWith(RobotState.PRE_SHOOT));
