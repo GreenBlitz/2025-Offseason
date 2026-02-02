@@ -58,8 +58,8 @@ public class JoysticksBindings {
 	private static void mainJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = MAIN_JOYSTICK;
 		// bindings...
-		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.DRIVE));
-		usedJoystick.B.onTrue(robot.getRobotCommander().getSuperstructure().setState(RobotState.RESET_SUBSYSTEMS).andThen(new InstantCommand(() -> Logger.recordOutput("S1", true))));
+		usedJoystick.A.onTrue(new ParallelDeadlineGroup(new WaitCommand(4), robot.getRobotCommander().driveWith(RobotState.SHOOT)));
+		usedJoystick.B.onTrue(robot.getRobotCommander().driveWith((RobotState.RESET_SUBSYSTEMS)));
 		usedJoystick.Y.onTrue(new ParallelDeadlineGroup(new WaitCommand(4), robot.getRobotCommander().shootSequence()));
 		usedJoystick.L1.onTrue((robot.getRobotCommander().getIntakeStateHandler().toggleState()));
 	}

@@ -11,6 +11,8 @@ import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.function.Supplier;
 
 public class ShooterStateHandler {
@@ -111,12 +113,11 @@ public class ShooterStateHandler {
 	}
 
 	private Command resetSubsystems() {
-		return new ParallelCommandGroup(
-			hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE).until(this::hasHoodBeenReset),
-			turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE).until(this::hasTurretBeenReset),
-			new RunCommand(() -> Logger.recordOutput(logPath + "/hasHoodBeenResetInCommand",hasHoodBeenReset())).until(this::hasHoodBeenReset),
-			new RunCommand(() -> Logger.recordOutput(logPath + "/hasTurretBeenResetInCommand",hasTurretBeenReset())).until(this::hasTurretBeenReset)
-		).andThen(new InstantCommand(() -> Logger.recordOutput("sssssss",true)).beforeStarting(new InstantCommand(() -> Logger.recordOutput("sssssss",false))));
+		return new ParallelRaceGroup(
+		new ParallelCommandGroup(
+			hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE).until(() -> hasHoodBeenReset()).andThen(hood.getCommandsBuilder().stayInPlace()),
+			turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE).until(() -> hasTurretBeenReset()).andThen(turret.getCommandsBuilder().stayInPlace())
+		), new RunCommand(() -> {}).until(this::hasBeenFullyReset).andThen(new WaitCommand(0.000001)));
 	}
 
 	private Command calibration() {
@@ -152,6 +153,10 @@ public class ShooterStateHandler {
 	
 	public boolean hasHoodBeenReset(){
 		return hasHoodBeenReset;
+	}
+	public boolean hasBeenFullyReset(){
+		Logger.recordOutput("ASADASF",hasTurretBeenReset && hasHoodBeenReset);
+		return hasTurretBeenReset && hasHoodBeenReset;
 	}
 
 }
