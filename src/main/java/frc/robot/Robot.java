@@ -110,7 +110,7 @@ public class Robot {
 			swerve.getIMUAcceleration()
 		);
 
-		robotCommander = new RobotCommander("/RobotCommander", this);
+		robotCommander = new RobotCommander("RobotCommander", this);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
 		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());
@@ -156,8 +156,6 @@ public class Robot {
 		updateAllSubsystems();
 		resetSubsystems();
 		simulationManager.logPoses();
-
-		robotCommander.getIntakeStateHandler().periodic();
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();

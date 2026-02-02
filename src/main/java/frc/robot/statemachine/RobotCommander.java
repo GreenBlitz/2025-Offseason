@@ -30,13 +30,13 @@ public class RobotCommander extends GBSubsystem {
 		this.robot = robot;
 		this.swerve = robot.getSwerve();
 
-		this.logPath = "/stateMachine";
+		this.logPath = logPath;
 
 		this.intakeStateHandler = new IntakeStateHandler(
 			robot.getFourBar(),
 			robot.getIntakeRoller(),
 			robot.getIntakeRollerSensor(),
-			logPath + "/IntakeStateHandler"
+			logPath
 		);
 
 		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath);
@@ -49,6 +49,7 @@ public class RobotCommander extends GBSubsystem {
 		);
 
 		this.currentState = RobotState.STAY_IN_PLACE;
+		Logger.recordOutput(logPath + "/CurrentState", RobotState.STAY_IN_PLACE);
 
 		setDefaultCommand(
 			new ConditionalCommand(
@@ -90,7 +91,9 @@ public class RobotCommander extends GBSubsystem {
 
 	@Override
 	protected void subsystemPeriodic() {
+		intakeStateHandler.periodic();
 		funnelStateHandler.periodic();
+		shooterStateHandler.periodic();
 		Logger.recordOutput(logPath + "/isRunningIndependently", isRunningIndependently());
 	}
 

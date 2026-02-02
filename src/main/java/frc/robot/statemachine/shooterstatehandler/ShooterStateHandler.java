@@ -101,4 +101,8 @@ public class ShooterStateHandler {
 		);
 	}
 
+	public void periodic() {
+		Logger.recordOutput(logPath + "/CurrentState", currentState);
+	}
+
 }
