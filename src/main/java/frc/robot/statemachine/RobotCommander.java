@@ -191,10 +191,22 @@ public class RobotCommander extends GBSubsystem {
 	}
 
 	public Command shootSequence() {
-		return new RepeatCommand(
-			new SequentialCommandGroup(
-				driveWith(RobotState.PRE_SHOOT).until(this::isReadyToShoot),
-				driveWith(RobotState.SHOOT).until(() -> (!canContinueShooting()))
+		return new ParallelCommandGroup(
+			swerve.getCommandsBuilder().driveByDriversInputs(RobotState.SHOOT.getSwerveState()),
+			shooterStateHandler.setState(ShooterState.SHOOT),
+			new RepeatCommand(
+				new SequentialCommandGroup(
+					new ParallelCommandGroup(
+						funnelStateHandler.setState(FunnelState.DRIVE).until(this::isReadyToShoot),
+						new InstantCommand(() -> currentState = RobotState.PRE_SHOOT),
+						new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", RobotState.PRE_SHOOT))
+					),
+					new ParallelCommandGroup(
+						funnelStateHandler.setState(FunnelState.SHOOT).until(this::isReadyToShoot),
+						new InstantCommand(() -> currentState = RobotState.SHOOT),
+						new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", RobotState.SHOOT))
+					)
+				)
 			)
 		);
 	}
