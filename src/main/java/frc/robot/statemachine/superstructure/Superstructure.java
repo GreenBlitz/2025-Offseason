@@ -93,7 +93,7 @@ public class Superstructure {
 	}
 
 	private Command resetSubsystems() {
-		return new ParallelCommandGroup(
+		return new ParallelDeadlineGroup(
 			shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
 			funnelStateHandler.setState(FunnelState.DRIVE)
 		);

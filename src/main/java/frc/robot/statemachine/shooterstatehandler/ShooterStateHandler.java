@@ -116,16 +116,17 @@ public class ShooterStateHandler {
 	private Command resetSubsystems() {
 		return new ParallelCommandGroup(
 			new ConditionalCommand(
-				hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE),
+				hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE).until(() -> hasHoodBeenReset()),
 				new InstantCommand(() -> {}),
-				() -> hasHoodBeenReset
-			).until(() -> hasHoodBeenReset),
+				() -> !hasHoodBeenReset
+			),
 			new ConditionalCommand(
-				turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE),
+				turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE).until(() -> hasTurretBeenReset()),
 				new InstantCommand(() -> {}),
-				() -> hasTurretBeenReset
-			)
-		).until(() -> hasTurretBeenReset);
+				() -> !hasTurretBeenReset
+			),
+			new InstantCommand(() -> Logger.recordOutput(logPath + "/hasBeenResetInCommand", hasHoodBeenReset))
+		);
 	}
 
 	private Command calibration() {
@@ -153,6 +154,14 @@ public class ShooterStateHandler {
 			hasHoodBeenReset = isHoodReset();
 		Logger.recordOutput(logPath + "/HasHoodBeenReset", hasHoodBeenReset);
 		Logger.recordOutput(logPath + "/HasTurretBeenReset", hasTurretBeenReset);
+	}
+	
+	public boolean hasTurretBeenReset(){
+		return hasTurretBeenReset;
+	}
+	
+	public boolean hasHoodBeenReset(){
+		return hasHoodBeenReset;
 	}
 
 }
