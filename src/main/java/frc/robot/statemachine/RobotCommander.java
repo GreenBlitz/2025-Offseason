@@ -109,7 +109,6 @@ public class RobotCommander extends GBSubsystem {
 		);
 	}
 
-
 	public Command driveWith(RobotState state, Command command) {
 		Command swerveDriveCommand = swerve.getCommandsBuilder().driveByDriversInputs(state.getSwerveState());
 		Command wantedCommand = command.deadlineFor(swerveDriveCommand);
