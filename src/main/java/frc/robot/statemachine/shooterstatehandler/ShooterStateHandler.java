@@ -1,9 +1,6 @@
 package frc.robot.statemachine.shooterstatehandler;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.hardware.digitalinput.DigitalInputInputsAutoLogged;
 import frc.robot.hardware.digitalinput.IDigitalInput;
 import frc.robot.statemachine.ShootingCalculations;
@@ -70,7 +67,7 @@ public class ShooterStateHandler {
 			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", shooterState.name())),
 			new InstantCommand(() -> currentState = shooterState),
 			command
-		);
+		).andThen(new InstantCommand(() -> Logger.recordOutput("s1",true)).beforeStarting(new InstantCommand(() -> Logger.recordOutput("s1",false))));
 	}
 
 	private Command stayInPlace() {
@@ -115,18 +112,11 @@ public class ShooterStateHandler {
 
 	private Command resetSubsystems() {
 		return new ParallelCommandGroup(
-			new ConditionalCommand(
-				hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE).until(() -> hasHoodBeenReset()),
-				new InstantCommand(() -> {}),
-				() -> !hasHoodBeenReset
-			),
-			new ConditionalCommand(
-				turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE).until(() -> hasTurretBeenReset()),
-				new InstantCommand(() -> {}),
-				() -> !hasTurretBeenReset
-			),
-			new InstantCommand(() -> Logger.recordOutput(logPath + "/hasBeenResetInCommand", hasHoodBeenReset))
-		);
+			hood.getCommandsBuilder().setVoltageWithoutLimit(HoodConstants.RESET_HOOD_VOLTAGE).until(this::hasHoodBeenReset),
+			turret.getCommandsBuilder().setVoltageWithoutLimit(TurretConstants.RESET_TURRET_VOLTAGE).until(this::hasTurretBeenReset),
+			new RunCommand(() -> Logger.recordOutput(logPath + "/hasHoodBeenResetInCommand",hasHoodBeenReset())).until(this::hasHoodBeenReset),
+			new RunCommand(() -> Logger.recordOutput(logPath + "/hasTurretBeenResetInCommand",hasTurretBeenReset())).until(this::hasTurretBeenReset)
+		).andThen(new InstantCommand(() -> Logger.recordOutput("sssssss",true)).beforeStarting(new InstantCommand(() -> Logger.recordOutput("sssssss",false))));
 	}
 
 	private Command calibration() {
