@@ -42,7 +42,7 @@ public record IMUSignals(
 		);
 	}
 
-	public Translation3d[] getAllAccelerationsGUnits() {
+	public Translation3d[] getAllAccelerationsMagnitudeG() {
 		Double[] allXAccelerations = xAccelerationSignalEarthGravitationalAcceleration.asArray();
 		Double[] allYAccelerations = yAccelerationSignalEarthGravitationalAcceleration.asArray();
 		Double[] allZAccelerations = zAccelerationSignalEarthGravitationalAcceleration.asArray();
@@ -55,7 +55,7 @@ public record IMUSignals(
 		return allAccelerations;
 	}
 
-	public Translation3d getLatestAccelerationGUnits() {
+	public Translation3d getLatestAccelerationMagnitudeG() {
 		return new Translation3d(
 			xAccelerationSignalEarthGravitationalAcceleration().getLatestValue(),
 			yAccelerationSignalEarthGravitationalAcceleration().getLatestValue(),
