@@ -42,7 +42,7 @@ public class ShooterStateHandler {
 	public Command setState(ShooterState shooterState) {
 		Command command = switch (shooterState) {
 			case STAY_IN_PLACE -> stayInPlace();
-			case IDLE -> idle();
+			case NEUTRAL -> neutral();
 			case SHOOT -> shoot();
 			case CALIBRATION -> calibration();
 		};
@@ -61,7 +61,7 @@ public class ShooterStateHandler {
 		);
 	}
 
-	private Command idle() {
+	private Command neutral() {
 		return new ParallelCommandGroup(
 			turret.asSubsystemCommand(
 				new TurretSafeMoveToPosition(
