@@ -43,7 +43,7 @@ public class SimulationManager {
 
 	public Pose3d getIntakePosition3d() {
 		return new Pose3d(
-			new Translation3d(0.2, 0.0, 0.2),
+			new Translation3d(-0.3, 0, 0.1),
 			new Rotation3d(0.0, Rotation2d.fromDegrees(110).minus(robot.getFourBar().getPosition()).getRadians(), 0.0)
 		);
 	}
