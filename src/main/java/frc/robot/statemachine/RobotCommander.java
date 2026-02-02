@@ -30,7 +30,7 @@ public class RobotCommander extends GBSubsystem {
 		this.robot = robot;
 		this.swerve = robot.getSwerve();
 
-		this.logPath = "stateMachine";
+		this.logPath = "/stateMachine";
 
 		this.intakeStateHandler = new IntakeStateHandler(
 			robot.getFourBar(),
