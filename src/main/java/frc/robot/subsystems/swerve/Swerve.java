@@ -113,7 +113,7 @@ public class Swerve extends GBSubsystem {
 		return getIMUAccelerationG().times(RobotConstants.GRAVITATIONAL_ACCELERATION_METERS_PER_SECOND_SQUARED_ISRAEL);
 	}
 
-	public double getIMUAccelerationTwoDimentionalNormG() {
+	public double getIMUAccelerationXYNormG() {
 		return getIMUAccelerationG().toTranslation2d().getNorm();
 	}
 
@@ -349,7 +349,7 @@ public class Swerve extends GBSubsystem {
 	}
 
 	public boolean isCollisionDetected() {
-		return getIMUAccelerationTwoDimentionalNormG() > SwerveConstants.MIN_COLLISION_G_FORCE;
+		return getIMUAccelerationXYNormG() > SwerveConstants.MIN_COLLISION_G_FORCE;
 	}
 
 	public boolean isTilted() {
