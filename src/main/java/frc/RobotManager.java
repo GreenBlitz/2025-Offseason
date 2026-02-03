@@ -95,6 +95,11 @@ public class RobotManager extends LoggedRobot {
 	}
 
 	@Override
+	public void simulationPeriodic() {
+		robot.getSimulationManager().logPoses();
+	}
+
+	@Override
 	public void robotPeriodic() {
 		updateTimeRelatedData(); // Better to be first
 		JoysticksBindings.updateChassisDriverInputs();

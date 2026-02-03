@@ -37,7 +37,7 @@ public class FunnelStateHandler {
 
 	public Command setState(FunnelState state) {
 		Command command = switch (state) {
-			case DRIVE -> drive();
+			case NEUTRAL -> drive();
 			case SHOOT -> shoot();
 			case STOP -> stop();
 			case CALIBRATION -> calibration();
