@@ -68,6 +68,8 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void autonomousInit() {
+		robot.getSwerve().setIsRunningIndependently(true);
+
 		if (autonomousCommand == null) {
 			this.autonomousCommand = robot.getAutonomousCommand();
 		}
@@ -79,6 +81,8 @@ public class RobotManager extends LoggedRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
+
+		robot.getSwerve().setIsRunningIndependently(false);
 	}
 
 	@Override
