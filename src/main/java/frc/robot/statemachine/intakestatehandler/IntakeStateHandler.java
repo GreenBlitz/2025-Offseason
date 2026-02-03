@@ -50,7 +50,7 @@ public class IntakeStateHandler {
 	public Command resetFourBar() {
 		return fourBar.getCommandsBuilder()
 			.setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE)
-			.until(() -> hasBeenReset)
+			.until(() -> hasFourBarBeenReset())
 			.andThen(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", "FinishedReset")));
 	}
 
@@ -99,10 +99,10 @@ public class IntakeStateHandler {
 
 	public void periodic() {
 		fourBarResetCheckSensor.updateInputs(fourBarResetCheckInput);
-		if (!hasBeenReset)
+		if (!hasFourBarBeenReset())
 			hasBeenReset = isFourBarReset();
-		Logger.recordOutput(logPath + "/hasBeenReset", hasBeenReset);
-		Logger.recordOutput(logPath + "/resetSensorValue", isFourBarReset());
+		Logger.recordOutput(logPath + "/hasBeenReset", hasFourBarBeenReset());
+		Logger.processInputs(logPath + "/resetSensorValue", fourBarResetCheckInput);
 	}
 
 	public boolean isFourBarReset() {

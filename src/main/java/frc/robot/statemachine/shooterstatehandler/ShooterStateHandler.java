@@ -151,8 +151,8 @@ public class ShooterStateHandler {
 			hasHoodBeenReset = isHoodReset();
 		Logger.recordOutput(logPath + "/HasHoodBeenReset", hasHoodBeenReset);
 		Logger.recordOutput(logPath + "/HasTurretBeenReset", hasTurretBeenReset);
-		Logger.recordOutput(logPath + "/hoodResetSensor", isHoodReset());
-		Logger.recordOutput(logPath + "/ResetSensor", isTurretReset());
+		Logger.processInputs(logPath + "/turretResetSensor", turretResetCheckInput);
+		Logger.processInputs(logPath + "/hoodResetSensor", hoodResetCheckInput);
 		Logger.recordOutput(logPath + "/CurrentState", currentState);
 	}
 
