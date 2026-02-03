@@ -1,14 +1,6 @@
 package frc.robot.statemachine;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.statemachine.funnelstatehandler.FunnelState;
 import frc.robot.statemachine.funnelstatehandler.FunnelStateHandler;
@@ -39,13 +31,20 @@ public class RobotCommander extends GBSubsystem {
 
 		this.logPath = logPath;
 
-		this.intakeStateHandler = new IntakeStateHandler(robot.getFourBar(), robot.getIntakeRoller(), robot.getIntakeRollerSensor(), logPath);
+		this.intakeStateHandler = new IntakeStateHandler(
+			robot.getFourBar(),
+			robot.getIntakeRoller(),
+			robot.getFourBarResetCheckSensor(),
+			logPath
+		);
 		this.funnelStateHandler = new FunnelStateHandler(robot.getTrain(), robot.getBelly(), logPath);
 		this.shooterStateHandler = new ShooterStateHandler(
 			robot.getTurret(),
 			robot.getHood(),
 			robot.getFlyWheel(),
 			ShootingCalculations::getShootingParams,
+			robot.getTurretResetCheckSensor(),
+			robot.getHoodResetCheckSensor(),
 			logPath
 		);
 
@@ -105,6 +104,7 @@ public class RobotCommander extends GBSubsystem {
 			case PRE_SCORE, PRE_PASS -> preShoot();
 			case SCORE, PASS -> shoot();
 			case CALIBRATION_PRE_SCORE -> calibrationPreShoot();
+			case RESET_SUBSYSTEMS -> resetSubsystems();
 			case CALIBRATION_SCORE -> calibrationShoot();
 		}, robotState);
 	}
@@ -133,6 +133,13 @@ public class RobotCommander extends GBSubsystem {
 
 	private Command shoot() {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.SHOOT), funnelStateHandler.setState(FunnelState.SHOOT));
+	}
+
+	private Command resetSubsystems() {
+		return new ParallelDeadlineGroup(
+			shooterStateHandler.setState(ShooterState.RESET_SUBSYSTEMS),
+			funnelStateHandler.setState(FunnelState.NEUTRAL)
+		);
 	}
 
 	private Command calibrationPreShoot() {
@@ -283,7 +290,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-			case NEUTRAL, SCORE, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE, PASS -> driveWith(RobotState.NEUTRAL);
+			case NEUTRAL, SCORE, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE, PASS, RESET_SUBSYSTEMS -> driveWith(RobotState.NEUTRAL);
 			case PRE_SCORE -> driveWith(RobotState.PRE_SCORE);
 			case PRE_PASS -> driveWith(RobotState.PRE_PASS);
 		};

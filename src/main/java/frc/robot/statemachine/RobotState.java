@@ -11,6 +11,7 @@ public enum RobotState {
 	SCORE(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
 	PRE_PASS(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
 	PASS(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
+	RESET_SUBSYSTEMS,
 	CALIBRATION_PRE_SCORE,
 	CALIBRATION_SCORE;
 
