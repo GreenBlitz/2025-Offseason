@@ -68,7 +68,6 @@ public class RobotManager extends LoggedRobot {
 
 	@Override
 	public void autonomousInit() {
-		robot.getRobotCommander().getSuperstructure().setisRunningIndependently(true);
 		robot.getSwerve().setIsRunningIndependently(true);
 
 		if (autonomousCommand == null) {
@@ -83,7 +82,6 @@ public class RobotManager extends LoggedRobot {
 			autonomousCommand.cancel();
 		}
 
-		robot.getRobotCommander().getSuperstructure().setisRunningIndependently(false);
 		robot.getSwerve().setIsRunningIndependently(false);
 	}
 
@@ -94,6 +92,11 @@ public class RobotManager extends LoggedRobot {
 
 	public static double getTeleopStartTimeSeconds() {
 		return teleopStartTimeSeconds;
+	}
+
+	@Override
+	public void simulationPeriodic() {
+		robot.getSimulationManager().logPoses();
 	}
 
 	@Override
