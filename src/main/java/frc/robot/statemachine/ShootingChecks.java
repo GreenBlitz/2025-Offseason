@@ -14,7 +14,7 @@ import static edu.wpi.first.math.MathUtil.isNear;
 
 public class ShootingChecks {
 
-	private static final String shootingChecksLogPath = "Statemachine/ShootingChecks";
+	private static final String shootingChecksLogPath = "ShootingChecks";
 
 	public static boolean isInAllianceZone(Translation2d position) {
 		if (Field.isFieldConventionAlliance()) {

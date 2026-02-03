@@ -6,7 +6,7 @@ import frc.robot.subsystems.swerve.states.aimassist.AimAssist;
 public enum RobotState {
 
 	STAY_IN_PLACE,
-	DRIVE,
+	NEUTRAL,
 	PRE_SCORE(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
 	SCORE(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
 	PRE_PASS(SwerveState.DEFAULT_DRIVE.withAimAssist(AimAssist.LOOK_AT_TARGET)),
