@@ -18,7 +18,6 @@ import frc.robot.hardware.digitalinput.chooser.ChooserDigitalInput;
 import frc.robot.hardware.interfaces.IIMU;
 import frc.robot.hardware.phoenix6.BusChain;
 import frc.robot.statemachine.RobotCommander;
-import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
 import frc.robot.statemachine.shooterstatehandler.ShooterState;

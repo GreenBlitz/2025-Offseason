@@ -34,7 +34,7 @@ public class IntakeStateHandler {
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
 	}
-	
+
 
 	public Command calibration() {
 		return new ParallelCommandGroup(
@@ -51,7 +51,7 @@ public class IntakeStateHandler {
 		return fourBar.getCommandsBuilder()
 			.setVoltageWithoutLimit(FourBarConstants.FOUR_BAR_RESET_VOLTAGE)
 			.until(() -> hasBeenReset)
-			.andThen(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", IntakeState.STAY_IN_PLACE.name())));
+			.andThen(new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", "FinishedReset")));
 	}
 
 	public Command toggleState() {
