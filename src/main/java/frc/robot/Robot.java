@@ -21,6 +21,7 @@ import frc.robot.statemachine.RobotCommander;
 import frc.robot.statemachine.RobotState;
 import frc.robot.statemachine.ShootingCalculations;
 import frc.robot.statemachine.intakestatehandler.IntakeState;
+import frc.robot.statemachine.shooterstatehandler.ShooterState;
 import frc.robot.subsystems.arm.ArmSimulationConstants;
 import frc.robot.subsystems.arm.VelocityPositionArm;
 import frc.robot.subsystems.constants.belly.BellyConstants;
@@ -116,12 +117,12 @@ public class Robot {
 			WPILibPoseEstimatorConstants.WPILIB_POSEESTIMATOR_LOGPATH,
 			swerve.getKinematics(),
 			swerve.getModules().getWheelPositions(0),
-			swerve.getGyroAbsoluteYaw().getValue(),
-			swerve.getGyroAbsoluteYaw().getTimestamp(),
-			swerve.getIMUAcceleration()
+			swerve.getIMUAbsoluteYaw().getValue(),
+			swerve.getIMUAccelerationXYNormG(),
+			swerve.getIMUAbsoluteYaw().getTimestamp()
 		);
 
-		robotCommander = new RobotCommander("/RobotCommander", this);
+		robotCommander = new RobotCommander("StateMachine", this);
 
 		swerve.setHeadingSupplier(() -> poseEstimator.getEstimatedPose().getRotation());
 		swerve.getStateHandler().setIsTurretMoveLegalSupplier(() -> isTurretMoveLegal());
@@ -132,7 +133,7 @@ public class Robot {
 
 		new Trigger(() -> DriverStation.isEnabled()).onTrue(
 			(new ParallelCommandGroup(
-				robotCommander.getSuperstructure().setState(RobotState.RESET_SUBSYSTEMS),
+				robotCommander.getShooterStateHandler().setState(ShooterState.RESET_SUBSYSTEMS),
 				robotCommander.getIntakeStateHandler().setState(IntakeState.RESET_FOUR_BAR)
 			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
 		);
@@ -173,7 +174,6 @@ public class Robot {
 		BusChain.refreshAll();
 		updateAllSubsystems();
 		resetSubsystems();
-		simulationManager.logPoses();
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
@@ -385,6 +385,10 @@ public class Robot {
 
 	public RobotCommander getRobotCommander() {
 		return robotCommander;
+	}
+
+	public SimulationManager getSimulationManager() {
+		return simulationManager;
 	}
 
 	public PathPlannerAutoWrapper getAutonomousCommand() {

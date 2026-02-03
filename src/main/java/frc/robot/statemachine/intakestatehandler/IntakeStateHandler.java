@@ -34,6 +34,7 @@ public class IntakeStateHandler {
 		this.logPath = logPath + "/IntakeStateHandler";
 		this.currentState = IntakeState.STAY_IN_PLACE;
 	}
+	
 
 	public Command calibration() {
 		return new ParallelCommandGroup(

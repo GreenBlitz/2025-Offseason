@@ -58,7 +58,7 @@ public class ShooterStateHandler {
 	public Command setState(ShooterState shooterState) {
 		Command command = switch (shooterState) {
 			case STAY_IN_PLACE -> stayInPlace();
-			case IDLE -> idle();
+			case NEUTRAL -> neutral();
 			case SHOOT -> shoot();
 			case RESET_SUBSYSTEMS -> resetSubsystems();
 			case CALIBRATION -> calibration();
@@ -67,8 +67,6 @@ public class ShooterStateHandler {
 			new InstantCommand(() -> Logger.recordOutput(logPath + "/CurrentState", shooterState.name())),
 			new InstantCommand(() -> currentState = shooterState),
 			command
-		).andThen(
-			new InstantCommand(() -> Logger.recordOutput("s1", true)).beforeStarting(new InstantCommand(() -> Logger.recordOutput("s1", false)))
 		);
 	}
 
@@ -80,7 +78,7 @@ public class ShooterStateHandler {
 		);
 	}
 
-	private Command idle() {
+	private Command neutral() {
 		return new ParallelCommandGroup(
 			turret.asSubsystemCommand(
 				new TurretSafeMoveToPosition(
@@ -153,6 +151,7 @@ public class ShooterStateHandler {
 			hasHoodBeenReset = isHoodReset();
 		Logger.recordOutput(logPath + "/HasHoodBeenReset", hasHoodBeenReset);
 		Logger.recordOutput(logPath + "/HasTurretBeenReset", hasTurretBeenReset);
+		Logger.recordOutput(logPath + "/CurrentState", currentState);
 	}
 
 	public boolean hasTurretBeenReset() {
