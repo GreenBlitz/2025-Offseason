@@ -83,6 +83,7 @@ public class ShootingCalculations {
 		Logger.recordOutput(LOG_PATH + "/flywheelTarget", flywheelTargetRPS);
 		Logger.recordOutput(LOG_PATH + "/predictedTurretPose", new Pose2d(turretPredictedPose, new Rotation2d()));
 		Logger.recordOutput(LOG_PATH + "/distanceFromTarget", distanceFromTurretToTargetMeters);
+		Logger.recordOutput(LOG_PATH + "/OptimalPassingPosition", targetTranslation);
 		return new ShootingParams(
 			flywheelTargetRPS,
 			hoodTargetPosition,
@@ -146,18 +147,13 @@ public class ShootingCalculations {
 	}
 
 	public static Translation2d getOptimalPassingPosition(Translation2d turretPosition) {
-		Translation2d optimalPassingPosition;
 		if (!ShootingChecks.isInYRangeForSidePassing(turretPosition)) {
-			optimalPassingPosition = new Translation2d(ShooterConstants.getTargetXForPassing(), turretPosition.getY());
-		} else {
-			if (turretPosition.getY() > Field.WIDTH_METERS / 2) {
-				optimalPassingPosition = ShooterConstants.getUpperYSidePassingTarget();
-			} else {
-				optimalPassingPosition = ShooterConstants.getLowerYSidePassingTarget();
-			}
+			return new Translation2d(ShooterConstants.getTargetXForPassing(), turretPosition.getY());
 		}
-		Logger.recordOutput(LOG_PATH + "/OptimalPassingPosition", optimalPassingPosition);
-		return optimalPassingPosition;
+		if (turretPosition.getY() > Field.WIDTH_METERS / 2) {
+			return ShooterConstants.getUpperYSidePassingTarget();
+		}
+		return ShooterConstants.getLowerYSidePassingTarget();
 	}
 
 	private static final InterpolationMap<Double, Rotation2d> HOOD_SCORING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
