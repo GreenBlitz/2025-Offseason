@@ -10,13 +10,13 @@ public class ShooterConstants {
 
 	public static final Rotation2d DEFAULT_FLYWHEEL_ROTATIONS_PER_SECOND = Rotation2d.fromRotations(10);
 
-	public static final double MAX_Y_FOR_UNPASSABLE_AREA = Field.getHubMiddle().getY() + 0.58;
-	public static final double MIN_Y_FOR_UNPASSABLE_AREA = Field.getHubMiddle().getY() - 0.58;
+	public static final double MAX_Y_FOR_UNPASSABLE_AREA = Field.getHubMiddle().getY() + Field.HUB_Y_LENGTH/2;
+	public static final double MIN_Y_FOR_UNPASSABLE_AREA = Field.getHubMiddle().getY() - Field.HUB_Y_LENGTH/2;
 
 	public static final double MAX_X_FOR_UNPASSABLE_ARIA_BLUE_RELATIVE = 8;
 	private static final double TARGET_X_FOR_PASSING_BLUE_RELATIVE = 3;
 
-	private static final Translation2d LOWER_Y_SIDE_PASSING_TARGET = new Translation2d(2, 2);
+	private static final Translation2d LOWER_Y_SIDE_PASSING_TARGET = new Translation2d(1, 1);
 	private static final Translation2d UPPER_Y_SIDE_PASSING_TARGET = FieldMath.mirror(LOWER_Y_SIDE_PASSING_TARGET, false, true);
 
 	public static final double getTargetXForPassing() {
