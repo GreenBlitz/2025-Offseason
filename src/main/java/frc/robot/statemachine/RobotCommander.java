@@ -268,9 +268,10 @@ public class RobotCommander extends GBSubsystem {
 						)
 					)
 				)
-            )
-        );
-    }
+			)
+		);
+	}
+
 	private Command asSubsystemCommand(Command command, RobotState state) {
 		return new ParallelCommandGroup(
 			asSubsystemCommand(command, state.name()),
@@ -282,7 +283,7 @@ public class RobotCommander extends GBSubsystem {
 	private Command endState(RobotState state) {
 		return switch (state) {
 			case STAY_IN_PLACE -> driveWith(RobotState.STAY_IN_PLACE);
-            case NEUTRAL, SCORE, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE, PASS -> driveWith(RobotState.NEUTRAL);
+			case NEUTRAL, SCORE, CALIBRATION_PRE_SCORE, CALIBRATION_SCORE, PASS -> driveWith(RobotState.NEUTRAL);
 			case PRE_SCORE -> driveWith(RobotState.PRE_SCORE);
 			case PRE_PASS -> driveWith(RobotState.PRE_PASS);
 		};
