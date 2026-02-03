@@ -124,7 +124,7 @@ public class RobotCommander extends GBSubsystem {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.STAY_IN_PLACE), funnelStateHandler.setState(FunnelState.STOP));
 	}
 
-	public Command neutral() {
+	private Command neutral() {
 		return new ParallelCommandGroup(shooterStateHandler.setState(ShooterState.NEUTRAL), funnelStateHandler.setState(FunnelState.NEUTRAL));
 	}
 
