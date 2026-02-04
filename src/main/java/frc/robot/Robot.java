@@ -139,22 +139,6 @@ public class Robot {
 		);
 	}
 
-	public void resetSubsystems() {
-		if (DriverStation.isEnabled()) {
-			return;
-		}
-
-		if (HoodConstants.MINIMUM_POSITION.getRadians() > hood.getPosition().getRadians()) {
-			hood.setPosition(HoodConstants.MINIMUM_POSITION);
-		}
-		if (TurretConstants.MIN_POSITION.getRadians() > turret.getPosition().getRadians()) {
-			turret.setPosition(TurretConstants.MIN_POSITION);
-		}
-		if (FourBarConstants.MAXIMUM_POSITION.getRadians() < fourBar.getPosition().getRadians()) {
-			fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
-		}
-	}
-
 	private void updateAllSubsystems() {
 		swerve.update();
 		fourBar.update();
@@ -173,7 +157,7 @@ public class Robot {
 	public void periodic() {
 		BusChain.refreshAll();
 		updateAllSubsystems();
-		resetSubsystems();
+		robotCommander.update();
 
 		poseEstimator.updateOdometry(swerve.getAllOdometryData());
 		poseEstimator.log();
