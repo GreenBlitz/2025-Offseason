@@ -5,10 +5,12 @@ import frc.joysticks.Axis;
 import frc.joysticks.JoystickPorts;
 import frc.joysticks.SmartJoystick;
 import frc.robot.Robot;
+import frc.robot.autonomous.PathFollowingCommandsBuilder;
 import frc.robot.statemachine.RobotState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.swerve.ChassisPowers;
+import frc.utils.auto.PathHelper;
 import frc.utils.battery.BatteryUtil;
 
 public class JoysticksBindings {
@@ -65,7 +67,12 @@ public class JoysticksBindings {
 	private static void thirdJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = THIRD_JOYSTICK;
 		// bindings...
-		applyRobotCommanderCalibrationsBinding(usedJoystick, robot);
+		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
+
+		usedJoystick.B.onTrue(PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost")));
+		usedJoystick.X.onTrue(PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot")));
+//		usedJoystick.X.onTrue(PathFollowingCommandsBuilder.pathfindThenFollowPath());
+//		usedJoystick.Y.onTrue(PathFollowingCommandsBuilder.pathfindToPose());
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {
