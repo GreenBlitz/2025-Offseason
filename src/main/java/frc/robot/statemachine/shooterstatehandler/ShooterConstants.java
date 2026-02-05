@@ -16,8 +16,8 @@ public class ShooterConstants {
 	private static final double MAX_X_VALUE_FOR_UNPASSABLE_AREA = 8;
 	private static final double TARGET_X_VALUE_FOR_PASSING = 3;
 
-	private static final Translation2d LOWER_Y_SIDE_PASSING_TARGET = new Translation2d(1, 1);
-	private static final Translation2d UPPER_Y_SIDE_PASSING_TARGET = FieldMath.mirror(LOWER_Y_SIDE_PASSING_TARGET, false, true);
+	private static final Translation2d LOWER_Y_PRESET_PASSING_TARGET = new Translation2d(1, 1);
+	private static final Translation2d UPPER_Y_PRESET_PASSING_TARGET = FieldMath.mirror(LOWER_Y_PRESET_PASSING_TARGET, false, true);
 
 	public static double getTargetXForPassing() {
 		if (!Field.isFieldConventionAlliance()) {
@@ -26,18 +26,18 @@ public class ShooterConstants {
 		return TARGET_X_VALUE_FOR_PASSING;
 	}
 
-	public static Translation2d getLowerYSidePassingTarget() {
+	public static Translation2d getLowerYPresetPassingTarget() {
 		if (!Field.isFieldConventionAlliance()) {
-			return FieldMath.mirror(LOWER_Y_SIDE_PASSING_TARGET, true, false);
+			return FieldMath.mirror(LOWER_Y_PRESET_PASSING_TARGET, true, false);
 		}
-		return LOWER_Y_SIDE_PASSING_TARGET;
+		return LOWER_Y_PRESET_PASSING_TARGET;
 	}
 
-	public static Translation2d getUpperYSidePassingTarget() {
+	public static Translation2d getUpperYPresetPassingTarget() {
 		if (!Field.isFieldConventionAlliance()) {
-			return FieldMath.mirror(UPPER_Y_SIDE_PASSING_TARGET, true, false);
+			return FieldMath.mirror(UPPER_Y_PRESET_PASSING_TARGET, true, false);
 		}
-		return UPPER_Y_SIDE_PASSING_TARGET;
+		return UPPER_Y_PRESET_PASSING_TARGET;
 	}
 
 	public static double getMaxXValueForUnpassableArea() {

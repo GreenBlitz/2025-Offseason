@@ -147,13 +147,13 @@ public class ShootingCalculations {
 	}
 
 	public static Translation2d getOptimalPassingPosition(Translation2d turretTranslation) {
-		if (!ShootingChecks.isInYRangeForSidePassing(turretTranslation)) {
+		if (!ShootingChecks.isInYRangeForPresetTargetPassing(turretTranslation)) {
 			return new Translation2d(ShooterConstants.getTargetXForPassing(), turretTranslation.getY());
 		}
 		if (turretTranslation.getY() > Field.WIDTH_METERS / 2) {
-			return ShooterConstants.getUpperYSidePassingTarget();
+			return ShooterConstants.getUpperYPresetPassingTarget();
 		}
-		return ShooterConstants.getLowerYSidePassingTarget();
+		return ShooterConstants.getLowerYPresetPassingTarget();
 	}
 
 	private static final InterpolationMap<Double, Rotation2d> HOOD_SCORING_INTERPOLATION_MAP = new InterpolationMap<Double, Rotation2d>(
