@@ -132,22 +132,22 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	@Override
-	public void resetPose(OdometryData currentOdometryData, Pose2d poseMeters) {
+	public void resetPose(OdometryData odometryData, Pose2d poseMeters) {
 		Logger.recordOutput(logPath + "/lastPoseResetTo", poseMeters);
 
 		poseEstimator.resetPosition(
-			Rotation2d.fromRadians(currentOdometryData.getIMUOrientation().orElse(Rotation3d.kZero).getZ()),
-			currentOdometryData.getWheelPositions(),
+			Rotation2d.fromRadians(odometryData.getIMUOrientation().orElse(Rotation3d.kZero).getZ()),
+			odometryData.getWheelPositions(),
 			poseMeters
 		);
-		this.lastOdometryData = currentOdometryData;
+		this.lastOdometryData = odometryData;
 		poseToIMUYawDifferenceBuffer.clear();
 		imuYawBuffer.addSample(
-			currentOdometryData.getTimestampSeconds(),
-			Rotation2d.fromRadians(currentOdometryData.getIMUOrientation().orElse(Rotation3d.kZero).getZ())
+			odometryData.getTimestampSeconds(),
+			Rotation2d.fromRadians(odometryData.getIMUOrientation().orElse(Rotation3d.kZero).getZ())
 		);
 		imuXYAccelerationGBuffer
-			.addSample(currentOdometryData.getTimestampSeconds(), currentOdometryData.getIMUXYAccelerationG().orElse(Translation2d.kZero));
+			.addSample(odometryData.getTimestampSeconds(), odometryData.getIMUXYAccelerationG().orElse(Translation2d.kZero));
 	}
 
 	@Override

@@ -9,7 +9,7 @@ public interface IOdometryEstimator {
 
 	void updateOdometry(OdometryData odometryData);
 
-	void resetPose(OdometryData currentOdometryData, Pose2d poseMeters);
+	void resetPose(OdometryData odometryData, Pose2d poseMeters);
 
 	Pose2d getOdometryPose();
 
