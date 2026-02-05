@@ -132,38 +132,27 @@ public class WPILibPoseEstimatorWrapper implements IPoseEstimator {
 	}
 
 	@Override
-	public void resetPose(
-		double timestampSeconds,
-		Rotation3d imuOrientation,
-		Translation2d imuXYAccelerationG,
-		SwerveModulePosition[] wheelPositions,
-		SwerveModuleState[] wheelStates,
-		Pose2d poseMeters
-	) {
+	public void resetPose(OdometryData currentOdometryData, Pose2d poseMeters) {
 		Logger.recordOutput(logPath + "/lastPoseResetTo", poseMeters);
-		poseEstimator.resetPosition(Rotation2d.fromRadians(imuOrientation.getZ()), wheelPositions, poseMeters);
-		this.lastOdometryData = new OdometryData(
-			timestampSeconds,
-			wheelPositions,
-			wheelStates,
-			Optional.of(imuOrientation),
-			Optional.of(imuXYAccelerationG)
+
+		poseEstimator.resetPosition(
+			Rotation2d.fromRadians(currentOdometryData.getIMUOrientation().orElse(Rotation3d.kZero).getZ()),
+			currentOdometryData.getWheelPositions(),
+			poseMeters
 		);
+		this.lastOdometryData = currentOdometryData;
 		poseToIMUYawDifferenceBuffer.clear();
-		imuYawBuffer.addSample(timestampSeconds, Rotation2d.fromRadians(imuOrientation.getZ()));
-		imuXYAccelerationGBuffer.addSample(timestampSeconds, imuXYAccelerationG);
+		imuYawBuffer.addSample(
+			currentOdometryData.getTimestampSeconds(),
+			Rotation2d.fromRadians(currentOdometryData.getIMUOrientation().orElse(Rotation3d.kZero).getZ())
+		);
+		imuXYAccelerationGBuffer
+			.addSample(currentOdometryData.getTimestampSeconds(), currentOdometryData.getIMUXYAccelerationG().orElse(Translation2d.kZero));
 	}
 
 	@Override
 	public void resetPose(Pose2d poseMeters) {
-		resetPose(
-			lastOdometryData.getTimestampSeconds(),
-			lastOdometryData.getIMUOrientation().orElse(Rotation3d.kZero),
-			lastOdometryData.getIMUXYAccelerationG().orElse(Translation2d.kZero),
-			lastOdometryData.getWheelPositions(),
-			lastOdometryData.getWheelStates(),
-			poseMeters
-		);
+		resetPose(lastOdometryData, poseMeters);
 	}
 
 	@Override
