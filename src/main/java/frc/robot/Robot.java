@@ -22,8 +22,12 @@ import frc.robot.poseestimator.IPoseEstimator;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorConstants;
 import frc.robot.poseestimator.WPILibPoseEstimator.WPILibPoseEstimatorWrapper;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.constants.belly.BellyConstants;
+import frc.robot.subsystems.constants.flywheel.FlywheelConstants;
 import frc.robot.subsystems.constants.fourBar.FourBarConstants;
 import frc.robot.subsystems.constants.hood.HoodConstants;
+import frc.robot.subsystems.constants.intakeRollers.IntakeRollerConstants;
+import frc.robot.subsystems.constants.train.TrainConstant;
 import frc.robot.subsystems.constants.turret.TurretConstants;
 import frc.robot.subsystems.flywheel.FlyWheel;
 import frc.robot.subsystems.roller.Roller;
@@ -65,30 +69,30 @@ public class Robot {
 	public Robot() {
 		BatteryUtil.scheduleLimiter();
 
-		this.turret = CreateComponents.createTurret();
-		this.turretResetCheckSensor = CreateComponents.createTurretResetCheckSensor();
+		this.turret = TurretConstants.createTurret();
+		this.turretResetCheckSensor = TurretConstants.createTurretResetCheckSensor();
 		turret.setPosition(TurretConstants.MIN_POSITION);
 		BrakeStateManager.add(() -> turret.setBrake(true), () -> turret.setBrake(false));
 
-		this.flyWheel = CreateComponents.createFlyWheel();
+		this.flyWheel = FlywheelConstants.createFlyWheel();
 
-		this.fourBar = CreateComponents.createFourBar();
-		this.fourBarResetCheckSensor = CreateComponents.createFourBarSensorResetCheck();
+		this.fourBar = FourBarConstants.createFourBar();
+		this.fourBarResetCheckSensor = FourBarConstants.createFourBarSensorResetCheck();
 		fourBar.setPosition(FourBarConstants.MAXIMUM_POSITION);
 		BrakeStateManager.add(() -> fourBar.setBrake(true), () -> fourBar.setBrake(false));
 
-		this.hood = CreateComponents.createHood();
-		this.hoodResetCheckSensor = CreateComponents.createHoodResetCheckSensor();
+		this.hood = HoodConstants.createHood();
+		this.hoodResetCheckSensor = HoodConstants.createHoodResetCheckSensor();
 		hood.setPosition(HoodConstants.MINIMUM_POSITION);
 		BrakeStateManager.add(() -> hood.setBrake(true), () -> hood.setBrake(false));
 
-		this.intakeRoller = CreateComponents.createIntakeRollers();
+		this.intakeRoller = IntakeRollerConstants.createIntakeRollers();
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
 
-		this.train = CreateComponents.createTrain();
+		this.train = TrainConstant.createTrain();
 		BrakeStateManager.add(() -> train.setBrake(true), () -> train.setBrake(false));
 
-		this.belly = CreateComponents.createBelly();
+		this.belly = BellyConstants.createBelly();
 		BrakeStateManager.add(() -> belly.setBrake(true), () -> belly.setBrake(false));
 
 		IIMU imu = IMUFactory.createIMU(RobotConstants.SUBSYSTEM_LOGPATH_PREFIX + "/Swerve");
