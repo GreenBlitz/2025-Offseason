@@ -150,7 +150,7 @@ public class ShootingCalculations {
 			return new Translation2d(Field.getTargetXForPassing(), turretTranslation.getY());
 		}
 		if (turretTranslation.getY() > Field.WIDTH_METERS / 2) {
-			return Field.getUpperYPresetPassingTarget();
+			return Field.getUpperPresetPassingTarget();
 		}
 		return Field.getLowerPresetPassingTarget();
 	}

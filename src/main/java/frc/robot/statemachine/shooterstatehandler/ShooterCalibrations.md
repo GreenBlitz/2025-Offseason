@@ -9,8 +9,8 @@ Shooter Calibrations
 - [ ] Check fly wheel interpolation
 
 #### Passing Position Constants
-- [ ] Max/Min Y value for unpassable area
+- [ ] Max/Min Y value you cant pass straight from
 - [ ] Preset Points for side passing
 - [ ] Target X value for passing
-- [ ] Max X for unpassable area
+- [ ] Max X value you cant pass from from behind the bumper
  
