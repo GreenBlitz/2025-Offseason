@@ -9,6 +9,7 @@ Train calibrations
 - [ ] Inverted
 - [ ] Forward or Backward
 - [ ] Debounce time for ball sensor
+- [ ] Check sensor ID
 
 #### Config
 - [ ] Gear ratio
