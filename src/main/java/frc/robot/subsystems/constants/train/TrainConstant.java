@@ -62,7 +62,7 @@ public class TrainConstant {
 		);
 	}
 
-	public static IDigitalInput ballSensorCreate() {
+	public static IDigitalInput createTrainBallSensor() {
 		return Robot.ROBOT_TYPE.isReal()
 			? new ChanneledDigitalInput(new DigitalInput(IDs.DigitalInputsIDs.TRAIN_BALL_SENSOR), new Debouncer(TRAIN_BALL_SENSOR_DEBOUNCE_TIME))
 			: new ChooserDigitalInput("trainBallSensor");

@@ -91,7 +91,7 @@ public class Robot {
 		BrakeStateManager.add(() -> intakeRoller.setBrake(true), () -> intakeRoller.setBrake(false));
 
 		this.train = TrainConstant.createTrain();
-		this.trainBallSensor = TrainConstant.ballSensorCreate();
+		this.trainBallSensor = TrainConstant.createTrainBallSensor();
 		BrakeStateManager.add(() -> train.setBrake(true), () -> train.setBrake(false));
 
 		this.belly = BellyConstants.createBelly();
