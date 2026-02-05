@@ -23,16 +23,16 @@ public class ShootingChecks {
 		return position.getX() > Field.getHubMiddle().getX();
 	}
 
-	public static boolean isInRangeForPresetTargetPassing(Translation2d turretPosition) {
-		boolean isInYRangeForPresetTargetPassing = turretPosition.getY() < Field.MAX_Y_VALUE_YOU_CANT_PASS_STRAIGHT_FROM
-			&& turretPosition.getY() > Field.MIN_Y_VALUE_YOU_CANT_PASS_STRAIGHT_FROM;
+	public static boolean isBehindHub(Translation2d turretPosition) {
+		boolean isInYRangeForPresetTargetPassing = turretPosition.getY() < Field.HIGHEST_HUB_Y_VALUE
+			&& turretPosition.getY() > Field.LOWEST_HUB_Y_VALUE;
 		return isInYRangeForPresetTargetPassing;
 	}
 
 	private static boolean isInPositionForPassing(Translation2d turretPosition, String logPath) {
 		Translation2d allianceRelativeTurretPosition = Field.getAllianceRelative(turretPosition);
-		boolean isInPositionForPassing = !(isInRangeForPresetTargetPassing(turretPosition)
-			&& allianceRelativeTurretPosition.getX() > FieldMath.mirrorX(Field.getMaxXValueYouCantPassFromFromBehindTheHub()));
+		boolean isInPositionForPassing = !(isBehindHub(turretPosition)
+			&& allianceRelativeTurretPosition.getX() > FieldMath.mirrorX(Field.getMaxXValueYouCantPassFromWhenBehindHub()));
 		Logger.recordOutput(logPath + "/IsInPositionForPassing", isInPositionForPassing);
 		return isInPositionForPassing;
 	}
