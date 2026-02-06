@@ -24,16 +24,15 @@ public class ShootingChecks {
 	}
 
 	public static boolean isBehindHub(Translation2d turretTranslation) {
-        return turretTranslation.getY() < Field.MAX_HUB_Y_VALUE
-            && turretTranslation.getY() > Field.MIN_HUB_Y_VALUE;
+		return turretTranslation.getY() < Field.MAX_HUB_Y_VALUE && turretTranslation.getY() > Field.MIN_HUB_Y_VALUE;
 	}
 
 	private static boolean isInPositionForPassing(Translation2d turretTranslation, String logPath) {
 		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
 		boolean isBehindHub = !isBehindHub(turretTranslation);
-		boolean  isToCloseToHub= allianceRelativeTurretTranslation.getX() > FieldMath.mirrorX(Field.getMinXValueForBehindHubPassing());
+		boolean isToCloseToHub = allianceRelativeTurretTranslation.getX() > FieldMath.mirrorX(Field.getMinXValueForBehindHubPassing());
 		Logger.recordOutput(logPath + "/IsBehindHub", isBehindHub);
-		return isBehindHub&&isToCloseToHub;
+		return isBehindHub && isToCloseToHub;
 	}
 
 	private static boolean isWithinDistance(
