@@ -134,17 +134,17 @@ public class Robot {
 			).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming))
 		);
 
-		swerve.configPathPlanner(poseEstimator::getEstimatedPose, poseEstimator::resetPose, getRobotConfig());
+		swerve.configPathPlanner(() -> poseEstimator.getEstimatedPose(), (pose) -> {}, getRobotConfig());
 	}
 
 	public RobotConfig getRobotConfig() {
 		return new RobotConfig(
-			45,
-			6.325,
+			RobotConstants.ROBOT_MASS_KG,
+			RobotConstants.ROBOT_MOI,
 			new ModuleConfig(
 				swerve.getModules().getModule(ModuleUtil.ModulePosition.FRONT_LEFT).getConstants().wheelDiameterMeters() / 2,
 				swerve.getConstants().velocityAt12VoltsMetersPerSecond(),
-				0.96,
+				RobotConstants.WHEEL_COF,
 				DCMotor.getKrakenX60Foc(1),
 				KrakenX60DriveBuilder.GEAR_RATIO,
 				KrakenX60DriveBuilder.SLIP_CURRENT,

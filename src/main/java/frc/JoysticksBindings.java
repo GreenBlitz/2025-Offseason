@@ -67,12 +67,8 @@ public class JoysticksBindings {
 	private static void thirdJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = THIRD_JOYSTICK;
 		// bindings...
-		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
 
-		usedJoystick.B.onTrue(PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost")));
-		usedJoystick.X.onTrue(PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot")));
-//		usedJoystick.X.onTrue(PathFollowingCommandsBuilder.pathfindThenFollowPath());
-//		usedJoystick.Y.onTrue(PathFollowingCommandsBuilder.pathfindToPose());
+		applyShootOnMoveBinds(usedJoystick, robot);
 	}
 
 	private static void fourthJoystickButtons(Robot robot) {
@@ -88,6 +84,13 @@ public class JoysticksBindings {
 	private static void sixthJoystickButtons(Robot robot) {
 		SmartJoystick usedJoystick = SIXTH_JOYSTICK;
 		// bindings...
+	}
+
+	private static void applyShootOnMoveBinds(SmartJoystick usedJoystick, Robot robot) {
+		usedJoystick.A.onTrue(robot.getRobotCommander().driveWith(RobotState.NEUTRAL));
+
+		usedJoystick.B.onTrue(PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Depot-to-Outpost")));
+		usedJoystick.X.onTrue(PathFollowingCommandsBuilder.followPath(PathHelper.PATH_PLANNER_PATHS.get("Outpost-to-Depot")));
 	}
 
 	private static void applyRobotCommanderCalibrationsBinding(SmartJoystick joystick, Robot robot) {
