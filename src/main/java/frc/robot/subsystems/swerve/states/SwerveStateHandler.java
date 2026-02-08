@@ -97,9 +97,9 @@ public class SwerveStateHandler {
 			);
 		}
 
-		ChassisSpeeds returnSpeeds = AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);
-		returnSpeeds.omegaRadiansPerSecond += joystickRotationalSpeed;
-		return returnSpeeds;
+		ChassisSpeeds finalSpeeds = AimAssistMath.getRotationAssistedSpeeds(speeds, fieldRelativeTurretAngle, targetHeading, swerveConstants);
+		finalSpeeds.omegaRadiansPerSecond += joystickRotationalSpeed;
+		return finalSpeeds;
 	}
 
 	public Translation2d getRotationAxis(RotateAxis rotationAxisState) {
