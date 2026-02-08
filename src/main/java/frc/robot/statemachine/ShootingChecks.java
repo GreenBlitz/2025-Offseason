@@ -30,9 +30,9 @@ public class ShootingChecks {
 	private static boolean isInPositionForPassing(Translation2d turretTranslation, String logPath) {
 		Translation2d allianceRelativeTurretTranslation = Field.getAllianceRelative(turretTranslation);
 		boolean isBehindHub = isBehindHub(turretTranslation);
-		boolean isToCloseToHub = allianceRelativeTurretTranslation.getX() > FieldMath.mirrorX(Field.getMinXValueForBehindHubPassing());
+		boolean isTooCloseToHub = allianceRelativeTurretTranslation.getX() > FieldMath.mirrorX(Field.getMinXValueForBehindHubPassing());
 		Logger.recordOutput(logPath + "/IsBehindHub", isBehindHub);
-		return !isBehindHub || !isToCloseToHub;
+		return !isBehindHub || !isTooCloseToHub;
 	}
 
 	private static boolean isWithinDistance(
@@ -340,7 +340,7 @@ public class ShootingChecks {
 			&& !isInAllianceZone(robot.getPoseEstimator().getEstimatedPose().getTranslation())
 			&& isInPositionForPassing(
 				ShootingCalculations.getFieldRelativeTurretPosition(robot.getPoseEstimator().getEstimatedPose()),
-				shootingChecksLogPath + "canContinuePassing"
+				shootingChecksLogPath + "/canContinuePassing"
 			);
 	}
 
