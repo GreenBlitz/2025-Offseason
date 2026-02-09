@@ -78,10 +78,10 @@ public class Field {
 	}
 
 	public static double getMinXValueForBehindHubPassing() {
-		if (isFieldConventionAlliance()) {
-			return MIN_X_VALUE_FOR_BEHIND_HUB_PASSING;
+		if (!isFieldConventionAlliance()) {
+			return FieldMath.mirrorX(MIN_X_VALUE_FOR_BEHIND_HUB_PASSING);
 		}
-		return FieldMath.mirrorX(MIN_X_VALUE_FOR_BEHIND_HUB_PASSING);
+		return MIN_X_VALUE_FOR_BEHIND_HUB_PASSING;
 	}
 
 	public static Translation2d getTrenchMiddle(AllianceSide side) {
