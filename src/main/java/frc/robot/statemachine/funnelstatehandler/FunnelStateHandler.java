@@ -58,16 +58,14 @@ public class FunnelStateHandler {
 	}
 
 	private Command neutral() {
-		return new ParallelCommandGroup(train.getCommandsBuilder().stop(), belly.getCommandsBuilder().stop());
+		return new SequentialCommandGroup(setState(FunnelState.MOVE_ROLLS_TO_SENSOR).until(this::isBallAtSensor), setState(FunnelState.STOP));
 	}
 
-	private Command moveRollsToSensors(){
-		if (isBallAtSensor()){
-			return neutral();
-		}
-		else {
-			return train.getCommandsBuilder().setVelocity(FunnelState.SHOOT.getTrainVelocity());
-		}
+	private Command moveRollsToSensors() {
+		return new ParallelCommandGroup(
+			train.getCommandsBuilder().setVelocity(FunnelState.SHOOT.getTrainVelocity()),
+			belly.getCommandsBuilder().setVoltage(6.7)
+		);
 	}
 
 	private Command shoot() {
